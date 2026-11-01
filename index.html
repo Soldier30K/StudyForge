@@ -2,9 +2,9 @@
 <html lang="en" id="htmlRoot" class="dark">
 <head>
     <meta charset="UTF-8">
-    <title>StudyForge AI</title>
-    <link rel="icon" type="image/png" href="favicon_32x32.png">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StudyForge</title>
+    <link rel="icon" type="image/png" href="studyforge_cap_512_dominant.png">
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Dexie.js for IndexedDB -->
@@ -73,219 +73,13 @@
                          0 4px 12px rgba(0, 0, 0, 0.9);
         }
 
-       @keyframes fnfScrollUpSlow {
+@keyframes fnfScrollUpSlow {
     0% {
         transform: translateY(100vh);
     }
     100% {
         transform: translateY(calc(100vh - 50%));
     }
-}
-    
-        /* ===== HALLOWEEN EVENT ===== */
-        .halloween-login {
-            background: linear-gradient(135deg, #1a0a00, #ff6b00, #1a0a00) !important;
-        }
-        .halloween-login .glass-panel {
-            border-color: #ff6b00 !important;
-        }
-        body.halloween-mode {
-            position: relative;
-        }
-        #halloweenDarkOverlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.99);
-            z-index: 45;
-            pointer-events: none;
-            display: none;
-        }
-        body.halloween-mode.candle-bought #halloweenDarkOverlay {
-            display: block !important;
-            -webkit-mask-image: radial-gradient(circle 99px at var(--light-x, -240px) var(--light-y, -240px), transparent 0%, transparent 55%, #000 78%);
-            mask-image: radial-gradient(circle 99px at var(--light-x, -240px) var(--light-y, -240px), transparent 0%, transparent 55%, #000 78%);
-        }
-        #lightSource {
-            position: fixed;
-            width: 198px;
-            height: 198px;
-            border-radius: 50%;
-            background: radial-gradient(circle, rgba(255,200,80,0.55) 0%, rgba(255,140,0,0.25) 40%, transparent 70%);
-            pointer-events: none;
-            z-index: 46;
-            transform: translate(-50%, -50%);
-            mix-blend-mode: screen;
-            display: none;
-            transition: width 0.3s, height 0.3s, background 0.3s;
-        }
-        #lightSource.lantern {
-            width: 340px;
-            height: 340px;
-            background: radial-gradient(circle, rgba(255,220,120,0.7) 0%, rgba(255,160,40,0.35) 45%, transparent 75%);
-        }
-        #lightEmoji {
-            position: fixed;
-            font-size: 2.6rem;
-            z-index: 47;
-            pointer-events: none;
-            transform: translate(-50%, -60%);
-            display: none;
-            filter: drop-shadow(0 0 8px #ffaa00);
-            user-select: none;
-            touch-action: none;
-        }
-        #lightTimer {
-            position: fixed;
-            font-size: 0.7rem;
-            font-weight: bold;
-            color: #ffcc66;
-            z-index: 47;
-            pointer-events: none;
-            transform: translate(-50%, 12px);
-            display: none;
-            text-shadow: 0 0 4px #000;
-        }
-        .hidden-object {
-            position: fixed;
-            font-size: 2.4rem;
-            cursor: pointer;
-            opacity: 0.85;
-            transition: transform 0.2s;
-            z-index: 44;
-            user-select: none;
-            filter: drop-shadow(0 0 4px #ff4500);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            pointer-events: auto;
-        }
-        .hidden-object .emoji-timer {
-            position: absolute;
-            top: -24px;
-            font-size: 0.85rem;
-            font-weight: 900;
-            color: #ff2200;
-            text-shadow: 0 0 6px #000, 0 0 10px #ff0000;
-            background: rgba(0,0,0,0.7);
-            padding: 1px 6px;
-            border-radius: 8px;
-            border: 1px solid #ff4500;
-            display: none;
-            white-space: nowrap;
-        }
-        .magic-book {
-            position: fixed;
-            font-size: 3rem;
-            cursor: pointer;
-            z-index: 42;
-            animation: floatBook 3s ease-in-out infinite;
-            filter: drop-shadow(0 0 10px #ffaa00);
-        }
-        @keyframes floatBook {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-14px); }
-        }
-        .cursed-book {
-            position: fixed;
-            bottom: 24px;
-            right: 24px;
-            font-size: 2.2rem;
-            cursor: pointer;
-            z-index: 48;
-            filter: drop-shadow(0 0 10px #8b0000);
-            transition: transform 0.2s;
-        }
-        .cursed-book:hover { transform: scale(1.15); }
-        .screen-shake { animation: shakeAnim 0.08s infinite; }
-        @keyframes shakeAnim {
-            0%, 100% { transform: translate(0); }
-            25% { transform: translate(-5px, 3px); }
-            50% { transform: translate(5px, -3px); }
-            75% { transform: translate(-3px, 5px); }
-        }
-        .screen-flash {
-            position: fixed;
-            inset: 0;
-            background: #fff;
-            opacity: 0;
-            pointer-events: none;
-            z-index: 65;
-            transition: opacity 0.12s;
-        }
-        .screen-flash.active { opacity: 0.95; }
-        .curse-message {
-            position: fixed;
-            inset: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-family: 'Times New Roman', Times, serif;
-            font-size: clamp(1.8rem, 5vw, 3.2rem);
-            font-weight: bold;
-            color: #ff4500;
-            z-index: 62;
-            text-shadow: 0 0 24px #ff0000, 0 0 40px #8b0000;
-            pointer-events: none;
-            letter-spacing: 2px;
-        }
-        .halloween-shop-item { border-color: #ff6b00 !important; }
-        @keyframes candleGlow {
-            0%, 100% { box-shadow: 0 0 8px #ff6b00, 0 0 18px rgba(255,107,0,0.45); }
-            50% { box-shadow: 0 0 18px #ffaa00, 0 0 32px rgba(255,170,0,0.75); }
-        }
-        .candle-glow {
-            animation: candleGlow 1.4s ease-in-out infinite;
-            border-color: #ff6b00 !important;
-        }
-        .shop-nav-glow {
-            animation: candleGlow 1.6s ease-in-out infinite;
-            color: #ff8c00 !important;
-            position: relative;
-            z-index: 52;
-            background: #1a0a00;
-        }
-        .candle-glow {
-            position: relative;
-            z-index: 52;
-        }
-        #halloweenObjects { display: none !important; }
-        body.halloween-mode.halloween-game #halloweenObjects { display: block !important; }
-
-@keyframes cursedNightSequence {
-    0% { opacity: 0; }
-    12.5% { opacity: 1; }
-    87.5% { opacity: 1; }
-    100% { opacity: 0; }
-}
-
-#cursedNightTitle {
-    position: fixed;
-    inset: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    z-index: 99999;
-    pointer-events: none;
-
-    font-family: "Times New Roman", serif;
-    font-size: clamp(2rem, 6vw, 5rem);
-    font-weight: bold;
-
-    color: orange;
-    opacity: 0;
-
-    text-shadow:
-        -2px -2px 0 black,
-         2px -2px 0 black,
-        -2px  2px 0 black,
-         2px  2px 0 black,
-         0 0 15px orange;
-}
-
-#cursedNightTitle.show {
-    animation: cursedNightSequence 4s forwards;
 }
     </style>
 </head>
@@ -298,8 +92,8 @@
         </div>
     </div>
 
-    <!-- Startup Loading Splash -->
-    <div id="startupLoader" class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-slate-950 text-white space-y-6">
+    <!-- Startup Loading Splash with Custom Quote -->
+    <div id="startupLoader" class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-slate-950 text-white space-y-6 transition-opacity duration-700">
         <div class="w-12 h-12 bg-brand-500 rounded-2xl flex items-center justify-center text-white text-xl font-bold shadow-lg shadow-brand-500/30 animate-bounce">
             <i class="fa-solid fa-graduation-cap"></i>
         </div>
@@ -307,10 +101,9 @@
             <h2 class="text-base font-bold tracking-wider">Loading StudyForge AI Database...</h2>
             <p class="text-sm text-slate-400 italic">"Just because it's <strong>hard</strong> doesn't mean you <strong>can't</strong>"</p>
         </div>
-        <div class="w-48 h-1.5 bg-slate-800 rounded-full overflow-hidden">
-            <div id="startupProgressBar" class="h-full bg-brand-500 transition-all duration-200 rounded-full" style="width: 0%"></div>
+        <div class="w-48 h-1 bg-slate-800 rounded-full overflow-hidden">
+            <div class="h-full bg-brand-500 animate-pulse w-3/4"></div>
         </div>
-        <p id="startupPercentText" class="text-sm font-black text-brand-500">0%</p>
     </div>
 
     <!-- Auth Modal with Login, Signup, and Import Account Tabs -->
@@ -335,7 +128,7 @@
             <form id="authCredentialsForm" onsubmit="handleAuthSubmit(event)" class="space-y-4">
                 <div>
                     <label class="block text-xs font-semibold mb-1 text-slate-500 dark:text-slate-400">Username</label>
-                    <input type="text" id="loginUser" required class="w-full px-4 py-3 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-sm focus:outline-none focus:border-brand-500">
+                    <input type="text" autocomplete="off" id="loginUser" required class="w-full px-4 py-3 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-sm focus:outline-none focus:border-brand-500">
                 </div>
                 <div>
                     <label class="block text-xs font-semibold mb-1 text-slate-500 dark:text-slate-400">Password</label>
@@ -396,15 +189,21 @@
             <button onclick="switchTabMobile('wordgame')" class="w-full px-4 py-3 rounded-xl font-semibold text-xs transition-all text-slate-600 dark:text-slate-300 hover:bg-white/40 dark:hover:bg-slate-800/40 flex items-center space-x-3">
                 <i class="fa-solid fa-puzzle-piece w-5 text-center text-sm"></i><span>Guess the Word</span>
             </button>
+            <button onclick="switchTabMobile('quests')" class="w-full px-4 py-3 rounded-xl font-semibold text-xs transition-all text-slate-600 dark:text-slate-300 hover:bg-white/40 dark:hover:bg-slate-800/40 flex items-center space-x-3">
+                <i class="fa-solid fa-flag w-5 text-center text-sm"></i><span>Quest & Mission</span>
+            </button>
 
             <div class="border-t border-slate-200 dark:border-slate-800 my-2"></div>
             <div class="text-[10px] font-bold text-slate-400 uppercase tracking-widest px-1">Rewards & Personal</div>
 
-            <button onclick="switchTabMobile('shop')" class="shop-nav-glow w-full px-4 py-3 rounded-xl font-semibold text-xs transition-all text-orange-400 hover:bg-orange-500/20 flex items-center space-x-3">
+            <button onclick="switchTabMobile('shop')" class="w-full px-4 py-3 rounded-xl font-semibold text-xs transition-all text-slate-600 dark:text-slate-300 hover:bg-white/40 dark:hover:bg-slate-800/40 flex items-center space-x-3">
                 <i class="fa-solid fa-store w-5 text-center text-sm text-amber-500"></i><span>Reward Shop</span>
             </button>
             <button onclick="switchTabMobile('profile')" class="w-full px-4 py-3 rounded-xl font-semibold text-xs transition-all text-slate-600 dark:text-slate-300 hover:bg-white/40 dark:hover:bg-slate-800/40 flex items-center space-x-3">
                 <i class="fa-solid fa-user w-5 text-center text-sm"></i><span>Profile & Stats</span>
+            </button>
+            <button onclick="switchTabMobile('socials')" class="w-full px-4 py-3 rounded-xl font-semibold text-xs transition-all text-indigo-500 hover:bg-indigo-500/10 flex items-center space-x-3">
+                <i class="fa-solid fa-heart w-5 text-center text-sm"></i><span>Support My Socials</span>
             </button>
         </div>
     </div>
@@ -424,10 +223,6 @@
                 <span class="font-extrabold text-base tracking-wide hidden sm:inline">StudyForge <span class="text-brand-500 text-xs px-2 py-0.5 bg-brand-500/10 rounded-full">AI</span></span>
             </div>
             <div class="flex items-center space-x-2 sm:space-x-3">
-                <button onclick="switchTab('shop')" class="px-3 py-1.5 rounded-xl bg-orange-500/20 text-orange-400 font-bold text-xs flex items-center space-x-1.5 transition-all shadow-sm border border-orange-500/30 hover:bg-orange-500/30">
-                    <i class="fa-solid fa-store text-amber-500"></i>
-                    <span>Reward Shop</span>
-                </button>
                 <div class="flex items-center space-x-1.5 px-2.5 sm:px-3 py-1.5 rounded-xl bg-amber-500/10 text-amber-500 text-[11px] sm:text-xs font-bold border border-amber-500/20 shadow-sm" title="Your Coins">
                     <i class="fa-solid fa-coins text-amber-500"></i>
                     <span id="navCoinsDisplay">0 Coins</span>
@@ -441,13 +236,13 @@
                     <span class="text-slate-400">•</span>
                     <span id="navXpDisplay" class="text-slate-600 dark:text-slate-300">0 XP</span>
                 </div>
-                <button onclick="openSocialsModal()" class="hidden sm:flex px-3 py-2 rounded-xl bg-indigo-500/10 hover:bg-indigo-500/20 text-indigo-500 font-bold text-xs items-center space-x-1.5 transition-all shadow-sm">
-                    <i class="fa-solid fa-heart text-sm"></i>
-                    <span>Support My Socials</span>
-                </button>
-                <button onclick="toggleTheme()" class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl glass-panel flex items-center justify-center text-xs hover:bg-slate-200 dark:hover:bg-slate-800 transition-all">
+<button onclick="toggleTheme()" class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl glass-panel flex items-center justify-center text-xs hover:bg-slate-200 dark:hover:bg-slate-800 transition-all">
                     <i id="themeSunIcon" class="fa-solid fa-sun hidden"></i>
                     <i id="themeMoonIcon" class="fa-solid fa-moon"></i>
+                </button>
+                <button onclick="toggleNotifications()" id="notifBtn" class="relative w-9 h-9 sm:w-10 sm:h-10 rounded-xl glass-panel flex items-center justify-center text-xs hover:bg-slate-200 dark:hover:bg-slate-800 transition-all" title="Notifications">
+                    <i class="fa-solid fa-bell"></i>
+                    <span id="notifDot" class="hidden absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
                 </button>
                 <button onclick="openSettingsModal()" class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl glass-panel flex items-center justify-center text-xs hover:bg-slate-200 dark:hover:bg-slate-800 transition-all">
                     <i class="fa-solid fa-gear"></i>
@@ -483,15 +278,22 @@
                 <button onclick="switchTab('wordgame')" id="sidebar-wordgame" class="w-full px-4 py-3 rounded-xl font-semibold text-xs transition-all text-slate-600 dark:text-slate-300 hover:bg-white/40 dark:hover:bg-slate-800/40 flex items-center space-x-3">
                     <i class="fa-solid fa-puzzle-piece w-5 text-center text-sm"></i><span>Guess the Word</span>
                 </button>
+                <button onclick="switchTab('quests')" id="sidebar-quests" class="w-full px-4 py-3 rounded-xl font-semibold text-xs transition-all text-slate-600 dark:text-slate-300 hover:bg-white/40 dark:hover:bg-slate-800/40 flex items-center space-x-3 relative">
+                    <i class="fa-solid fa-flag w-5 text-center text-sm"></i><span>Quest & Mission</span>
+                    <span id="questBadge" class="hidden absolute right-3 top-2 w-2 h-2 bg-red-500 rounded-full"></span>
+                </button>
 
                 <div class="border-t border-slate-200 dark:border-slate-800 my-3"></div>
                 <div class="text-[10px] font-bold text-slate-400 uppercase tracking-widest px-3 mb-1">Rewards & Personal</div>
 
-                <button onclick="switchTab('shop')" id="sidebar-shop" class="shop-nav-glow w-full px-4 py-3 rounded-xl font-semibold text-xs transition-all text-orange-400 hover:bg-orange-500/20 flex items-center space-x-3">
+                <button onclick="switchTab('shop')" id="sidebar-shop" class="w-full px-4 py-3 rounded-xl font-semibold text-xs transition-all text-slate-600 dark:text-slate-300 hover:bg-white/40 dark:hover:bg-slate-800/40 flex items-center space-x-3">
                     <i class="fa-solid fa-store w-5 text-center text-sm text-amber-500"></i><span>Reward Shop</span>
                 </button>
                 <button onclick="switchTab('profile')" id="sidebar-profile" class="w-full px-4 py-3 rounded-xl font-semibold text-xs transition-all text-slate-600 dark:text-slate-300 hover:bg-white/40 dark:hover:bg-slate-800/40 flex items-center space-x-3">
                     <i class="fa-solid fa-user w-5 text-center text-sm"></i><span>Profile & Stats</span>
+                </button>
+                <button onclick="switchTab('socials')" id="sidebar-socials" class="w-full px-4 py-3 rounded-xl font-semibold text-xs transition-all text-indigo-500 hover:bg-indigo-500/10 flex items-center space-x-3">
+                    <i class="fa-solid fa-heart w-5 text-center text-sm"></i><span>Support My Socials</span>
                 </button>
             </aside>
 
@@ -595,10 +397,6 @@
                         <div id="hwLoadingSection" class="hidden space-y-4 py-8 text-center">
                             <div class="animate-spin w-10 h-10 border-4 border-brand-500 border-t-transparent rounded-full mx-auto"></div>
                             <p class="text-xs font-semibold text-slate-400">AI is reading your homework assignment...</p>
-                            <div class="w-full max-w-xs mx-auto h-2 bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden">
-                                <div id="hwProgressBar" class="h-full bg-brand-500 transition-all duration-300 rounded-full" style="width: 0%"></div>
-                            </div>
-                            <p id="hwPercentText" class="text-sm font-black text-brand-500">0%</p>
                         </div>
 
                         <div id="hwSelectQuestionSection" class="hidden space-y-4">
@@ -621,7 +419,7 @@
                             <div class="space-y-2">
                                 <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest">Your Answer / Response:</label>
                                 <div class="flex flex-col sm:flex-row gap-2">
-                                    <input type="text" id="hwUserResponseInput" placeholder="Type your answer..." class="w-full px-4 py-3 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-xs focus:outline-none focus:border-brand-500 font-semibold">
+                                    <input type="text" autocomplete="off" id="hwUserResponseInput" placeholder="Type your answer..." class="w-full px-4 py-3 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-xs focus:outline-none focus:border-brand-500 font-semibold">
                                     <button onclick="submitHomeworkStep()" class="px-6 py-3 bg-brand-500 hover:bg-brand-600 text-white font-bold rounded-xl text-xs transition-all flex-shrink-0">Submit</button>
                                 </div>
                             </div>
@@ -674,6 +472,7 @@
                             <div id="flashcardInner" class="relative w-full h-full duration-500 transform-style-3d shadow-2xl rounded-3xl">
                                 <div class="absolute inset-0 backface-hidden glass-panel rounded-3xl p-6 sm:p-8 flex flex-col justify-between border">
                                     <span class="text-[10px] font-bold tracking-widest text-brand-500 uppercase">Question (Click to flip)</span>
+                                    <span class="text-[10px] font-bold tracking-widest text-brand-500 uppercase">
 
 <div class="flex gap-4 flex-1 min-h-0">
 
@@ -749,10 +548,6 @@
                         <div id="quizLoadingContainer" class="hidden space-y-4 py-8">
                             <div class="animate-spin w-10 h-10 border-4 border-brand-500 border-t-transparent rounded-full mx-auto"></div>
                             <p class="text-xs font-semibold text-slate-400">Synthesizing quiz questions with Gemini...</p>
-                            <div class="w-full max-w-xs mx-auto h-2 bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden">
-                                <div id="quizProgressBar" class="h-full bg-brand-500 transition-all duration-300 rounded-full" style="width: 0%"></div>
-                            </div>
-                            <p id="quizPercentText" class="text-sm font-black text-brand-500">0%</p>
                         </div>
 
                         <div id="quizActiveContainer" class="hidden space-y-6 text-left">
@@ -821,13 +616,12 @@
                             <div class="space-y-2 text-center py-4">
                                 <p class="text-[10px] text-slate-400 font-bold uppercase">Definition / Clue:</p>
                                 <p id="wordGameClue" class="text-sm font-semibold text-slate-700 dark:text-slate-200"></p>
-                                <p id="wordGameHint" class="text-xs text-amber-500 font-semibold"></p>
                                 <div id="wordGameBlanks" class="text-xl sm:text-2xl font-black tracking-widest text-brand-500 my-4 font-mono overflow-x-auto py-2">_ _ _ _</div>
                             </div>
 
                             <div class="space-y-3">
                                 <div class="flex space-x-2">
-                                    <input type="text" id="wordGuessInput" maxlength="1" placeholder="Enter letter" class="w-full px-4 py-3 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-sm text-center uppercase focus:outline-none focus:border-brand-500 font-bold">
+                                    <input type="text" autocomplete="off" id="wordGuessInput" maxlength="1" placeholder="Enter letter" class="w-full px-4 py-3 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-sm text-center uppercase focus:outline-none focus:border-brand-500 font-bold">
                                     <button onclick="submitWordGuessLetter()" class="px-6 py-3 bg-brand-500 hover:bg-brand-600 text-white font-bold rounded-xl text-xs transition-all flex-shrink-0">Guess</button>
                                 </div>
                                 <p id="wordGameGuessedLetters" class="text-[10px] text-slate-400 text-center">Guessed letters: None</p>
@@ -915,46 +709,13 @@
                         </div>
 
                         <!-- Custom Wallpaper Upload Box -->
-                        
-                            <!-- Halloween Shop Items -->
-                            <div class="glass-panel p-4 rounded-2xl flex flex-col justify-between space-y-4 border text-center shadow-lg halloween-shop-item candle-glow">
-                                <div class="space-y-2">
-                                    <div class="w-10 h-10 bg-orange-500/20 text-orange-400 rounded-2xl mx-auto flex items-center justify-center text-lg">🕯️</div>
-                                    <h4 class="font-bold text-xs">Candle</h4>
-                                    <p class="text-[10px] text-slate-400">+25% reward boost. Unlocks Halloween Mode.</p>
-                                </div>
-                                <div class="space-y-2">
-                                    <span class="text-xs font-black text-amber-500 block">20 Coins</span>
-                                    <button id="shopBtn-candle" onclick="buyHalloweenItem('candle', 20)" class="candle-glow w-full py-2 bg-orange-500 hover:bg-orange-600 text-white font-bold rounded-xl text-xs">Buy Candle</button>
-                                </div>
-                            </div>
-                            <div class="glass-panel p-4 rounded-2xl flex flex-col justify-between space-y-4 border text-center shadow-lg halloween-shop-item">
-                                <div class="space-y-2">
-                                    <div class="w-10 h-10 bg-amber-500/20 text-amber-400 rounded-2xl mx-auto flex items-center justify-center text-lg">🔨</div>
-                                    <h4 class="font-bold text-xs">Crafter</h4>
-                                    <p class="text-[10px] text-slate-400">+50% reward boost. Allows crafting Lantern.</p>
-                                </div>
-                                <div class="space-y-2">
-                                    <span class="text-xs font-black text-amber-500 block">200 Coins</span>
-                                    <button id="shopBtn-crafter" onclick="buyHalloweenItem('crafter', 200)" class="w-full py-2 bg-amber-600 hover:bg-amber-700 text-white font-bold rounded-xl text-xs">Buy Crafter</button>
-                                </div>
-                            </div>
-<div class="glass-panel p-4 rounded-2xl flex flex-col justify-between space-y-4 border text-center shadow-lg halloween-shop-item">
-                                <div class="space-y-2">
-                                    <div class="w-10 h-10 bg-yellow-500/20 text-yellow-300 rounded-2xl mx-auto flex items-center justify-center text-lg">🏮</div>
-                                    <h4 class="font-bold text-xs">Lantern</h4>
-                                    <p class="text-[10px] text-slate-400">Craft with Crafter + Iron + Glass + Candle. Reveals extra secrets.</p>
-                                </div>
-                                <div class="space-y-2">
-                                    <span id="lanternStatus" class="text-xs font-black text-slate-400 block">Requires Crafter</span>
-                                    <button id="craftLanternBtn" onclick="craftLantern()" class="w-full py-2 bg-yellow-600 hover:bg-yellow-700 text-white font-bold rounded-xl text-xs disabled:opacity-50 disabled:cursor-not-allowed" disabled>Craft Lantern</button>
-                                    <button id="equipLanternBtn" onclick="activateLantern()" class="w-full py-1.5 mt-1 bg-yellow-500/20 text-yellow-300 font-bold rounded-xl text-[10px] hidden">Equip Lantern</button>
-                                </div>
-                            </div>
-
                         <div id="customWallpaperUploadBox" class="hidden glass-panel p-5 rounded-2xl space-y-3 border border-blue-500/30">
                             <h4 class="font-bold text-xs text-blue-500">Upload Custom Wallpaper Image</h4>
-                            <input type="file" accept="image/*" onchange="handleWallpaperUpload(event)" class="text-xs text-slate-400 w-full file:py-1 file:px-3 file:rounded-lg file:border-0 file:bg-blue-500/10 file:text-blue-500 cursor-pointer">
+                            <label class="w-full flex items-center justify-between gap-2 px-3 py-2 bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl text-xs cursor-pointer hover:border-blue-500 transition-all">
+                                <span id="wallpaperFileName" class="text-slate-500 truncate">No file chosen</span>
+                                <span class="text-blue-500 font-bold flex-shrink-0">Browse</span>
+                                <input type="file" id="wallpaperFileInput" accept="image/*" onchange="handleWallpaperUpload(event)" class="hidden">
+                            </label>
                         </div>
 
                         <!-- Custom Audio Upload Box -->
@@ -985,7 +746,125 @@
                     </div>
                 </div>
 
-                <!-- TAB: PROFILE -->
+                <!-- TAB: QUEST & MISSION -->
+                <div id="content-quests" class="hidden space-y-6">
+                    <div class="glass-panel p-6 sm:p-8 rounded-3xl shadow-xl space-y-6">
+                        <div>
+                            <h3 class="text-lg font-bold">Quest & Mission</h3>
+                            <p class="text-xs text-slate-400">Complete quests for quick rewards and missions for bigger goals.</p>
+                        </div>
+
+                        <div id="questActiveView" class="space-y-8">
+                            <!-- QUESTS -->
+                            <div class="space-y-4">
+                                <h4 class="font-bold text-xs uppercase tracking-widest text-slate-400">Quests</h4>
+
+                                <div class="p-4 rounded-2xl bg-slate-100/50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800">
+                                    <div class="flex justify-between items-start gap-3">
+                                        <div class="flex-1">
+                                            <span class="text-[10px] font-bold text-brand-500 uppercase">Easy</span>
+                                            <p class="font-bold text-sm mt-1">Win 2 Games</p>
+                                            <p class="text-xs text-slate-400 mt-1">Progress: <span id="qEasyProgress">0</span>/2</p>
+                                        </div>
+                                        <div class="text-right text-xs">
+                                            <p class="text-amber-500 font-bold">50 Coins</p>
+                                            <p class="text-brand-500">50 EXP</p>
+                                            <button onclick="claimQuest('easy')" id="claimEasyBtn" class="mt-2 px-3 py-1 bg-brand-500 text-white text-[10px] font-bold rounded-lg hidden">Claim</button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="p-4 rounded-2xl bg-slate-100/50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800">
+                                    <div class="flex justify-between items-start gap-3">
+                                        <div class="flex-1">
+                                            <span class="text-[10px] font-bold text-amber-500 uppercase">Normal</span>
+                                            <p class="font-bold text-sm mt-1">Answer 20 Questions Correctly</p>
+                                            <p class="text-xs text-slate-400 mt-1">Progress: <span id="qNormalProgress">0</span>/20</p>
+                                        </div>
+                                        <div class="text-right text-xs">
+                                            <p class="text-amber-500 font-bold">100 Coins</p>
+                                            <p class="text-brand-500">100 EXP</p>
+                                            <button onclick="claimQuest('normal')" id="claimNormalBtn" class="mt-2 px-3 py-1 bg-brand-500 text-white text-[10px] font-bold rounded-lg hidden">Claim</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- MISSIONS -->
+                            <div class="space-y-4 pt-4 border-t border-slate-200 dark:border-slate-800">
+                                <h4 class="font-bold text-xs uppercase tracking-widest text-slate-400">Missions</h4>
+
+                                <div class="p-4 rounded-2xl bg-slate-100/50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800">
+                                    <div class="flex justify-between items-start gap-3">
+                                        <div class="flex-1">
+                                            <span class="text-[10px] font-bold text-purple-500 uppercase">Mission</span>
+                                            <p class="font-bold text-sm mt-1">Win 3 Different Games 3 Times</p>
+                                            <p class="text-xs text-slate-400 mt-1">Progress: <span id="missionDiffProgress">0</span>/3 modes</p>
+                                            <p class="text-[10px] text-slate-500">(3 wins in each of 3 different modes)</p>
+                                        </div>
+                                        <div class="text-right text-xs">
+                                            <p class="text-amber-500 font-bold">650 Coins</p>
+                                            <p class="text-brand-500">650 EXP</p>
+                                            <button onclick="claimMission('diff')" id="claimDiffBtn" class="mt-2 px-3 py-1 bg-brand-500 text-white text-[10px] font-bold rounded-lg hidden">Claim</button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="p-4 rounded-2xl bg-slate-100/50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800">
+                                    <div class="flex justify-between items-start gap-3">
+                                        <div class="flex-1">
+                                            <span class="text-[10px] font-bold text-purple-500 uppercase">Mission</span>
+                                            <p class="font-bold text-sm mt-1">Win Guess the Word (Hard) 3 Times</p>
+                                            <p class="text-xs text-slate-400 mt-1">Progress: <span id="missionHardProgress">0</span>/3</p>
+                                        </div>
+                                        <div class="text-right text-xs">
+                                            <p class="text-amber-500 font-bold">700 Coins</p>
+                                            <p class="text-brand-500">700 EXP</p>
+                                            <button onclick="claimMission('hard')" id="claimHardBtn" class="mt-2 px-3 py-1 bg-brand-500 text-white text-[10px] font-bold rounded-lg hidden">Claim</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="questCooldownView" class="hidden text-center space-y-4 py-8">
+                            <div class="w-16 h-16 bg-brand-500/20 text-brand-500 rounded-3xl mx-auto flex items-center justify-center text-2xl">
+                                <i class="fa-solid fa-clock"></i>
+                            </div>
+                            <h3 class="text-lg font-bold">More quests and mission will be here later</h3>
+                            <p class="text-xs text-slate-400">Next set available in:</p>
+                            <p id="questCooldownTimer" class="text-2xl font-black text-brand-500">23:59:59</p>
+                        </div>
+                    </div>
+                </div>
+
+                                
+                <!-- TAB: SUPPORT MY SOCIALS -->
+                <div id="content-socials" class="hidden space-y-6">
+                    <div class="glass-panel p-6 sm:p-8 rounded-3xl shadow-xl max-w-xl mx-auto space-y-6">
+                        <div class="text-center space-y-2">
+                            <div class="w-16 h-16 bg-indigo-500/20 text-indigo-500 rounded-3xl mx-auto flex items-center justify-center text-2xl">
+                                <i class="fa-solid fa-heart"></i>
+                            </div>
+                            <h3 class="text-xl font-bold">Support My Socials</h3>
+                            <p class="text-xs text-slate-400">Follow my channels and check out Microsoft Rewards!</p>
+                        </div>
+
+                        <div class="space-y-3">
+                            <a href="#" target="_blank" class="w-full py-3 bg-red-600 hover:bg-red-700 text-white font-bold rounded-xl text-sm flex items-center justify-center space-x-2 shadow-lg transition-all">
+                                <i class="fa-brands fa-youtube"></i><span>YouTube</span>
+                            </a>
+                            <a href="#" target="_blank" class="w-full py-3 bg-slate-900 hover:bg-black text-white font-bold rounded-xl text-sm flex items-center justify-center space-x-2 shadow-lg transition-all border border-slate-700">
+                                <i class="fa-brands fa-tiktok"></i><span>TikTok</span>
+                            </a>
+                            <a href="https://rewards.bing.com/welcome?rh=7rPckSSimXA&ref=rafsrchae" target="_blank" rel="noopener" class="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl text-sm flex items-center justify-center space-x-2 shadow-lg transition-all">
+                                <i class="fa-solid fa-medal"></i><span>Microsoft Rewards</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+<!-- TAB: PROFILE -->
                 <div id="content-profile" class="hidden space-y-6">
                     <div class="glass-panel p-6 sm:p-8 rounded-3xl shadow-xl max-w-xl mx-auto space-y-6">
                         <div class="flex items-center space-x-4">
@@ -1113,7 +992,7 @@
     </div>
 
     <!-- Weekly Challenge Bottom-Right Floating Widget -->
-    <div id="weeklyChallengePopup" class="hidden fixed bottom-16 sm:bottom-6 right-4 left-4 sm:left-auto sm:w-80 glass-panel p-5 sm:p-6 rounded-3xl shadow-2xl border border-brand-500/30 space-y-4 z-50">
+    <div id="weeklyChallengePopup" style="display:none !important" class="hidden fixed bottom-16 sm:bottom-6 right-4 left-4 sm:left-auto sm:w-80 glass-panel p-5 sm:p-6 rounded-3xl shadow-2xl border border-brand-500/30 space-y-4 z-50">
         <div class="flex justify-between items-center">
             <div class="flex items-center space-x-2">
                 <div class="w-8 h-8 bg-brand-500 rounded-xl flex items-center justify-center text-white text-xs font-bold shadow-md"><i class="fa-solid fa-trophy"></i></div>
@@ -1145,10 +1024,6 @@
         <div id="wcStateLoading" class="hidden py-6 text-center space-y-2">
             <div class="animate-spin w-8 h-8 border-3 border-brand-500 border-t-transparent rounded-full mx-auto"></div>
             <p class="text-[10px] text-slate-400 font-semibold">Synthesizing advanced stretch questions...</p>
-            <div class="w-full h-2 bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden">
-                <div id="wcProgressBar" class="h-full bg-brand-500 transition-all duration-300 rounded-full" style="width: 0%"></div>
-            </div>
-            <p id="wcPercentText" class="text-xs font-black text-brand-500">0%</p>
         </div>
 
         <div id="wcStateActive" class="hidden space-y-3">
@@ -1159,7 +1034,7 @@
             <p id="wcQuestionText" class="text-xs font-bold leading-relaxed"></p>
             
             <div class="space-y-2">
-                <input type="text" id="wcAnswerInput" placeholder="Type your answer..." class="w-full px-3 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-xs focus:outline-none focus:border-brand-500 font-semibold">
+                <input type="text" autocomplete="off" id="wcAnswerInput" placeholder="Type your answer..." class="w-full px-3 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-xs focus:outline-none focus:border-brand-500 font-semibold">
                 
                 <div class="flex space-x-2">
                     <button onclick="prevWcQuestion()" id="wcPrevBtn" class="w-1/3 py-2 bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 font-bold rounded-xl text-xs transition-all">Previous</button>
@@ -1395,66 +1270,25 @@
             }
         }
 
-        function setProgress(barId, textId, percent) {
-            const bar = document.getElementById(barId);
-            const text = document.getElementById(textId);
-            const p = Math.min(100, Math.max(0, Math.round(percent)));
-            if (bar) bar.style.width = p + '%';
-            if (text) text.textContent = p + '%';
-        }
+        window.onload = async function() {
+            loadSavedTheme();
 
-        document.addEventListener('DOMContentLoaded', async function() {
-            setProgress('startupProgressBar', 'startupPercentText', 20);
+            setTimeout(async () => {
+                document.getElementById('startupLoader').classList.add('opacity-0');
+                setTimeout(() => document.getElementById('startupLoader').classList.add('hidden'), 500);
 
-            const savedTheme = localStorage.getItem('studyforge_theme') || 'dark';
-            const html = document.getElementById('htmlRoot');
-            const sun = document.getElementById('themeSunIcon');
-            const moon = document.getElementById('themeMoonIcon');
-
-            if (savedTheme === 'light') {
-                html.classList.remove('dark');
-                sun.classList.remove('hidden');
-                moon.classList.add('hidden');
-            } else {
-                html.classList.add('dark');
-                sun.classList.add('hidden');
-                moon.classList.remove('hidden');
-            }
-            setProgress('startupProgressBar', 'startupPercentText', 40);
-
-            // Safety: always finish the splash even if something fails
-            const forceHide = setTimeout(() => hideStartupLoader(), 6000);
-
-            try {
-                setProgress('startupProgressBar', 'startupPercentText', 55);
                 setupAuthPrompt();
-                setProgress('startupProgressBar', 'startupPercentText', 70);
-
                 if (currentUser) {
-                    await loadAccountData();
-                    setProgress('startupProgressBar', 'startupPercentText', 85);
-                    checkAndVerifyStreak();
-                    showApp();
-                    checkWeeklyChallengeStatus();
-                    initHalloween();
+                    try {
+                        await loadAccountData();
+                        checkAndVerifyStreak();
+                        showApp();
+                    } catch (err) {
+                        console.error("Database connection error:", err);
+                    }
                 }
-                setProgress('startupProgressBar', 'startupPercentText', 100);
-            } catch (err) {
-                console.error("Database connection error:", err);
-                setProgress('startupProgressBar', 'startupPercentText', 100);
-            }
-
-            clearTimeout(forceHide);
-            setTimeout(hideStartupLoader, 250);
-        });
-
-        function hideStartupLoader() {
-            const loader = document.getElementById('startupLoader');
-            if (!loader || loader.classList.contains('hidden')) return;
-            loader.style.transition = 'opacity 0.4s';
-            loader.style.opacity = '0';
-            setTimeout(() => loader.classList.add('hidden'), 400);
-        }
+            }, 800);
+        };
 
         function setAuthMode(mode) {
             authMode = mode;
@@ -1631,6 +1465,7 @@
             apiKey = setDoc ? setDoc.apiKey || '' : '';
 
             if (userProfile.customBg) document.getElementById('bodyRoot').style.backgroundImage = `url(${userProfile.customBg})`;
+            if (typeof loadNotifications === 'function') loadNotifications();
             if (userProfile.customColor) applyCustomColor(userProfile.customColor, false);
             if (apiKey) document.getElementById('settingsApiKey').value = apiKey;
             applyUserPfp();
@@ -1653,20 +1488,127 @@
             await db.settings.put({ username: currentUser, apiKey: apiKey });
         }
 
-        function toggleTheme() {
+        function applyTheme(theme) {
             const html = document.getElementById('htmlRoot');
             const sun = document.getElementById('themeSunIcon');
             const moon = document.getElementById('themeMoonIcon');
-            
-            if (html.classList.contains('dark')) {
+            if (theme === 'light') {
                 html.classList.remove('dark');
-                localStorage.setItem('studyforge_theme', 'light');
-                sun.classList.remove('hidden');
-                moon.classList.add('hidden');
+                if (sun) sun.classList.remove('hidden');
+                if (moon) moon.classList.add('hidden');
             } else {
                 html.classList.add('dark');
-                sun.classList.add('hidden');
-                moon.classList.remove('hidden');
+                if (sun) sun.classList.add('hidden');
+                if (moon) moon.classList.remove('hidden');
+            }
+            localStorage.setItem('studyforge_theme', theme);
+        }
+
+        
+        // ========== NOTIFICATIONS SYSTEM ==========
+        let notifications = [];
+
+        function loadNotifications() {
+            try {
+                const saved = localStorage.getItem('studyforge_notifications');
+                notifications = saved ? JSON.parse(saved) : [];
+            } catch (e) { notifications = []; }
+
+            // Only add Halloween notification if the user actually participated (bought a candle)
+            const participated = !!(userProfile && userProfile.halloween && userProfile.halloween.shopItems && userProfile.halloween.shopItems.candle);
+            const hasHalloween = notifications.some(n => n.id === 'halloween-thanks');
+            if (!hasHalloween && participated) {
+                notifications.push({
+                    id: 'halloween-thanks',
+                    emoji: '🎃',
+                    title: 'Thank You for Participating',
+                    description: 'Click me to claim your rewards',
+                    date: '1/11/2026',
+                    read: false,
+                    claimed: false
+                });
+                saveNotifications();
+            }
+            renderNotifications();
+        }
+
+        function saveNotifications() {
+            localStorage.setItem('studyforge_notifications', JSON.stringify(notifications));
+        }
+
+        function renderNotifications() {
+            const list = document.getElementById('notificationsList');
+            const dot = document.getElementById('notifDot');
+            if (!list) return;
+
+            const unread = notifications.filter(n => !n.read);
+            if (dot) dot.classList.toggle('hidden', unread.length === 0);
+
+            if (notifications.length === 0) {
+                list.innerHTML = '<p class="text-slate-400 text-center py-4">No notifications yet</p>';
+                return;
+            }
+
+            list.innerHTML = notifications.map(n => `
+                <div onclick="openNotification('${n.id}')" class="flex items-start gap-3 p-3 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800/50 cursor-pointer transition-all ${n.read ? 'opacity-60' : ''}">
+                    <div class="text-2xl flex-shrink-0">${n.emoji || '🔔'}</div>
+                    <div class="flex-1 min-w-0">
+                        <p class="font-bold text-xs">${n.title}</p>
+                        <p class="text-[10px] text-slate-400 truncate">${n.description}</p>
+                        <p class="text-[9px] text-slate-500 mt-0.5">${n.date || ''}</p>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function openNotification(id) {
+            const n = notifications.find(x => x.id === id);
+            if (!n) return;
+
+            // Mark as read permanently
+            n.read = true;
+            saveNotifications();
+            renderNotifications();
+
+            // Halloween claim
+            if (id === 'halloween-thanks' && !n.claimed) {
+                n.claimed = true;
+                userProfile.coins = (userProfile.coins || 0) + 1000;
+                userProfile.xp = (userProfile.xp || 0) + 1000;
+                saveAccountData();
+                updateStats();
+                if (typeof playCoinsSfx === 'function') playCoinsSfx();
+                alert('🎃 Claimed +1000 Coins & +1000 EXP! Thank you for participating in the Halloween event.');
+                saveNotifications();
+            }
+
+            // Close panel
+            const panel = document.getElementById('notificationsPanel');
+            if (panel) panel.classList.add('hidden');
+        }
+
+        function toggleNotifications() {
+            const panel = document.getElementById('notificationsPanel');
+            if (panel) panel.classList.toggle('hidden');
+        }
+
+        // Load on startup (after DOM)
+        setTimeout(loadNotifications, 600);
+
+
+        function toggleTheme() {
+            const html = document.getElementById('htmlRoot');
+            const newTheme = html.classList.contains('dark') ? 'light' : 'dark';
+            applyTheme(newTheme);
+        }
+
+        function loadSavedTheme() {
+            const saved = localStorage.getItem('studyforge_theme');
+            if (saved === 'light' || saved === 'dark') {
+                applyTheme(saved);
+            } else {
+                // Default to dark if nothing saved
+                applyTheme('dark');
             }
         }
 
@@ -1764,6 +1706,8 @@
         function handleWallpaperUpload(event) {
             const file = event.target.files[0];
             if (!file) return;
+            const nameEl = document.getElementById('wallpaperFileName');
+            if (nameEl) nameEl.textContent = file.name;
             if (file.size > 5 * 1024 * 1024) {
                 alert("Please choose an image file smaller than 5MB.");
                 return;
@@ -1772,6 +1716,7 @@
             reader.onload = async function(e) {
                 const base64Image = e.target.result;
                 userProfile.customBg = base64Image;
+                userProfile.customBgName = file.name;
                 document.getElementById('bodyRoot').style.backgroundImage = `url(${base64Image})`;
                 await saveAccountData();
                 alert("Successfully applied custom wallpaper!");
@@ -1953,6 +1898,11 @@
         }
 
         function showApp() {
+            // Restore wallpaper filename display
+            const nameEl = document.getElementById('wallpaperFileName');
+            if (nameEl && userProfile && userProfile.customBgName) {
+                nameEl.textContent = userProfile.customBgName;
+            }
             document.getElementById('authModal').classList.add('hidden');
             document.getElementById('appContainer').classList.remove('hidden');
             document.getElementById('loggedInUserDisplay').textContent = currentUser;
@@ -1987,8 +1937,6 @@
         }
 
         function switchTab(tabId) {
-            if (typeof hideHalloweenHazards === 'function') hideHalloweenHazards();
-
             if (currentResultAudio) {
                 currentResultAudio.pause();
                 currentResultAudio.src = "";
@@ -1997,7 +1945,7 @@
             }
             hideFnfBanner();
 
-            ['overview', 'upload', 'homework', 'decks', 'quizzes', 'wordgame', 'shop', 'profile'].forEach(t => {
+            ['overview', 'upload', 'homework', 'decks', 'quizzes', 'wordgame', 'quests', 'socials', 'shop', 'profile'].forEach(t => {
                 const btn = document.getElementById(`sidebar-${t}`);
                 const content = document.getElementById(`content-${t}`);
                 if (t === tabId) {
@@ -2184,7 +2132,10 @@
         }
 
         function checkWeeklyChallengeStatus() {
+            // Weekly Challenge removed — replaced by Quest & Mission
             const popup = document.getElementById('weeklyChallengePopup');
+            if (popup) popup.classList.add('hidden');
+            return;
             const stateGrade = document.getElementById('wcStateGrade');
             const stateCountdown = document.getElementById('wcStateCountdown');
             if (!popup) return;
@@ -2221,17 +2172,13 @@
 
             document.getElementById('wcStateGrade').classList.add('hidden');
             document.getElementById('wcStateLoading').classList.remove('hidden');
-            setProgress('wcProgressBar', 'wcPercentText', 15);
 
             try {
                 const prompt = `Generate a JSON array of exactly 3 advanced challenge questions for a student in Grade ${grade}. Questions must be 1-2 grade levels higher. Each object must have keys "q" and "ans". Return ONLY valid JSON array without markdown.`;
-                setProgress('wcProgressBar', 'wcPercentText', 40);
                 const res = await callGeminiApi(prompt);
-                setProgress('wcProgressBar', 'wcPercentText', 75);
                 wcActiveQuestions = parseAiJson(res.text);
                 wcUserAnswers = ["", "", ""];
                 wcCurrentIndex = 0;
-                setProgress('wcProgressBar', 'wcPercentText', 100);
 
                 document.getElementById('wcStateLoading').classList.add('hidden');
                 document.getElementById('wcStateActive').classList.remove('hidden');
@@ -2328,7 +2275,6 @@
             document.getElementById('wordGameSetup').classList.add('hidden');
             document.getElementById('wordGameResult').classList.add('hidden');
             document.getElementById('wordGamePlay').classList.remove('hidden');
-            if (typeof showHalloweenHazards === 'function') showHalloweenHazards('wordgame');
         }
 
         function updateWordGameBlanks() {
@@ -2358,7 +2304,6 @@
         }
 
         async function endWordGame(won) {
-            if (typeof hideHalloweenHazards === 'function') hideHalloweenHazards();
             document.getElementById('wordGamePlay').classList.add('hidden');
             document.getElementById('wordGameResult').classList.remove('hidden');
 
@@ -2376,7 +2321,7 @@
                 xpText.textContent = `+${earned} Coins & +${earned} XP Earned`;
 
                 userProfile.xp += earned;
-                userProfile.coins += Math.round(earned * (typeof getHalloweenRewardMultiplier === 'function' ? getHalloweenRewardMultiplier() : 1));
+                userProfile.coins += earned;
 
                 await saveAccountData();
                 registerGameCompletionStreak();
@@ -2384,7 +2329,7 @@
                 playCoinsSfx();
                 playQuizResultMusic(true);
                 triggerFnfBanner('win');
-                if (typeof registerHalloweenWin === 'function') registerHalloweenWin('wordgame');
+                if (typeof recordGameWin === 'function') recordGameWin('wordgame', wordGameMode === 'hard');
             } else {
                 resultTitle.textContent = "You Lost!";
                 iconBox.className = "w-16 h-16 bg-red-500/20 text-red-500 rounded-3xl mx-auto flex items-center justify-center text-2xl";
@@ -2397,11 +2342,9 @@
 
             document.getElementById('wordGameCorrectWordReveal').textContent = `Word: ${wordGameCurrent.word}`;
             updateStats();
-            if (typeof trySpawnMagicBook === 'function') trySpawnMagicBook();
         }
 
         function resetWordGame() {
-            if (typeof hideHalloweenHazards === 'function') hideHalloweenHazards();
             hideFnfBanner();
             if (currentResultAudio) {
                 currentResultAudio.pause();
@@ -2536,7 +2479,6 @@
 
             document.getElementById('hwUploadSection').classList.add('hidden');
             document.getElementById('hwLoadingSection').classList.remove('hidden');
-            setProgress('hwProgressBar', 'hwPercentText', 10);
 
             const fileName = file.name.toLowerCase();
             const isImage = file.type.startsWith('image/') || /\.(png|jpe?g|gif|webp|bmp|tiff?)$/i.test(fileName);
@@ -2544,7 +2486,6 @@
 
             try {
                 let textContent = '';
-                setProgress('hwProgressBar', 'hwPercentText', 25);
                 if (isImage) {
                     textContent = await extractTextFromImage(file);
                     if (!textContent || textContent.length < 2) {
@@ -2557,7 +2498,6 @@
                 } else {
                     textContent = await file.text();
                 }
-                setProgress('hwProgressBar', 'hwPercentText', 55);
                 await processHomeworkText(textContent);
             } catch (err) {
                 alert("Error processing homework: " + err.message);
@@ -2568,14 +2508,11 @@
 
         async function processHomeworkText(textContent) {
             try {
-                setProgress('hwProgressBar', 'hwPercentText', 70);
                 const aiRes = await callGeminiApi(`Split this homework text into a JSON array of strings: ["Q1...", "Q2..."]. Return ONLY a valid JSON array.\n\n${textContent}`);
-                setProgress('hwProgressBar', 'hwPercentText', 90);
                 hwParsedQuestions = parseAiJson(aiRes.text);
                 if (!Array.isArray(hwParsedQuestions)) {
                     hwParsedQuestions = [String(hwParsedQuestions)];
                 }
-                setProgress('hwProgressBar', 'hwPercentText', 100);
                 document.getElementById('hwLoadingSection').classList.add('hidden');
                 if (hwParsedQuestions.length > 1) {
                     document.getElementById('hwQuestionsList').innerHTML = hwParsedQuestions.map((q, i) => {
@@ -2596,15 +2533,12 @@
             hwActiveQuestion = qText;
             document.getElementById('hwSelectQuestionSection').classList.add('hidden');
             document.getElementById('hwLoadingSection').classList.remove('hidden');
-            setProgress('hwProgressBar', 'hwPercentText', 20);
             try {
                 const res = await callGeminiApi(`Socratic tutor guidance for: "${hwActiveQuestion}". Provide Step 1 and end with a guiding question.`);
-                setProgress('hwProgressBar', 'hwPercentText', 100);
                 document.getElementById('hwAiPromptText').textContent = res.text;
                 hwSocraticStepCount = 1;
                 document.getElementById('hwLoadingSection').classList.add('hidden');
                 document.getElementById('hwSocraticSection').classList.remove('hidden');
-                if (typeof showHalloweenHazards === 'function') showHalloweenHazards('homework');
             } catch (err) { alert("Error: " + err.message); resetHomeworkHelper(); }
         }
 
@@ -2614,19 +2548,15 @@
             document.getElementById('hwUserResponseInput').value = '';
             document.getElementById('hwLoadingSection').classList.remove('hidden');
             document.getElementById('hwSocraticSection').classList.add('hidden');
-            setProgress('hwProgressBar', 'hwPercentText', 25);
             try {
                 const res = await callGeminiApi(`Problem: "${hwActiveQuestion}". Student response: "${userAns}". Provide Step ${++hwSocraticStepCount} guidance.`);
-                setProgress('hwProgressBar', 'hwPercentText', 100);
                 document.getElementById('hwAiPromptText').textContent = res.text;
                 document.getElementById('hwLoadingSection').classList.add('hidden');
                 document.getElementById('hwSocraticSection').classList.remove('hidden');
-                if (typeof registerHalloweenWin === 'function') registerHalloweenWin('homework');
             } catch (err) { alert("Error: " + err.message); resetHomeworkHelper(); }
         }
 
         function resetHomeworkHelper() {
-            if (typeof hideHalloweenHazards === 'function') hideHalloweenHazards();
             document.getElementById('hwLoadingSection').classList.add('hidden');
             document.getElementById('hwSelectQuestionSection').classList.add('hidden');
             document.getElementById('hwSocraticSection').classList.add('hidden');
@@ -2910,11 +2840,9 @@ alert("✨ Flashcard deck generated successfully!");
             document.getElementById('deckResultContainer').classList.add('hidden');
             document.getElementById('deckReviewView').classList.remove('hidden');
             loadCardContent();
-            if (typeof showHalloweenHazards === 'function') showHalloweenHazards('decks');
         }
 
         function closeReviewDeck() {
-            if (typeof hideHalloweenHazards === 'function') hideHalloweenHazards();
             hideFnfBanner();
             // Stop win/lose result music when leaving the result screen
             if (currentResultAudio) {
@@ -2973,7 +2901,6 @@ alert("✨ Flashcard deck generated successfully!");
             setTimeout(() => {
                 currentCardIndex++;
                 if (currentCardIndex >= activeReviewDeck.cards.length) {
-                    if (typeof hideHalloweenHazards === 'function') hideHalloweenHazards();
                     document.getElementById('deckReviewView').classList.add('hidden');
                     document.getElementById('deckResultContainer').classList.remove('hidden');
                     document.getElementById('deckScorePercentText').textContent = `${Math.round((cardMasteredCount/activeReviewDeck.cards.length)*100)}%`;
@@ -2992,7 +2919,7 @@ document.getElementById('deckXpEarnedText').textContent =
 playCoinsSfx();
 playQuizResultMusic(true);
 triggerFnfBanner('win');
-if (typeof registerHalloweenWin === 'function') registerHalloweenWin('decks');
+if (typeof recordGameWin === 'function') recordGameWin('decks', false);
 updateStats();
                 } else { loadCardContent(); }
             }, 1000);
@@ -3055,12 +2982,10 @@ updateStats();
             const qty = document.getElementById('quizQuantitySelect').value;
             document.getElementById('quizStartContainer').classList.add('hidden');
             document.getElementById('quizLoadingContainer').classList.remove('hidden');
-            setProgress('quizProgressBar', 'quizPercentText', 15);
 
             try {
                 /* Extract text from uploaded IndexedDB materials */
                 let materialContext = materials.map(m => `File: ${m.name}\nContent:\n${m.content}`).join("\n\n");
-                setProgress('quizProgressBar', 'quizPercentText', 35);
                 
                 let promptText;
                 if (materialContext.trim().length > 0) {
@@ -3077,20 +3002,16 @@ ${materialContext}`;
                     promptText = `Generate a JSON array of ${qty} multiple-choice questions. Keys: "q", "options" (array of 4 strings), "correct" (index 0-3), "readingText" (null or passage string if applicable).`;
                 }
 
-                setProgress('quizProgressBar', 'quizPercentText', 50);
                 const res = await callGeminiApi(promptText);
-                setProgress('quizProgressBar', 'quizPercentText', 85);
                 activeQuizQuestions = parseAiJson(res.text);
                 if (!Array.isArray(activeQuizQuestions)) {
                     throw new Error("AI did not return a valid array of quiz questions");
                 }
                 currentQuizQuestionIndex = 0; 
                 quizScore = 0;
-                setProgress('quizProgressBar', 'quizPercentText', 100);
                 document.getElementById('quizLoadingContainer').classList.add('hidden');
                 document.getElementById('quizActiveContainer').classList.remove('hidden');
                 loadQuizQuestion();
-                if (typeof showHalloweenHazards === 'function') showHalloweenHazards('quizzes');
             } catch (e) { 
                 alert("Quiz generation failed: " + e.message); 
                 resetQuiz(); 
@@ -3122,11 +3043,13 @@ ${materialContext}`;
         async function selectQuizOption(idx) {
             const currentQ = activeQuizQuestions[currentQuizQuestionIndex];
             const isCorrect = idx === currentQ.correct;
-            if (isCorrect) quizScore++;
+            if (isCorrect) {
+                quizScore++;
+                if (typeof recordCorrectAnswer === 'function') recordCorrectAnswer();
+            }
             currentQuizQuestionIndex++;
 
             if (currentQuizQuestionIndex >= activeQuizQuestions.length) {
-                if (typeof hideHalloweenHazards === 'function') hideHalloweenHazards();
                 document.getElementById('quizActiveContainer').classList.add('hidden');
                 document.getElementById('quizResultContainer').classList.remove('hidden');
                 const finalPercent = Math.round((quizScore/activeQuizQuestions.length)*100);
@@ -3144,7 +3067,7 @@ ${materialContext}`;
                     icon.className = "fa-solid fa-trophy";
                     triggerFnfBanner('win');
                     playCoinsSfx();
-                    if (typeof registerHalloweenWin === 'function') registerHalloweenWin('quizzes');
+                    if (typeof recordGameWin === 'function') recordGameWin('quizzes', false);
                 } else {
                     resultTitle.textContent = "You Lost!";
                     iconBox.className = "w-16 h-16 bg-red-500/20 text-red-500 rounded-3xl mx-auto flex items-center justify-center text-2xl";
@@ -3153,7 +3076,7 @@ ${materialContext}`;
                 }
 
                 userProfile.xp += quizScore * 15; 
-                userProfile.coins += Math.round(quizScore * 10 * (typeof getHalloweenRewardMultiplier === 'function' ? getHalloweenRewardMultiplier() : 1)); 
+                userProfile.coins += quizScore * 10; 
                 userProfile.quizzesCompleted++;
 
                 if (!userProfile.quizHistoryRecords) userProfile.quizHistoryRecords = [];
@@ -3173,8 +3096,162 @@ ${materialContext}`;
             }
         }
 
+
+        // ========== QUEST & MISSION SYSTEM ==========
+        let questProgress = {
+            easyWins: 0,
+            normalCorrect: 0,
+            diffWins: { homework: 0, decks: 0, quizzes: 0, wordgame: 0 },
+            hardWordWins: 0,
+            claimedEasy: false,
+            claimedNormal: false,
+            claimedDiff: false,
+            claimedHard: false,
+            cooldownUntil: 0
+        };
+
+        function loadQuestProgress() {
+            try {
+                const saved = localStorage.getItem('studyforge_quests');
+                if (saved) Object.assign(questProgress, JSON.parse(saved));
+            } catch (e) {}
+            if (!questProgress.diffWins) questProgress.diffWins = { homework: 0, decks: 0, quizzes: 0, wordgame: 0 };
+        }
+
+        function saveQuestProgress() {
+            localStorage.setItem('studyforge_quests', JSON.stringify(questProgress));
+        }
+
+        function getDiffTotal() {
+            const w = questProgress.diffWins || {};
+            // Count how many different modes have at least 3 wins
+            let modesWith3 = 0;
+            ['homework','decks','quizzes','wordgame'].forEach(m => {
+                if ((w[m] || 0) >= 3) modesWith3++;
+            });
+            return modesWith3; // 0–4, need 3
+        }
+
+        function getDiffProgressText() {
+            const w = questProgress.diffWins || {};
+            const parts = [];
+            ['homework','decks','quizzes','wordgame'].forEach(m => {
+                const c = w[m] || 0;
+                if (c > 0) parts.push(m + ':' + c);
+            });
+            return parts.length ? parts.join(', ') : '0';
+        }
+
+        function updateQuestUI() {
+            const now = Date.now();
+            const onCooldown = questProgress.cooldownUntil && now < questProgress.cooldownUntil;
+
+            const active = document.getElementById('questActiveView');
+            const cool = document.getElementById('questCooldownView');
+            if (active) active.classList.toggle('hidden', !!onCooldown);
+            if (cool) cool.classList.toggle('hidden', !onCooldown);
+
+            if (onCooldown) {
+                const left = questProgress.cooldownUntil - now;
+                const h = Math.floor(left / 3600000);
+                const m = Math.floor((left % 3600000) / 60000);
+                const s = Math.floor((left % 60000) / 1000);
+                const el = document.getElementById('questCooldownTimer');
+                if (el) el.textContent = `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+                return;
+            }
+
+            if (questProgress.cooldownUntil && now >= questProgress.cooldownUntil) {
+                questProgress = { easyWins:0, normalCorrect:0, diffWins:{homework:0,decks:0,quizzes:0,wordgame:0}, hardWordWins:0, claimedEasy:false, claimedNormal:false, claimedDiff:false, claimedHard:false, cooldownUntil:0 };
+                saveQuestProgress();
+            }
+
+            const setText = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
+            setText('qEasyProgress', questProgress.easyWins || 0);
+            setText('qNormalProgress', questProgress.normalCorrect || 0);
+            setText('missionDiffProgress', getDiffTotal() + ' modes');
+            setText('missionHardProgress', questProgress.hardWordWins || 0);
+
+            const showClaim = (id, show) => { const el = document.getElementById(id); if (el) el.classList.toggle('hidden', !show); };
+            showClaim('claimEasyBtn', (questProgress.easyWins||0) >= 2 && !questProgress.claimedEasy);
+            showClaim('claimNormalBtn', (questProgress.normalCorrect||0) >= 20 && !questProgress.claimedNormal);
+            showClaim('claimDiffBtn', getDiffTotal() >= 3 && !questProgress.claimedDiff);
+            showClaim('claimHardBtn', (questProgress.hardWordWins||0) >= 3 && !questProgress.claimedHard);
+        }
+
+        function recordGameWin(mode, isHardWord) {
+            loadQuestProgress();
+            if (questProgress.cooldownUntil && Date.now() < questProgress.cooldownUntil) return;
+            questProgress.easyWins = (questProgress.easyWins || 0) + 1;
+            if (mode && questProgress.diffWins) {
+                questProgress.diffWins[mode] = (questProgress.diffWins[mode] || 0) + 1;
+            }
+            if (isHardWord) questProgress.hardWordWins = (questProgress.hardWordWins || 0) + 1;
+            saveQuestProgress();
+            updateQuestUI();
+        }
+
+        function recordCorrectAnswer() {
+            loadQuestProgress();
+            if (questProgress.cooldownUntil && Date.now() < questProgress.cooldownUntil) return;
+            questProgress.normalCorrect = (questProgress.normalCorrect || 0) + 1;
+            saveQuestProgress();
+            updateQuestUI();
+        }
+
+        function claimQuest(type) {
+            loadQuestProgress();
+            if (type === 'easy' && (questProgress.easyWins||0) >= 2 && !questProgress.claimedEasy) {
+                userProfile.coins = (userProfile.coins||0) + 50;
+                userProfile.xp = (userProfile.xp||0) + 50;
+                questProgress.claimedEasy = true;
+                alert('Claimed 50 Coins & 50 EXP!');
+            } else if (type === 'normal' && (questProgress.normalCorrect||0) >= 20 && !questProgress.claimedNormal) {
+                userProfile.coins = (userProfile.coins||0) + 100;
+                userProfile.xp = (userProfile.xp||0) + 100;
+                questProgress.claimedNormal = true;
+                alert('Claimed 100 Coins & 100 EXP!');
+            }
+            checkAllClaimed();
+            saveQuestProgress();
+            saveAccountData();
+            updateStats();
+            updateQuestUI();
+        }
+
+        function claimMission(type) {
+            loadQuestProgress();
+            if (type === 'diff' && getDiffTotal() >= 3 && !questProgress.claimedDiff) {
+                userProfile.coins = (userProfile.coins||0) + 650;
+                userProfile.xp = (userProfile.xp||0) + 650;
+                questProgress.claimedDiff = true;
+                alert('Claimed 650 Coins & 650 EXP!');
+            } else if (type === 'hard' && (questProgress.hardWordWins||0) >= 3 && !questProgress.claimedHard) {
+                userProfile.coins = (userProfile.coins||0) + 700;
+                userProfile.xp = (userProfile.xp||0) + 700;
+                questProgress.claimedHard = true;
+                alert('Claimed 700 Coins & 700 EXP!');
+            }
+            checkAllClaimed();
+            saveQuestProgress();
+            saveAccountData();
+            updateStats();
+            updateQuestUI();
+        }
+
+        function checkAllClaimed() {
+            if (questProgress.claimedEasy && questProgress.claimedNormal && questProgress.claimedDiff && questProgress.claimedHard) {
+                questProgress.cooldownUntil = Date.now() + 24 * 60 * 60 * 1000;
+                alert('All quests and missions complete! More will be here later.');
+            }
+        }
+
+        // Call update periodically and on load
+        setInterval(updateQuestUI, 1000);
+        setTimeout(() => { loadQuestProgress(); updateQuestUI(); }, 500);
+
+
         function resetQuiz() {
-            if (typeof hideHalloweenHazards === 'function') hideHalloweenHazards();
             hideFnfBanner();
             if (currentResultAudio) {
                 currentResultAudio.pause();
@@ -3185,814 +3262,19 @@ ${materialContext}`;
             document.getElementById('quizActiveContainer').classList.add('hidden');
             document.getElementById('quizStartContainer').classList.remove('hidden');
         }
-    
-        // ========== HALLOWEEN EVENT ==========
-        let halloweenMode = false;
-        let curseBroken = false;
-        let halloweenCycleProgress = { homework: false, decks: false, quizzes: false, wordgame: false };
-        let halloweenCyclesCompleted = 0;
-        let halloweenShopItems = { iron: false, glass: false, candle: false, crafter: false, lantern: false };
-
-        // New Cursed Emoji State & Game Loop
-        let activeCursedEmojis = [];
-        let halloweenAnimationLoopId = null;
-
-        function getHalloweenRewardMultiplier() {
-            if (!halloweenMode) return 1;
-            let m = 1;
-            if (halloweenShopItems.iron) m += 0.15;
-            if (halloweenShopItems.glass) m += 0.20;
-            if (halloweenShopItems.candle) m += 0.25;
-            if (halloweenShopItems.crafter) m += 0.50;
-            return m;
-        }
-
-        function applyHalloweenLoginTheme() {
-            const auth = document.getElementById('authModal');
-            if (auth) auth.classList.add('halloween-login');
-        }
-
-        function getSpendableCoins() {
-            let n = Number(userProfile && userProfile.coins);
-            if (!Number.isFinite(n)) n = 0;
-            const shown = document.getElementById('navCoinsDisplay') || document.getElementById('shopCoinsBalance');
-            if (shown) {
-                const parsed = Number(String(shown.textContent).replace(/[^0-9.]/g, ''));
-                if (Number.isFinite(parsed)) n = parsed;
-            }
-            return n;
-        }
-
-        async function buyHalloweenItem(item, cost) {
-            const price = Number(cost);
-            const rebuyingCandle = item === 'candle' && halloweenShopItems.candle;
-            if (halloweenShopItems[item] && item !== 'candle') return alert("Already owned!");
-            const balance = getSpendableCoins();
-            userProfile.coins = balance;
-            if (balance < price) return alert("Not enough coins! You have " + balance + ", this costs " + price + ".");
-            userProfile.coins = balance - price;
-            halloweenShopItems[item] = true;
-            await saveHalloweenState();
-            updateStats();
-            if (typeof playPurchaseSfx === 'function') playPurchaseSfx();
-            if (item === 'candle') {
-                const firstPurchase = !rebuyingCandle;
-
-                halloweenShopItems.candle = true;
-
-                if (!candleEndsAt || candleEndsAt <= Date.now())
-                    candleEndsAt = Date.now() + 100000;
-                else
-                    candleEndsAt = Date.now() + 100000;
-
-                enableHalloweenMode();
-
-                if (firstPurchase) {
-                    showCursedNightTitle();
-                }
-
-                alert(rebuyingCandle ?
-                    "🕯️ New candle lit. 100 seconds." :
-                    "🕯️ Candle purchased! Halloween Mode unlocked.");
-            } else {
-                alert("Purchased! Reward boost increased.");
-            }
-            updateHalloweenShopUI();
-        }
-
-        function enableHalloweenMode() {
-            if (!halloweenShopItems.candle) return alert("Buy the Candle first!");
-            halloweenMode = true;
-            document.documentElement.classList.add('dark');
-            document.getElementById('bodyRoot').classList.add('halloween-mode', 'candle-bought');
-            hideHalloweenHazards();
-            const overlay = document.getElementById('halloweenDarkOverlay');
-            if (overlay) overlay.style.display = 'block';
-            saveHalloweenState();
-            setTimeout(() => activateCandle(), 300);
-        }
-
-        function disableHalloweenMode() {
-            halloweenMode = false;
-            document.getElementById('bodyRoot').classList.remove('halloween-mode', 'candle-bought', 'lantern-active', 'halloween-game');
-            hideHalloweenHazards();
-            const overlay = document.getElementById('halloweenDarkOverlay');
-            if (overlay) overlay.style.display = 'none';
-            const mb = document.getElementById('magicBook');
-            if (mb) mb.classList.add('hidden');
-            stopLight();
-            saveHalloweenState();
-        }
-
-        function showCursedNightTitle() {
-            const title = document.getElementById('cursedNightTitle');
-            if (!title) return;
-
-            title.classList.add('show');
-
-            setTimeout(() => {
-                title.classList.remove('show');
-            }, 4000);
-        }
-
-        async function registerHalloweenWin(mode) {
-            tryLuckDrop();
-            if (typeof trySpawnMagicBook === 'function') trySpawnMagicBook();
-            if (!halloweenMode || curseBroken) return;
-            if (!['homework','decks','quizzes','wordgame'].includes(mode)) return;
-            halloweenCycleProgress[mode] = true;
-            const allDone = Object.values(halloweenCycleProgress).every(Boolean);
-            if (allDone) {
-                halloweenCyclesCompleted++;
-                halloweenCycleProgress = { homework: false, decks: false, quizzes: false, wordgame: false };
-                let badgeName = null;
-                if (halloweenCyclesCompleted === 1) badgeName = "🎃 Haunted Scholar";
-                else if (halloweenCyclesCompleted === 2) badgeName = "👁 Dark Witness";
-                else if (halloweenCyclesCompleted === 3) badgeName = "🌙 Night Survivor";
-                if (badgeName) {
-                    alert("🏆 Badge earned: " + badgeName);
-                    if (!userProfile.halloweenBadges) userProfile.halloweenBadges = [];
-                    if (!userProfile.halloweenBadges.includes(badgeName)) {
-                        userProfile.halloweenBadges.push(badgeName);
-                    }
-                }
-                await saveHalloweenState();
-                updateStats();
-            } else {
-                await saveHalloweenState();
-            }
-        }
-
-        function getHolyBookSpawnChance() {
-            const now = new Date();
-            // Special end-of-event day: 31 Oct 2026
-            if (now.getFullYear() === 2026 && now.getMonth() === 9 && now.getDate() === 31) {
-                const hours = now.getHours();
-                if (hours >= 21) return 0.99; // 99% at/after 21:00
-                return 0.75; // 75% before 21:00
-            }
-            return 0.001; // normal low chance
-        }
-
-        function trySpawnMagicBook() {
-            if (!halloweenMode || curseBroken) return;
-            const chance = getHolyBookSpawnChance();
-            if (Math.random() < chance) {
-                spawnHolyBookSpecial();
-            }
-        }
-
-        function spawnHolyBookSpecial() {
-            const book = document.getElementById('magicBook');
-            if (!book || !book.classList.contains('hidden')) return;
-
-            // Spawn in the middle first
-            book.style.transition = 'none';
-            book.style.top = '50%';
-            book.style.left = '50%';
-            book.style.transform = 'translate(-50%, -50%)';
-            book.classList.remove('hidden');
-
-            // Then move to bottom-right corner
-            setTimeout(() => {
-                book.style.transition = 'all 1.2s ease-in-out';
-                book.style.top = 'auto';
-                book.style.bottom = '24px';
-                book.style.left = 'auto';
-                book.style.right = '24px';
-                book.style.transform = 'none';
-            }, 120);
-        }
-
-        function initMagicBook() {
-            const book = document.getElementById('magicBook');
-            if (!book) return;
-            book.onclick = async function() {
-                if (!halloweenMode || curseBroken) return;
-                this.style.transition = 'all 0.9s ease';
-                this.style.bottom = 'auto';
-                this.style.right = 'auto';
-                this.style.top = '50%';
-                this.style.left = '50%';
-                this.style.transform = 'translate(-50%, -50%) scale(2)';
-                document.getElementById('bodyRoot').classList.add('screen-shake');
-                setTimeout(() => {
-                    const flash = document.getElementById('screenFlash');
-                    if (flash) flash.classList.add('active');
-                    const isEndEventDay = (new Date().getFullYear() === 2026 && new Date().getMonth() === 9 && new Date().getDate() === 31);
-                    const flashDuration = isEndEventDay ? 5000 : 350;
-                    setTimeout(() => {
-                        if (flash) flash.classList.remove('active');
-                        document.getElementById('bodyRoot').classList.remove('screen-shake');
-                        disableHalloweenMode();
-                        const msg = document.getElementById('curseMessage');
-                        if (msg) {
-                            msg.classList.remove('hidden');
-                            setTimeout(() => msg.classList.add('hidden'), isEndEventDay ? 5000 : 2800);
-                        }
-                        curseBroken = true;
-                        const cursed = document.getElementById('cursedBook');
-                        if (cursed) cursed.classList.remove('hidden');
-                        if (!userProfile.halloweenBadges) userProfile.halloweenBadges = [];
-                        if (!userProfile.halloweenBadges.includes("📖 Holy Book")) {
-                            userProfile.halloweenBadges.push("📖 Holy Book");
-                        }
-                        alert("🏆 Secret Badge unlocked: 📖 Holy Book");
-                        saveHalloweenState();
-                        updateStats();
-                    }, 350);
-                }, 3000);
-            };
-        }
-
-        function initCursedBook() {
-            const cb = document.getElementById('cursedBook');
-            if (!cb) return;
-            cb.onclick = function() {
-                if (!curseBroken) return;
-                enableHalloweenMode();
-                setTimeout(() => alert("The curse never truly leaves..."), 200);
-            };
-        }
-
-        async function saveHalloweenState() {
-            if (!userProfile) return;
-            userProfile.halloween = {
-                mode: halloweenMode,
-                curseBroken,
-                cycleProgress: { ...halloweenCycleProgress },
-                cyclesCompleted: halloweenCyclesCompleted,
-                shopItems: { ...halloweenShopItems },
-                badges: userProfile.halloweenBadges || [],
-                candleEndsAt: candleEndsAt || 0
-            };
-            await saveAccountData();
-        }
-
-        function loadHalloweenState() {
-            if (!userProfile || !userProfile.halloween) return;
-            const h = userProfile.halloween;
-            halloweenMode = !!h.mode;
-            curseBroken = !!h.curseBroken;
-            halloweenCycleProgress = h.cycleProgress || { homework: false, decks: false, quizzes: false, wordgame: false };
-            halloweenCyclesCompleted = h.cyclesCompleted || 0;
-            halloweenShopItems = h.shopItems || { iron: false, glass: false, candle: false, crafter: false, lantern: false };
-            userProfile.halloweenBadges = h.badges || [];
-            candleEndsAt = h.candleEndsAt || 0;
-
-            if (halloweenShopItems.candle === true) {
-                halloweenMode = true;
-                document.getElementById('bodyRoot').classList.add('halloween-mode', 'candle-bought');
-                hideHalloweenHazards();
-                const overlay = document.getElementById('halloweenDarkOverlay');
-                if (overlay) overlay.style.display = 'block';
-                if (candleEndsAt > Date.now()) {
-                    setTimeout(() => activateCandle(), 500);
-                } else {
-                    candleEndsAt = 0;
-                    stopLight();
-                }
-            } else {
-                halloweenMode = false;
-                halloweenShopItems.candle = false;
-                candleEndsAt = 0;
-                document.getElementById('bodyRoot').classList.remove('halloween-mode', 'candle-bought', 'halloween-game', 'lantern-active');
-                hideHalloweenHazards();
-                const overlay = document.getElementById('halloweenDarkOverlay');
-                if (overlay) overlay.style.display = 'none';
-                stopLight();
-            }
-            if (curseBroken) {
-                document.getElementById('cursedBook').classList.remove('hidden');
-            }
-        }
-
-        function tryLuckDrop() {
-            if (!halloweenMode) return;
-            if (!halloweenShopItems.iron && Math.random() < 0.30) {
-                halloweenShopItems.iron = true;
-                alert("⚙️ You found Iron! (+15% reward boost)");
-                updateHalloweenShopUI();
-                saveHalloweenState();
-            }
-            if (!halloweenShopItems.glass && Math.random() < 0.30) {
-                halloweenShopItems.glass = true;
-                alert("🪟 You found Glass! (+20% reward boost)");
-                updateHalloweenShopUI();
-                saveHalloweenState();
-            }
-        }
-
-        async function craftLantern() {
-            if (!halloweenShopItems.crafter) return alert("Buy the Crafter first!");
-            if (!halloweenShopItems.iron || !halloweenShopItems.glass || !halloweenShopItems.candle) return alert("You need Iron, Glass, and a Candle to craft the Lantern!");
-            if (halloweenShopItems.lantern) return alert("Lantern already crafted!");
-            halloweenShopItems.lantern = true;
-            alert("🏮 Lantern crafted! Click the Lantern in the shop to equip it.");
-            await saveHalloweenState();
-            updateHalloweenShopUI();
-            updateStats();
-        }
-
-        function updateHalloweenShopUI() {
-            const lanternStatus = document.getElementById('lanternStatus');
-            const craftBtn = document.getElementById('craftLanternBtn');
-            if (lanternStatus) {
-                if (halloweenShopItems.lantern) lanternStatus.textContent = "Crafted";
-                else if (!halloweenShopItems.crafter) lanternStatus.textContent = "Requires Crafter";
-                else if (!halloweenShopItems.iron || !halloweenShopItems.glass || !halloweenShopItems.candle) lanternStatus.textContent = "Needs Iron + Glass + Candle";
-                else lanternStatus.textContent = "Ready to craft";
-            }
-            if (craftBtn) {
-                const canCraft = halloweenShopItems.crafter && halloweenShopItems.iron && halloweenShopItems.glass && halloweenShopItems.candle && !halloweenShopItems.lantern;
-                craftBtn.disabled = !canCraft;
-                craftBtn.textContent = halloweenShopItems.lantern ? "Crafted" : "Craft Lantern";
-                const equipBtn = document.getElementById('equipLanternBtn');
-                if (equipBtn) equipBtn.classList.toggle('hidden', !halloweenShopItems.lantern);
-            }
-            const candleBtn = document.getElementById('shopBtn-candle');
-            const crafterBtn = document.getElementById('shopBtn-crafter');
-            if (candleBtn) {
-                candleBtn.disabled = false;
-                candleBtn.textContent = (currentLightType === 'candle' && candleTimeLeft > 0) ? "Relight Candle" : "Buy Candle";
-            }
-            if (crafterBtn && halloweenShopItems.crafter) { crafterBtn.textContent = "Owned"; crafterBtn.disabled = true; }
-        }
-
-        let candleTimer = null;
-        let candleTimeLeft = 0;
-        let candleEndsAt = 0;
-        let currentLightType = null; // 'candle' or 'lantern'
-
-        let isDraggingLight = false;
-        let lightX = -240;
-        let lightY = -240;
-        let halloweenHazardActive = false;
-        let halloweenActiveGame = null;
-        let halloweenLossLock = false;
-
-        // Detect mobile / touch devices
-        const isMobile = window.matchMedia('(pointer: coarse)').matches || window.innerWidth <= 768 || navigator.maxTouchPoints > 0;
-
-        function currentLightRadius() {
-            return currentLightType === 'lantern' ? 102 : 55;
-        }
-
-        function startLight(type) {
-            if (!halloweenMode) return;
-            currentLightType = type;
-            const source = document.getElementById('lightSource');
-            const emoji = document.getElementById('lightEmoji');
-            const timerEl = document.getElementById('lightTimer');
-            if (!source || !emoji) return;
-
-            source.classList.remove('lantern');
-            document.getElementById('bodyRoot').classList.remove('lantern-active');
-            if (type === 'lantern') {
-                source.classList.add('lantern');
-                document.getElementById('bodyRoot').classList.add('lantern-active');
-                emoji.textContent = '🏮';
-                if (timerEl) timerEl.style.display = 'none';
-            } else {
-                emoji.textContent = '🕯️';
-                if (!candleEndsAt || candleEndsAt <= Date.now()) {
-                    candleEndsAt = Date.now() + 100000;
-                }
-                candleTimeLeft = Math.max(0, Math.ceil((candleEndsAt - Date.now()) / 1000));
-                if (timerEl) {
-                    timerEl.style.display = 'block';
-                    timerEl.textContent = candleTimeLeft + 's';
-                }
-                if (candleTimer) clearInterval(candleTimer);
-                candleTimer = setInterval(() => {
-                    candleTimeLeft = Math.max(0, Math.ceil((candleEndsAt - Date.now()) / 1000));
-                    if (timerEl) timerEl.textContent = candleTimeLeft + 's';
-                    if (candleTimeLeft <= 0) {
-                        candleEndsAt = 0;
-                        stopLight();
-                        saveHalloweenState();
-                        if (typeof updateHalloweenShopUI === 'function') updateHalloweenShopUI();
-                        alert("The candle has burned out. Buy another in the shop.");
-                    }
-                }, 1000);
-                saveHalloweenState();
-            }
-            source.style.display = 'block';
-            emoji.style.display = 'block';
-            if (timerEl && type === 'candle') timerEl.style.display = 'block';
-
-            if (isMobile) {
-                // Mobile: drag the candle/lantern itself
-                emoji.style.pointerEvents = 'auto';
-                emoji.style.cursor = 'grab';
-                const startX = window.innerWidth / 2;
-                const startY = window.innerHeight / 2;
-                moveLightTo(startX, startY);
-
-                emoji.onpointerdown = function(e) {
-                    e.preventDefault();
-                    isDraggingLight = true;
-                    emoji.setPointerCapture(e.pointerId);
-                    emoji.style.cursor = 'grabbing';
-                };
-                emoji.onpointermove = function(e) {
-                    if (!isDraggingLight) return;
-                    e.preventDefault();
-                    moveLightTo(e.clientX, e.clientY);
-                };
-                emoji.onpointerup = emoji.onpointercancel = function(e) {
-                    isDraggingLight = false;
-                    emoji.style.cursor = 'grab';
-                    try { emoji.releasePointerCapture(e.pointerId); } catch (_) {}
-                };
-            } else {
-                // Desktop: light follows the mouse
-                emoji.style.pointerEvents = 'none';
-                emoji.style.cursor = 'default';
-                document.addEventListener('mousemove', moveLight);
-            }
-        }
-
-        function stopLight() {
-            if (candleTimer) clearInterval(candleTimer);
-            candleTimer = null;
-            currentLightType = null;
-            isDraggingLight = false;
-            const source = document.getElementById('lightSource');
-            const emoji = document.getElementById('lightEmoji');
-            const timerEl = document.getElementById('lightTimer');
-            if (source) source.style.display = 'none';
-            if (emoji) {
-                emoji.style.display = 'none';
-                emoji.onpointerdown = null;
-                emoji.onpointermove = null;
-                emoji.onpointerup = null;
-                emoji.onpointercancel = null;
-            }
-            if (timerEl) timerEl.style.display = 'none';
-            document.getElementById('bodyRoot').classList.remove('lantern-active');
-            const overlay = document.getElementById('halloweenDarkOverlay');
-            if (overlay) {
-                overlay.style.setProperty('--light-x', '-240px');
-                overlay.style.setProperty('--light-y', '-240px');
-            }
-            document.removeEventListener('mousemove', moveLight);
-        }
-
-        function moveLightTo(x, y) {
-            const source = document.getElementById('lightSource');
-            const emoji = document.getElementById('lightEmoji');
-            const timerEl = document.getElementById('lightTimer');
-            const overlay = document.getElementById('halloweenDarkOverlay');
-            if (!source || !emoji) return;
-            lightX = x;
-            lightY = y;
-            source.style.left = x + 'px';
-            source.style.top = y + 'px';
-            emoji.style.left = x + 'px';
-            emoji.style.top = y + 'px';
-            if (timerEl && currentLightType === 'candle') {
-                timerEl.style.left = x + 'px';
-                timerEl.style.top = (y + 22) + 'px';
-            }
-            if (overlay) {
-                overlay.style.setProperty('--light-x', x + 'px');
-                overlay.style.setProperty('--light-y', y + 'px');
-            }
-        }
-
-        // Keep old name for any other callers
-        function moveLight(e) {
-            if (e && typeof e.clientX === 'number') moveLightTo(e.clientX, e.clientY);
-        }
-
-        // ==========================================
-        // NEW CURSED EMOJI MECHANIC & MOVEMENT LOOP
-        // ==========================================
-
-        function getActiveGameTargets(game) {
-            let selectors = [];
-            if (game === 'decks') {
-                selectors = ['#cardQuestionText', '#cardAnswerText'];
-            } else if (game === 'quizzes') {
-                selectors = ['#quizQuestionText', '#quizOptionsContainer'];
-            } else if (game === 'wordgame') {
-                selectors = ['#wordGameBlanks', '#wordGameHint'];
-            } else if (game === 'homework') {
-                selectors = ['#hwAiPromptText'];
-            }
-            const elements = [];
-            selectors.forEach(s => {
-                const el = document.querySelector(s);
-                if (el && el.offsetWidth > 0 && el.offsetHeight > 0) {
-                    elements.push(el);
-                }
-            });
-            return elements;
-        }
-
-        function getInitialCountdownTime() {
-            if (halloweenCyclesCompleted === 0) return 5;
-            return 3;
-        }
-
-        function spawnCursedEmoji(type, targetEl) {
-            const container = document.getElementById('halloweenObjects');
-            if (!container) return null;
-
-            const el = document.createElement('div');
-            el.className = 'hidden-object';
-            el.innerHTML = `${type}<div class="emoji-timer"></div>`;
-            container.appendChild(el);
-
-            // Edge spawn calculation
-            const w = window.innerWidth;
-            const h = window.innerHeight;
-            let x, y;
-            const edge = Math.floor(Math.random() * 4);
-            if (edge === 0) { x = Math.random() * w; y = -50; } // Top
-            else if (edge === 1) { x = w + 50; y = Math.random() * h; } // Right
-            else if (edge === 2) { x = Math.random() * w; y = h + 50; } // Bottom
-            else { x = -50; y = Math.random() * h; } // Left
-
-            el.style.left = x + 'px';
-            el.style.top = y + 'px';
-
-            return {
-                element: el,
-                timerEl: el.querySelector('.emoji-timer'),
-                type: type,
-                target: targetEl,
-                x: x,
-                y: y,
-                vx: 0,
-                vy: 0,
-                speed: 2.8 + Math.random() * 1.5,
-                escaping: false,
-                escapeTimer: 0,
-                countdownActive: false,
-                countdownTime: getInitialCountdownTime(),
-                lastTime: performance.now()
-            };
-        }
-
-        function updateCursedEmojiMechanic(now) {
-            if (!halloweenHazardActive || halloweenLossLock) return;
-
-            const radius = currentLightRadius();
-            const hasLight = (currentLightType === 'candle' || currentLightType === 'lantern');
-
-            activeCursedEmojis.forEach(obj => {
-                const dt = (now - obj.lastTime) / 1000;
-                obj.lastTime = now;
-
-                // Light touching detection
-                let touchedByLight = false;
-                if (hasLight) {
-                    const dxL = (obj.x + 20) - lightX;
-                    const dyL = (obj.y + 20) - lightY;
-                    if (dxL * dxL + dyL * dyL <= radius * radius) {
-                        touchedByLight = true;
-                    }
-                }
-
-                if (touchedByLight) {
-                    if (!obj.escaping) {
-                        obj.escaping = true;
-                        obj.escapeTimer = 3.0; // Continue escaping for 3 seconds
-                        // Fast escape direction vector
-                        const angle = Math.atan2((obj.y + 20) - lightY, (obj.x + 20) - lightX);
-                        obj.vx = Math.cos(angle) * 8.0;
-                        obj.vy = Math.sin(angle) * 8.0;
-                    }
-                }
-
-                if (obj.escaping) {
-                    obj.escapeTimer -= dt;
-                    obj.countdownActive = false;
-                    if (obj.timerEl) obj.timerEl.style.display = 'none';
-
-                    obj.x += obj.vx;
-                    obj.y += obj.vy;
-
-                    if (obj.escapeTimer <= 0) {
-                        obj.escaping = false;
-                    }
-                } else {
-                    // Move toward target
-                    let targetX = window.innerWidth / 2;
-                    let targetY = window.innerHeight / 2;
-
-                    if (obj.target && document.body.contains(obj.target)) {
-                        const rect = obj.target.getBoundingClientRect();
-                        targetX = rect.left + rect.width / 2;
-                        targetY = rect.top + rect.height / 2;
-                    }
-
-                    const dx = targetX - (obj.x + 20);
-                    const dy = targetY - (obj.y + 20);
-                    const dist = Math.sqrt(dx * dx + dy * dy);
-
-                    if (dist > 10) {
-                        obj.x += (dx / dist) * obj.speed;
-                        obj.y += (dy / dist) * obj.speed;
-                        obj.countdownActive = false;
-                        if (obj.timerEl) obj.timerEl.style.display = 'none';
-                    } else {
-                        // Reached target -> Countdown starts
-                        if (!obj.countdownActive) {
-                            obj.countdownActive = true;
-                            obj.countdownTime = getInitialCountdownTime();
-                        }
-
-                        obj.countdownTime -= dt;
-                        if (obj.timerEl) {
-                            obj.timerEl.style.display = 'block';
-                            obj.timerEl.textContent = Math.max(0, Math.ceil(obj.countdownTime)) + 's';
-                        }
-
-                        if (obj.countdownTime <= 0) {
-                            triggerHalloweenGameLoss();
-                            return;
-                        }
-                    }
-                }
-
-                obj.element.style.left = obj.x + 'px';
-                obj.element.style.top = obj.y + 'px';
-            });
-
-            if (halloweenHazardActive && !halloweenLossLock) {
-                halloweenAnimationLoopId = requestAnimationFrame(updateCursedEmojiMechanic);
-            }
-        }
-
-        function showHalloweenHazards(game) {
-            if (!halloweenMode || !halloweenShopItems.candle) return;
-            halloweenHazardActive = true;
-            halloweenActiveGame = game;
-            halloweenLossLock = false;
-
-            const root = document.getElementById('bodyRoot');
-            if (root) root.classList.add('halloween-game');
-
-            const objsContainer = document.getElementById('halloweenObjects');
-            if (objsContainer) {
-                objsContainer.innerHTML = '';
-                objsContainer.classList.remove('hidden');
-                objsContainer.style.display = 'block';
-            }
-
-            activeCursedEmojis = [];
-            const targets = getActiveGameTargets(game);
-            const emojis = ['🎃', '💀', '👻'];
-            const minEmojis = 8;
-
-            if (targets.length > 0) {
-                const perTarget = Math.max(3, Math.ceil(minEmojis / targets.length));
-                targets.forEach((target, i) => {
-                    for (let j = 0; j < perTarget; j++) {
-                        const type = emojis[(i + j) % emojis.length];
-                        const obj = spawnCursedEmoji(type, target);
-                        if (obj) activeCursedEmojis.push(obj);
-                    }
-                });
-            } else {
-                for (let j = 0; j < minEmojis; j++) {
-                    const type = emojis[j % emojis.length];
-                    const obj = spawnCursedEmoji(type, null);
-                    if (obj) activeCursedEmojis.push(obj);
-                }
-            }
-
-            // Safety: if somehow under 8, top up
-            while (activeCursedEmojis.length < minEmojis) {
-                const type = emojis[activeCursedEmojis.length % emojis.length];
-                const obj = spawnCursedEmoji(type, targets[0] || null);
-                if (obj) activeCursedEmojis.push(obj);
-                else break;
-            }
-
-            if (halloweenAnimationLoopId) cancelAnimationFrame(halloweenAnimationLoopId);
-            halloweenAnimationLoopId = requestAnimationFrame(updateCursedEmojiMechanic);
-        }
-
-        function hideHalloweenHazards() {
-            halloweenHazardActive = false;
-            halloweenActiveGame = null;
-            if (halloweenAnimationLoopId) {
-                cancelAnimationFrame(halloweenAnimationLoopId);
-                halloweenAnimationLoopId = null;
-            }
-
-            activeCursedEmojis.forEach(obj => {
-                if (obj.element && obj.element.parentNode) {
-                    obj.element.parentNode.removeChild(obj.element);
-                }
-            });
-            activeCursedEmojis = [];
-
-            const root = document.getElementById('bodyRoot');
-            if (root) root.classList.remove('halloween-game');
-            const objs = document.getElementById('halloweenObjects');
-            if (objs) {
-                objs.classList.add('hidden');
-                objs.style.display = 'none';
-                objs.innerHTML = '';
-            }
-        }
-
-        function triggerHalloweenGameLoss() {
-            if (halloweenLossLock) return;
-            halloweenLossLock = true;
-            const game = halloweenActiveGame;
-            hideHalloweenHazards();
-            alert("The light uncovered a hidden danger. You lost this game.");
-            if (game === 'wordgame' && typeof endWordGame === 'function') endWordGame(false);
-            else if (game === 'decks') failDeckFromHalloween();
-            else if (game === 'quizzes') failQuizFromHalloween();
-            else if (game === 'homework' && typeof resetHomeworkHelper === 'function') resetHomeworkHelper();
-        }
-
-        function failDeckFromHalloween() {
-            const review = document.getElementById('deckReviewView');
-            const result = document.getElementById('deckResultContainer');
-            if (review) review.classList.add('hidden');
-            if (result) result.classList.remove('hidden');
-            const score = document.getElementById('deckScorePercentText');
-            const xp = document.getElementById('deckXpEarnedText');
-            if (score) score.textContent = '0%';
-            if (xp) xp.textContent = 'The light uncovered a hidden danger. No rewards.';
-            activeReviewDeck = null;
-            if (typeof triggerFnfBanner === 'function') triggerFnfBanner('lose');
-            if (typeof trySpawnMagicBook === 'function') trySpawnMagicBook();
-        }
-
-        function failQuizFromHalloween() {
-            document.getElementById('quizLoadingContainer').classList.add('hidden');
-            document.getElementById('quizActiveContainer').classList.add('hidden');
-            document.getElementById('quizStartContainer').classList.add('hidden');
-            document.getElementById('quizResultContainer').classList.remove('hidden');
-            document.getElementById('quizScorePercentText').textContent = '0%';
-            document.getElementById('quizResultTitle').textContent = 'You Lost!';
-            const reward = document.getElementById('finalQuizScore');
-            if (reward) reward.textContent = 'The light uncovered a hidden danger. No rewards.';
-            if (typeof triggerFnfBanner === 'function') triggerFnfBanner('lose');
-            if (typeof trySpawnMagicBook === 'function') trySpawnMagicBook();
-        }
-
-        function activateCandle() {
-            if (!halloweenMode || !halloweenShopItems.candle) return;
-            stopLight();
-            startLight('candle');
-        }
-
-        function activateLantern() {
-            if (!halloweenShopItems.lantern) return alert("Craft the Lantern first!");
-            stopLight();
-            startLight('lantern');
-        }
-
-        function initHalloween() {
-            initMagicBook();
-            initCursedBook();
-            // Force normal view first
-            document.getElementById('bodyRoot').classList.remove('halloween-mode', 'candle-bought', 'halloween-game');
-            document.getElementById('halloweenDarkOverlay').style.display = 'none';
-            hideHalloweenHazards();
-            loadHalloweenState();
-            updateHalloweenShopUI();
-            setInterval(() => { const d = new Date(); if (!(d.getFullYear()===2026 && d.getMonth()===9 && d.getDate()===31)) trySpawnMagicBook(); }, 25000);
-        }
-
+        loadSavedTheme();
     </script>
 
-    <!-- ===== HALLOWEEN EVENT ELEMENTS ===== -->
-    <div id="halloweenDarkOverlay" style="display:none"></div>
-    <div id="lightSource" style="display:none"></div>
-    <div id="lightEmoji" style="display:none">🕯️</div>
-    <div id="lightTimer" style="display:none">100s</div>
-
-    <div id="halloweenObjects" class="hidden" style="display:none"></div>
-
-    <div id="cursedNightTitle">
-        The Cursed N🎃ght
+    <!-- Notifications Dropdown -->
+    <div id="notificationsPanel" class="hidden fixed top-16 right-4 w-80 max-w-[90vw] glass-panel rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-700 z-50 p-4 space-y-3">
+        <div class="flex items-center justify-between">
+            <h3 class="font-bold text-sm">Notifications</h3>
+            <button onclick="toggleNotifications()" class="text-slate-400 hover:text-slate-200 text-xs"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div id="notificationsList" class="space-y-2 max-h-80 overflow-y-auto text-xs">
+            <p class="text-slate-400 text-center py-4">No notifications yet</p>
+        </div>
     </div>
-
-    <script>
-        // Force Halloween elements hidden immediately, before any other script runs
-        (function() {
-            ['halloweenDarkOverlay','lightSource','lightEmoji','lightTimer','halloweenObjects'].forEach(id => {
-                const el = document.getElementById(id);
-                if (el) el.style.display = 'none';
-            });
-        })();
-    </script>
-
-    <div id="magicBook" class="magic-book hidden" title="Holy Book">📖</div>
-    <div id="cursedBook" class="cursed-book hidden" title="The curse never truly leaves...">📚</div>
-    <div id="screenFlash" class="screen-flash"></div>
-    <div id="curseMessage" class="curse-message hidden">THE CURSE HAS BEEN LIF✝️ED</div>
 
 </body>
 </html>
