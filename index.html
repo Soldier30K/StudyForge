@@ -2692,8 +2692,13 @@ Do not include any other text.`;
                 document.getElementById('hwLoadingSection').classList.add('hidden');
                 if (hwParsedQuestions.length > 1) {
                     document.getElementById('hwQuestionsList').innerHTML = hwParsedQuestions.map((q, i) => {
-                        const safeQ = String(q).replace(/'/g, "\\'").replace(/"/g, '&quot;');
-                        return `<button onclick="selectHwQuestion('${safeQ}')" class="w-full p-4 rounded-xl glass-panel text-left text-xs font-semibold hover:bg-brand-500 hover:text-white transition-all shadow-md">Problem ${i+1}: ${String(q).slice(0, 80)}...</button>`;
+                        
+                        return `<button
+data-question="${encodeURIComponent(q)}"
+onclick="selectHwQuestion(decodeURIComponent(this.dataset.question))"
+class="w-full p-4 rounded-xl glass-panel text-left text-xs font-semibold hover:bg-brand-500 hover:text-white transition-all shadow-md">
+Problem ${i+1}: ${String(q).slice(0, 80)}...
+</button>`; 
                     }).join('');
                     document.getElementById('hwSelectQuestionSection').classList.remove('hidden');
                 } else {
