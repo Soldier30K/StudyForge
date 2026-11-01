@@ -2,7 +2,7 @@
 <html lang="en" id="htmlRoot" class="dark">
 <head>
     <meta charset="UTF-8">
-    <title>StudyForge</title>
+    <title>StudyForge AI</title>
     <link rel="icon" type="image/png" href="favicon_32x32.png">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- Tailwind CSS CDN -->
@@ -2397,6 +2397,7 @@
 
             document.getElementById('wordGameCorrectWordReveal').textContent = `Word: ${wordGameCurrent.word}`;
             updateStats();
+            if (typeof trySpawnMagicBook === 'function') trySpawnMagicBook();
         }
 
         function resetWordGame() {
@@ -3296,6 +3297,7 @@ ${materialContext}`;
 
         async function registerHalloweenWin(mode) {
             tryLuckDrop();
+            if (typeof trySpawnMagicBook === 'function') trySpawnMagicBook();
             if (!halloweenMode || curseBroken) return;
             if (!['homework','decks','quizzes','wordgame'].includes(mode)) return;
             halloweenCycleProgress[mode] = true;
@@ -3321,16 +3323,45 @@ ${materialContext}`;
             }
         }
 
+        function getHolyBookSpawnChance() {
+            const now = new Date();
+            // Special end-of-event day: 31 Oct 2026
+            if (now.getFullYear() === 2026 && now.getMonth() === 9 && now.getDate() === 31) {
+                const hours = now.getHours();
+                if (hours >= 21) return 0.99; // 99% at/after 21:00
+                return 0.75; // 75% before 21:00
+            }
+            return 0.001; // normal low chance
+        }
+
         function trySpawnMagicBook() {
             if (!halloweenMode || curseBroken) return;
-            if (Math.random() < 0.001) {
-                const book = document.getElementById('magicBook');
-                if (!book) return;
-                book.style.top = (15 + Math.random() * 65) + '%';
-                book.style.left = (8 + Math.random() * 75) + '%';
-                book.style.transform = '';
-                book.classList.remove('hidden');
+            const chance = getHolyBookSpawnChance();
+            if (Math.random() < chance) {
+                spawnHolyBookSpecial();
             }
+        }
+
+        function spawnHolyBookSpecial() {
+            const book = document.getElementById('magicBook');
+            if (!book || !book.classList.contains('hidden')) return;
+
+            // Spawn in the middle first
+            book.style.transition = 'none';
+            book.style.top = '50%';
+            book.style.left = '50%';
+            book.style.transform = 'translate(-50%, -50%)';
+            book.classList.remove('hidden');
+
+            // Then move to bottom-right corner
+            setTimeout(() => {
+                book.style.transition = 'all 1.2s ease-in-out';
+                book.style.top = 'auto';
+                book.style.bottom = '24px';
+                book.style.left = 'auto';
+                book.style.right = '24px';
+                book.style.transform = 'none';
+            }, 120);
         }
 
         function initMagicBook() {
@@ -3339,6 +3370,8 @@ ${materialContext}`;
             book.onclick = async function() {
                 if (!halloweenMode || curseBroken) return;
                 this.style.transition = 'all 0.9s ease';
+                this.style.bottom = 'auto';
+                this.style.right = 'auto';
                 this.style.top = '50%';
                 this.style.left = '50%';
                 this.style.transform = 'translate(-50%, -50%) scale(2)';
@@ -3346,6 +3379,8 @@ ${materialContext}`;
                 setTimeout(() => {
                     const flash = document.getElementById('screenFlash');
                     if (flash) flash.classList.add('active');
+                    const isEndEventDay = (new Date().getFullYear() === 2026 && new Date().getMonth() === 9 && new Date().getDate() === 31);
+                    const flashDuration = isEndEventDay ? 5000 : 350;
                     setTimeout(() => {
                         if (flash) flash.classList.remove('active');
                         document.getElementById('bodyRoot').classList.remove('screen-shake');
@@ -3353,16 +3388,16 @@ ${materialContext}`;
                         const msg = document.getElementById('curseMessage');
                         if (msg) {
                             msg.classList.remove('hidden');
-                            setTimeout(() => msg.classList.add('hidden'), 2800);
+                            setTimeout(() => msg.classList.add('hidden'), isEndEventDay ? 5000 : 2800);
                         }
                         curseBroken = true;
                         const cursed = document.getElementById('cursedBook');
                         if (cursed) cursed.classList.remove('hidden');
                         if (!userProfile.halloweenBadges) userProfile.halloweenBadges = [];
-                        if (!userProfile.halloweenBadges.includes("📖 Curse Breaker")) {
-                            userProfile.halloweenBadges.push("📖 Curse Breaker");
+                        if (!userProfile.halloweenBadges.includes("📖 Holy Book")) {
+                            userProfile.halloweenBadges.push("📖 Holy Book");
                         }
-                        alert("🏆 Secret Badge unlocked: 📖 Curse Breaker");
+                        alert("🏆 Secret Badge unlocked: 📖 Holy Book");
                         saveHalloweenState();
                         updateStats();
                     }, 350);
@@ -3890,6 +3925,7 @@ ${materialContext}`;
             if (xp) xp.textContent = 'The light uncovered a hidden danger. No rewards.';
             activeReviewDeck = null;
             if (typeof triggerFnfBanner === 'function') triggerFnfBanner('lose');
+            if (typeof trySpawnMagicBook === 'function') trySpawnMagicBook();
         }
 
         function failQuizFromHalloween() {
@@ -3902,6 +3938,7 @@ ${materialContext}`;
             const reward = document.getElementById('finalQuizScore');
             if (reward) reward.textContent = 'The light uncovered a hidden danger. No rewards.';
             if (typeof triggerFnfBanner === 'function') triggerFnfBanner('lose');
+            if (typeof trySpawnMagicBook === 'function') trySpawnMagicBook();
         }
 
         function activateCandle() {
@@ -3925,7 +3962,7 @@ ${materialContext}`;
             hideHalloweenHazards();
             loadHalloweenState();
             updateHalloweenShopUI();
-            setInterval(trySpawnMagicBook, 25000);
+            setInterval(() => { const d = new Date(); if (!(d.getFullYear()===2026 && d.getMonth()===9 && d.getDate()===31)) trySpawnMagicBook(); }, 25000);
         }
 
     </script>
@@ -3955,7 +3992,7 @@ ${materialContext}`;
     <div id="magicBook" class="magic-book hidden" title="Holy Book">📖</div>
     <div id="cursedBook" class="cursed-book hidden" title="The curse never truly leaves...">📚</div>
     <div id="screenFlash" class="screen-flash"></div>
-    <div id="curseMessage" class="curse-message hidden">THE CURSE HAS BEEN BROKEN</div>
+    <div id="curseMessage" class="curse-message hidden">THE CURSE HAS BEEN LIF✝️ED</div>
 
 </body>
 </html>
