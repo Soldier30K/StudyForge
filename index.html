@@ -189,6 +189,9 @@
             <button onclick="switchTabMobile('wordgame')" class="w-full px-4 py-3 rounded-xl font-semibold text-xs transition-all text-slate-600 dark:text-slate-300 hover:bg-white/40 dark:hover:bg-slate-800/40 flex items-center space-x-3">
                 <i class="fa-solid fa-puzzle-piece w-5 text-center text-sm"></i><span>Guess the Word</span>
             </button>
+            <button onclick="switchTabMobile('notemaker')" class="w-full px-4 py-3 rounded-xl font-semibold text-xs transition-all text-slate-600 dark:text-slate-300 hover:bg-white/40 dark:hover:bg-slate-800/40 flex items-center space-x-3">
+                <i class="fa-solid fa-book w-5 text-center text-sm"></i><span>Note Maker</span>
+            </button>
             <button onclick="switchTabMobile('quests')" class="w-full px-4 py-3 rounded-xl font-semibold text-xs transition-all text-slate-600 dark:text-slate-300 hover:bg-white/40 dark:hover:bg-slate-800/40 flex items-center space-x-3">
                 <i class="fa-solid fa-flag w-5 text-center text-sm"></i><span>Quest & Mission</span>
             </button>
@@ -278,6 +281,9 @@
                 <button onclick="switchTab('wordgame')" id="sidebar-wordgame" class="w-full px-4 py-3 rounded-xl font-semibold text-xs transition-all text-slate-600 dark:text-slate-300 hover:bg-white/40 dark:hover:bg-slate-800/40 flex items-center space-x-3">
                     <i class="fa-solid fa-puzzle-piece w-5 text-center text-sm"></i><span>Guess the Word</span>
                 </button>
+                <button onclick="switchTab('notemaker')" id="sidebar-notemaker" class="w-full px-4 py-3 rounded-xl font-semibold text-xs transition-all text-slate-600 dark:text-slate-300 hover:bg-white/40 dark:hover:bg-slate-800/40 flex items-center space-x-3">
+                    <i class="fa-solid fa-book w-5 text-center text-sm"></i><span>Note Maker</span>
+                </button>
                 <button onclick="switchTab('quests')" id="sidebar-quests" class="w-full px-4 py-3 rounded-xl font-semibold text-xs transition-all text-slate-600 dark:text-slate-300 hover:bg-white/40 dark:hover:bg-slate-800/40 flex items-center space-x-3 relative">
                     <i class="fa-solid fa-flag w-5 text-center text-sm"></i><span>Quest & Mission</span>
                     <span id="questBadge" class="hidden absolute right-3 top-2 w-2 h-2 bg-red-500 rounded-full"></span>
@@ -314,41 +320,51 @@
                         </div>
                     </div>
 
-                    <!-- Subject Analytics Bar Chart Section -->
-                    <div class="glass-panel p-6 rounded-3xl shadow-xl space-y-4">
-                        <div class="flex justify-between items-center">
+                    <!-- Analytics + Stats Layout -->
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
+                        <!-- Large Analytics Rectangle -->
+                        <div class="lg:col-span-2 glass-panel p-5 sm:p-6 rounded-3xl shadow-xl space-y-3">
                             <div>
                                 <h3 class="font-bold text-sm">Subject Performance Analytics</h3>
                                 <p class="text-[10px] text-slate-400">Average scores grouped by broad subject areas</p>
                             </div>
+                            <div id="subjectBarChartContainer" class="h-36 sm:h-40 flex items-end justify-between space-x-2 pt-4 px-2 border-b border-slate-200 dark:border-slate-800">
+                                <!-- Injected bars -->
+                            </div>
+                            <div id="subjectChartLabels" class="flex justify-between text-[10px] font-bold text-slate-400 px-1">
+                                <span>English</span>
+                                <span>Mathematics</span>
+                                <span>Physics</span>
+                                <span>Biology</span>
+                            </div>
                         </div>
-                        <div id="subjectBarChartContainer" class="h-44 flex items-end justify-between space-x-3 pt-6 px-4 border-b border-slate-200 dark:border-slate-800">
-                            <!-- Injected bars -->
-                        </div>
-                        <div id="subjectChartLabels" class="flex justify-between text-[10px] font-bold text-slate-400 px-4">
-                            <span>English</span>
-                            <span>Mathematics</span>
-                            <span>Physics</span>
-                            <span>Biology</span>
-                        </div>
-                    </div>
 
-                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6">
-                        <div class="glass-panel p-5 sm:p-6 rounded-2xl shadow-lg space-y-1">
-                            <span class="text-xs text-slate-400 font-medium">Daily Streak</span>
-                            <h3 id="statStreak" class="text-lg sm:text-xl font-black text-amber-500">0 🔥</h3>
-                        </div>
-                        <div class="glass-panel p-5 sm:p-6 rounded-2xl shadow-lg space-y-1">
-                            <span class="text-xs text-slate-400 font-medium">Coins Balance</span>
-                            <h3 id="statCoins" class="text-lg sm:text-xl font-black text-amber-500">0 🪙</h3>
-                        </div>
-                        <div class="glass-panel p-5 sm:p-6 rounded-2xl shadow-lg space-y-1">
-                            <span class="text-xs text-slate-400 font-medium">Current Status</span>
-                            <h3 id="statLevel" class="text-lg sm:text-xl font-black text-brand-500">Level 1</h3>
-                        </div>
-                        <div class="glass-panel p-5 sm:p-6 rounded-2xl shadow-lg space-y-1">
-                            <span class="text-xs text-slate-400 font-medium">Decks Created</span>
-                            <h3 id="statDeckCount" class="text-lg sm:text-xl font-black">0 Decks</h3>
+                        <!-- Right column: 2 squares + storage rectangle -->
+                        <div class="flex flex-col gap-4 sm:gap-6">
+                            <div class="grid grid-cols-2 gap-4">
+                                <!-- Streak Square -->
+                                <div class="glass-panel p-4 sm:p-5 rounded-2xl shadow-lg space-y-1 flex flex-col items-center justify-center text-center min-h-[110px]">
+                                    <span class="text-[10px] sm:text-xs text-slate-400 font-medium">Daily Streak</span>
+                                    <h3 id="statStreak" class="text-lg sm:text-xl font-black text-amber-500">0 🔥</h3>
+                                </div>
+                                <!-- Level Square -->
+                                <div class="glass-panel p-4 sm:p-5 rounded-2xl shadow-lg space-y-1 flex flex-col items-center justify-center text-center min-h-[110px]">
+                                    <span class="text-[10px] sm:text-xs text-slate-400 font-medium">Level</span>
+                                    <h3 id="statLevel" class="text-lg sm:text-xl font-black text-brand-500">Level 1</h3>
+                                </div>
+                            </div>
+
+                            <!-- Storage Rectangle -->
+                            <div class="glass-panel p-4 sm:p-5 rounded-2xl shadow-lg space-y-3 flex-1 flex flex-col justify-center">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-xs text-slate-400 font-medium">Storage Usage</span>
+                                    <span id="storageUsageText" class="text-[10px] font-bold text-slate-500">0 MB / 100 MB</span>
+                                </div>
+                                <div class="w-full h-3 bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden">
+                                    <div id="storageProgressBar" class="h-full bg-brand-500 transition-all duration-500 rounded-full" style="width: 0%"></div>
+                                </div>
+                                <p class="text-[10px] text-slate-400">100 MB storage limit</p>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -592,7 +608,7 @@
                         <div class="w-16 h-16 bg-brand-500/20 text-brand-500 rounded-3xl mx-auto flex items-center justify-center text-2xl"><i class="fa-solid fa-puzzle-piece"></i></div>
                         <div>
                             <h3 class="text-xl font-bold">Guess the Word</h3>
-                            <p class="text-xs text-slate-400 mt-1">Test your vocabulary with obscure words based on your chosen difficulty mode!</p>
+                            <p class="text-xs text-slate-400 mt-1">Test your vocabulary with AI-generated words based on your chosen difficulty mode!</p>
                         </div>
 
                         <div id="wordGameSetup" class="space-y-4">
@@ -605,6 +621,11 @@
                                 </div>
                             </div>
                             <button onclick="startWordGame()" class="w-full py-3.5 bg-brand-500 hover:bg-brand-600 text-white font-bold rounded-2xl text-xs shadow-lg shadow-brand-500/20 transition-all">Start Game</button>
+                        </div>
+
+                        <div id="wordGameLoading" class="hidden space-y-4 py-8">
+                            <div class="animate-spin w-10 h-10 border-4 border-brand-500 border-t-transparent rounded-full mx-auto"></div>
+                            <p class="text-xs font-semibold text-slate-400">Gemini is thinking of a word...</p>
                         </div>
 
                         <div id="wordGamePlay" class="hidden space-y-6 text-left">
@@ -632,7 +653,7 @@
                             <div id="wordGameResultIconBox" class="w-16 h-16 bg-emerald-500/20 text-emerald-500 rounded-3xl mx-auto flex items-center justify-center text-2xl"><i id="wordGameResultIcon" class="fa-solid fa-trophy"></i></div>
                             <h3 id="wordGameResultTitle" class="text-xl font-bold">You Won!</h3>
                             <div class="space-y-1">
-                                <p id="wordGameCorrectWordReveal" class="text-base font-black text-brand-500">Word: APPLE</p>
+                                <p id="wordGameCorrectWordReveal" class="text-base font-black text-brand-500">Word: ...</p>
                                 <p id="wordGameXpEarned" class="text-xs font-semibold text-amber-500">+30 Coins & +30 XP Earned</p>
                             </div>
                             <button onclick="resetWordGame()" class="w-full py-3 bg-brand-500 hover:bg-brand-600 text-white font-bold rounded-2xl text-xs transition-all">Play Again</button>
@@ -864,6 +885,73 @@
                     </div>
                 </div>
 
+<!-- TAB: NOTE MAKER -->
+                <div id="content-notemaker" class="hidden space-y-6">
+                    <div class="glass-panel p-6 sm:p-8 rounded-3xl shadow-xl space-y-6">
+                        <div>
+                            <h3 class="text-lg font-bold"><i class="fa-solid fa-book text-brand-500 mr-2"></i>Note Maker</h3>
+                            <p class="text-xs text-slate-400">Upload an image, document, or text file to generate study notes.</p>
+                        </div>
+
+                        <!-- Input Area -->
+                        <div class="space-y-2">
+                            <label class="block text-xs font-semibold text-slate-400">Study Material</label>
+                            <label class="border-2 border-dashed border-slate-300 dark:border-slate-700 hover:border-brand-500 rounded-3xl p-6 sm:p-8 flex flex-col items-center justify-center cursor-pointer transition-all bg-slate-50/50 dark:bg-slate-900/50 text-center">
+                                <div class="w-12 h-12 rounded-2xl bg-brand-500/10 text-brand-500 flex items-center justify-center text-lg mb-3 shadow-inner"><i class="fa-solid fa-cloud-arrow-up"></i></div>
+                                <span class="font-bold text-xs mb-1">Click to upload (.docx, .txt, images)</span>
+                                <span class="text-[10px] text-slate-400">Supports DOCX, TXT, PDF text, and Image OCR</span>
+                                <input type="file" id="noteMakerFileInput" accept=".docx,.txt,.pdf,image/*" onchange="handleNoteMakerUpload(event)" class="hidden">
+                            </label>
+                            <p id="noteMakerFileStatus" class="text-[10px] text-slate-400 text-center hidden"></p>
+                        </div>
+
+                        <!-- Note Type Selector -->
+                        <div class="space-y-2">
+                            <label class="block text-xs font-semibold text-slate-400">Note Type</label>
+                            <select id="noteMakerType" class="w-full px-4 py-3 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-xs focus:outline-none focus:border-brand-500">
+                                <option value="outline" selected>Outline Notes</option>
+                                <option value="cornell">Cornell Notes</option>
+                            </select>
+                        </div>
+
+                        <!-- Generate Button -->
+                        <button onclick="generateNotes()" id="noteMakerGenerateBtn" class="w-full py-3.5 bg-brand-500 hover:bg-brand-600 text-white font-bold rounded-2xl text-xs shadow-lg shadow-brand-500/20 transition-all">
+                            ✨ Generate Notes
+                        </button>
+
+                        <!-- Progress Area -->
+                        <div id="noteMakerProgress" class="hidden space-y-3 py-4">
+                            <div class="w-full h-3 bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden">
+                                <div id="noteMakerProgressBar" class="h-full bg-brand-500 transition-all duration-500 rounded-full" style="width: 0%"></div>
+                            </div>
+                            <p id="noteMakerProgressText" class="text-xs font-semibold text-slate-400 text-center">Reading content...</p>
+                        </div>
+
+                        <!-- Output Area -->
+                        <div id="noteMakerOutputWrapper" class="hidden space-y-4">
+                            <div id="noteMakerOutput" class="glass-panel rounded-2xl p-6 text-slate-800 dark:text-slate-100 overflow-y-auto max-h-[70vh]" style="font-size: 18px; line-height: 1.8; font-weight: 500;">
+                                <!-- Generated notes appear here as a reading passage -->
+                            </div>
+
+                            <!-- Bonus Buttons -->
+                            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                                <button onclick="alert('Coming Soon')" class="py-2.5 glass-panel hover:bg-slate-200 dark:hover:bg-slate-800 font-bold rounded-xl text-xs transition-all flex items-center justify-center space-x-1.5">
+                                    <span>🧠</span><span>Convert to Mind Map</span>
+                                </button>
+                                <button onclick="alert('Coming Soon')" class="py-2.5 glass-panel hover:bg-slate-200 dark:hover:bg-slate-800 font-bold rounded-xl text-xs transition-all flex items-center justify-center space-x-1.5">
+                                    <span>🃏</span><span>Convert to Flashcards</span>
+                                </button>
+                                <button onclick="alert('Coming Soon')" class="py-2.5 glass-panel hover:bg-slate-200 dark:hover:bg-slate-800 font-bold rounded-xl text-xs transition-all flex items-center justify-center space-x-1.5">
+                                    <span>❓</span><span>Convert to Quiz</span>
+                                </button>
+                                <button onclick="downloadNotes()" class="py-2.5 bg-brand-500 hover:bg-brand-600 text-white font-bold rounded-xl text-xs transition-all flex items-center justify-center space-x-1.5">
+                                    <span>📥</span><span>Download Notes</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
 <!-- TAB: PROFILE -->
                 <div id="content-profile" class="hidden space-y-6">
                     <div class="glass-panel p-6 sm:p-8 rounded-3xl shadow-xl max-w-xl mx-auto space-y-6">
@@ -971,6 +1059,10 @@
             <button onclick="switchTab('quizzes')" id="bottomNav-quizzes" class="flex flex-col items-center space-y-1 text-slate-400 hover:text-brand-500 p-2">
                 <i class="fa-solid fa-brain text-sm"></i>
                 <span class="text-[10px] font-bold">Quizzes</span>
+            </button>
+            <button onclick="switchTab('notemaker')" id="bottomNav-notemaker" class="flex flex-col items-center space-y-1 text-slate-400 hover:text-brand-500 p-2">
+                <i class="fa-solid fa-book text-sm"></i>
+                <span class="text-[10px] font-bold">Notes</span>
             </button>
             <button onclick="switchTab('profile')" id="bottomNav-profile" class="flex flex-col items-center space-y-1 text-slate-400 hover:text-brand-500 p-2">
                 <i class="fa-solid fa-user text-sm"></i>
@@ -1226,29 +1318,7 @@
             { id: 'grandmaster', name: '👑 StudyForge Grandmaster', reqXp: 1500, reqQuizzes: 15 }
         ];
 
-        const wordBank = {
-            easy: [
-                { word: 'APPLE', clue: 'A common red or green fruit that grows on trees.' },
-                { word: 'HOUSE', clue: 'A building for human habitation.' },
-                { word: 'WATER', clue: 'A transparent, odorless, tasteless liquid essential for life.' },
-                { word: 'MOUSE', clue: 'A small rodent or computer pointing device.' },
-                { word: 'PLANT', clue: 'A living organism of the kind that grows in a permanent site.' }
-            ],
-            normal: [
-                { word: 'SYNERGY', clue: 'The interaction or cooperation of organizations to produce a combined effect.' },
-                { word: 'RESILIENCE', clue: 'The capacity to recover quickly from difficulties.' },
-                { word: 'ALGORITHM', clue: 'A process or set of rules to be followed in calculations or problem-solving.' },
-                { word: 'PARADIGM', clue: 'A typical example or pattern of something; a model.' },
-                { word: 'PRAGMATIC', clue: 'Dealing with things sensibly and realistically.' }
-            ],
-            hard: [
-                { word: 'EPHEMERAL', clue: 'Lasting for a very short time; fleeting.' },
-                { word: 'PERSPICACIOUS', clue: 'Having a ready insight into and understanding of things.' },
-                { word: 'PUSILLANIMOUS', clue: 'Showing a lack of courage or determination; timid.' },
-                { word: 'OBFUSCATE', clue: 'Render obscure, unclear, or unintelligible.' },
-                { word: 'SESQUIPEDALIAN', clue: 'Having many syllables or characterized by long words.' }
-            ]
-        };
+
 
         async function hashPassword(password) {
             const encoder = new TextEncoder();
@@ -1945,7 +2015,7 @@
             }
             hideFnfBanner();
 
-            ['overview', 'upload', 'homework', 'decks', 'quizzes', 'wordgame', 'quests', 'socials', 'shop', 'profile'].forEach(t => {
+            ['overview', 'upload', 'homework', 'decks', 'quizzes', 'wordgame', 'notemaker', 'quests', 'socials', 'shop', 'profile'].forEach(t => {
                 const btn = document.getElementById(`sidebar-${t}`);
                 const content = document.getElementById(`content-${t}`);
                 if (t === tabId) {
@@ -1957,7 +2027,7 @@
                 }
             });
 
-            ['overview', 'homework', 'decks', 'quizzes', 'profile'].forEach(bt => {
+            ['overview', 'homework', 'decks', 'quizzes', 'notemaker', 'profile'].forEach(bt => {
                 const navBtn = document.getElementById(`bottomNav-${bt}`);
                 if (navBtn) {
                     if (bt === tabId) {
@@ -1969,6 +2039,43 @@
             });
         }
 
+
+        const STORAGE_LIMIT_BYTES = 100 * 1024 * 1024; // 100 MB
+
+        async function updateStorageUsage() {
+            try {
+                let used = 0;
+                if (navigator.storage && navigator.storage.estimate) {
+                    const est = await navigator.storage.estimate();
+                    used = est.usage || 0;
+                } else {
+                    // Fallback: rough estimate from stored materials + decks
+                    const matSize = materials.reduce((sum, m) => sum + (m.content ? m.content.length : 0), 0);
+                    const deckSize = decks.reduce((sum, d) => sum + JSON.stringify(d.cards || []).length, 0);
+                    used = matSize + deckSize + 1024 * 50; // small overhead
+                }
+
+                const capped = Math.min(used, STORAGE_LIMIT_BYTES);
+                const percent = Math.min(100, Math.round((capped / STORAGE_LIMIT_BYTES) * 100));
+                const usedMB = (used / (1024 * 1024)).toFixed(1);
+                const limitMB = 100;
+
+                const bar = document.getElementById('storageProgressBar');
+                const text = document.getElementById('storageUsageText');
+                if (bar) bar.style.width = percent + '%';
+                if (text) text.textContent = usedMB + ' MB / ' + limitMB + ' MB';
+
+                // Color warning if near limit
+                if (bar) {
+                    if (percent >= 90) bar.className = "h-full bg-red-500 transition-all duration-500 rounded-full";
+                    else if (percent >= 70) bar.className = "h-full bg-amber-500 transition-all duration-500 rounded-full";
+                    else bar.className = "h-full bg-brand-500 transition-all duration-500 rounded-full";
+                }
+            } catch (e) {
+                console.warn("Storage estimate failed", e);
+            }
+        }
+
         function updateStats() {
             userProfile.level = Math.floor(userProfile.xp / 100) + 1;
             const streakStr = `${userProfile.streak || 0} 🔥`;
@@ -1978,11 +2085,10 @@
             document.getElementById('statStreak').textContent = streakStr;
             document.getElementById('profileStreakText').textContent = streakStr;
             document.getElementById('navCoinsDisplay').textContent = `${userProfile.coins || 0} Coins`;
-            document.getElementById('statCoins').textContent = coinsStr;
             document.getElementById('profileCoinsText').textContent = coinsStr;
             document.getElementById('shopCoinsBalance').textContent = `${userProfile.coins || 0} Coins`;
             document.getElementById('statLevel').textContent = `Level ${userProfile.level}`;
-            document.getElementById('statDeckCount').textContent = `${decks.length} Decks`;
+            updateStorageUsage();
             
             document.getElementById('navLevelDisplay').textContent = `Level ${userProfile.level}`;
             document.getElementById('navXpDisplay').textContent = `${userProfile.xp} XP`;
@@ -2262,19 +2368,68 @@
             });
         }
 
-        function startWordGame() {
-            const list = wordBank[wordGameMode];
-            wordGameCurrent = list[Math.floor(Math.random() * list.length)];
-            wordGameGuessed = [];
-            wordGameAttemptsLeft = wordGameMode === 'easy' ? 8 : (wordGameMode === 'normal' ? 6 : 4);
-
-            document.getElementById('wordGameModeBadge').textContent = `Mode: ${wordGameMode.toUpperCase()}`;
-            document.getElementById('wordGameClue').textContent = wordGameCurrent.clue;
-            updateWordGameBlanks();
+        async function startWordGame() {
+            if (!apiKey) {
+                alert("Configure your Gemini API Key in Settings first!");
+                openSettingsModal();
+                return;
+            }
 
             document.getElementById('wordGameSetup').classList.add('hidden');
             document.getElementById('wordGameResult').classList.add('hidden');
-            document.getElementById('wordGamePlay').classList.remove('hidden');
+            document.getElementById('wordGamePlay').classList.add('hidden');
+            document.getElementById('wordGameLoading').classList.remove('hidden');
+
+            try {
+                let difficultyGuide = "";
+                if (wordGameMode === 'easy') {
+                    difficultyGuide = "Easy difficulty: a common everyday word that is 4 to 6 letters long. Use simple, well-known vocabulary suitable for beginners.";
+                } else if (wordGameMode === 'normal') {
+                    difficultyGuide = "Normal difficulty: a moderately challenging word that is 6 to 9 letters long. Use intermediate vocabulary that requires some thought.";
+                } else {
+                    difficultyGuide = "Hard difficulty: an obscure, advanced, or rare English word that is 8 to 14 letters long. Use sophisticated vocabulary.";
+                }
+
+                const prompt = `Generate exactly one English word for a "Guess the Word" vocabulary game.
+${difficultyGuide}
+
+Requirements:
+- The word must contain ONLY uppercase letters A-Z (no spaces, hyphens, numbers, or punctuation).
+- Provide a clear, helpful clue/definition that does not directly reveal the word.
+- Return ONLY a valid JSON object in this exact format with no markdown, no code fences, and no extra text:
+{"word": "EXAMPLE", "clue": "A short definition or clue for the word."}
+
+Do not include any other text.`;
+
+                const res = await callGeminiApi(prompt);
+                let data = parseAiJson(res.text);
+                // Handle if AI returned an array by mistake
+                if (Array.isArray(data)) data = data[0];
+                if (!data || !data.word || !data.clue) {
+                    throw new Error("Invalid response from AI");
+                }
+
+                let word = String(data.word).toUpperCase().replace(/[^A-Z]/g, '');
+                if (word.length < 3 || word.length > 20) {
+                    throw new Error("Generated word has invalid length");
+                }
+
+                wordGameCurrent = { word, clue: String(data.clue).trim() };
+                wordGameGuessed = [];
+                wordGameAttemptsLeft = wordGameMode === 'easy' ? 8 : (wordGameMode === 'normal' ? 6 : 4);
+
+                document.getElementById('wordGameModeBadge').textContent = `Mode: ${wordGameMode.toUpperCase()}`;
+                document.getElementById('wordGameClue').textContent = wordGameCurrent.clue;
+                updateWordGameBlanks();
+
+                document.getElementById('wordGameLoading').classList.add('hidden');
+                document.getElementById('wordGamePlay').classList.remove('hidden');
+            } catch (err) {
+                console.error(err);
+                alert("Failed to generate word with Gemini: " + (err.message || err));
+                document.getElementById('wordGameLoading').classList.add('hidden');
+                document.getElementById('wordGameSetup').classList.remove('hidden');
+            }
         }
 
         function updateWordGameBlanks() {
@@ -2351,6 +2506,8 @@
                 currentResultAudio.currentTime = 0;
             }
             document.getElementById('wordGameResult').classList.add('hidden');
+            document.getElementById('wordGameLoading').classList.add('hidden');
+            document.getElementById('wordGamePlay').classList.add('hidden');
             document.getElementById('wordGameSetup').classList.remove('hidden');
         }
 
@@ -2360,6 +2517,20 @@
 
             const listContainer = document.getElementById('materialListContainer');
             const originalHtml = listContainer.innerHTML;
+
+            // Soft check against 100 MB limit
+            try {
+                if (navigator.storage && navigator.storage.estimate) {
+                    const est = await navigator.storage.estimate();
+                    const used = est.usage || 0;
+                    const totalNew = Array.from(files).reduce((s, f) => s + (f.size || 0), 0);
+                    if (used + totalNew > 100 * 1024 * 1024) {
+                        alert("This upload would exceed the 100 MB storage limit. Please delete some materials first.");
+                        event.target.value = '';
+                        return;
+                    }
+                }
+            } catch (e) { /* ignore */ }
 
             for (const file of files) {
                 const fileName = file.name.toLowerCase();
@@ -2420,7 +2591,11 @@
 
         async function renderMaterials() {
             const container = document.getElementById('materialListContainer');
-            if (materials.length === 0) { container.innerHTML = `<p class="text-xs text-slate-400 col-span-2">No materials uploaded yet.</p>`; return; }
+            if (materials.length === 0) { 
+                container.innerHTML = `<p class="text-xs text-slate-400 col-span-2">No materials uploaded yet.</p>`; 
+                updateStorageUsage();
+                return; 
+            }
             container.innerHTML = materials.map(m => `
                 <div class="glass-panel p-4 rounded-2xl flex items-center justify-between shadow-md">
                     <div class="flex items-center space-x-3 overflow-hidden">
@@ -2430,6 +2605,7 @@
                     <button onclick="removeMaterial(${m.id})" class="text-slate-400 hover:text-red-500 text-xs px-2 py-1"><i class="fa-solid fa-trash"></i></button>
                 </div>
             `).join('');
+            updateStorageUsage();
         }
 
         async function removeMaterial(id) {
@@ -2442,7 +2618,7 @@
             const grid = document.getElementById('deckGrid');
             if (decks.length === 0) {
                 grid.innerHTML = `<p class="text-xs text-slate-400 col-span-3">No flashcard decks available. Click "Generate AI Deck" to create one!</p>`;
-                document.getElementById('statDeckCount').textContent = `0 Decks`;
+                // decks count removed from overview
                 return;
             }
 
@@ -2461,7 +2637,7 @@
                     <button onclick="openReviewDeck(${idx})" class="w-full py-2.5 bg-brand-500/20 hover:bg-brand-500 hover:text-white text-brand-500 font-semibold rounded-xl text-xs transition-all">Review Deck</button>
                 </div>
             `).join('');
-            document.getElementById('statDeckCount').textContent = `${decks.length} Decks`;
+            // decks count removed from overview
         }
 
         async function removeDeck(id) {
@@ -3250,6 +3426,273 @@ ${materialContext}`;
         setInterval(updateQuestUI, 1000);
         setTimeout(() => { loadQuestProgress(); updateQuestUI(); }, 500);
 
+
+
+        // ========== NOTE MAKER ==========
+        let noteMakerGeneratedText = "";
+        let noteMakerSourceText = "";
+
+        function setNoteProgress(percent, statusText) {
+            const bar = document.getElementById('noteMakerProgressBar');
+            const txt = document.getElementById('noteMakerProgressText');
+            if (bar) bar.style.width = percent + '%';
+            if (txt && statusText) txt.textContent = statusText;
+        }
+
+        async function handleNoteMakerUpload(event) {
+            const file = event.target.files && event.target.files[0];
+            const status = document.getElementById('noteMakerFileStatus');
+            if (!file) return;
+
+            const fileName = file.name.toLowerCase();
+            const isImage = file.type.startsWith('image/') || /\.(png|jpe?g|gif|webp|bmp|tiff?)$/i.test(fileName);
+            const isDocx = fileName.endsWith('.docx');
+            const isPdf = fileName.endsWith('.pdf');
+
+            if (status) {
+                status.classList.remove('hidden');
+                status.textContent = "Reading " + file.name + "...";
+            }
+
+            try {
+                let extracted = "";
+                if (isImage) {
+                    if (!apiKey) {
+                        alert("Image OCR requires a Gemini API Key. Please set it in Settings first.");
+                        openSettingsModal();
+                        if (status) status.textContent = "Upload cancelled — API key required for images.";
+                        event.target.value = "";
+                        return;
+                    }
+                    extracted = await extractTextFromImage(file);
+                    if (!extracted || extracted.length < 2) {
+                        throw new Error("No readable text found in the image.");
+                    }
+                } else if (isDocx) {
+                    const arrayBuffer = await file.arrayBuffer();
+                    const result = await mammoth.extractRawText({ arrayBuffer });
+                    extracted = result.value || "";
+                } else if (isPdf) {
+                    // Basic text extraction attempt; full PDF parsing may be limited
+                    const textContent = await file.text();
+                    extracted = textContent.replace(/[^\x20-\x7E\n\r\t]/g, " ").replace(/\s+/g, " ").trim();
+                    if (extracted.length < 20) {
+                        throw new Error("Could not extract readable text from this PDF. Try a .txt or .docx instead.");
+                    }
+                } else {
+                    extracted = await file.text();
+                }
+
+                extracted = (extracted || "").trim();
+                if (!extracted) {
+                    throw new Error("No text could be extracted from the file.");
+                }
+
+                noteMakerSourceText = extracted;
+                if (status) {
+                    status.textContent = "Ready: " + file.name + " (" + extracted.length + " characters extracted)";
+                    status.classList.remove('text-slate-400');
+                    status.classList.add('text-emerald-500');
+                }
+            } catch (err) {
+                console.error(err);
+                noteMakerSourceText = "";
+                alert("Failed to read file: " + (err.message || err));
+                if (status) {
+                    status.textContent = "Failed to read file.";
+                    status.classList.remove('text-emerald-500');
+                    status.classList.add('text-red-500');
+                }
+            }
+            event.target.value = "";
+        }
+
+        async function generateNotes() {
+            const typeEl = document.getElementById('noteMakerType');
+            const content = (noteMakerSourceText || '').trim();
+            const noteType = typeEl.value;
+
+            if (!content) {
+                alert("Please upload a study file first.");
+                return;
+            }
+            if (!apiKey) {
+                alert("Configure your Gemini API Key in Settings first!");
+                openSettingsModal();
+                return;
+            }
+
+            const progress = document.getElementById('noteMakerProgress');
+            const outputWrap = document.getElementById('noteMakerOutputWrapper');
+            const output = document.getElementById('noteMakerOutput');
+            const btn = document.getElementById('noteMakerGenerateBtn');
+
+            progress.classList.remove('hidden');
+            outputWrap.classList.add('hidden');
+            if (btn) btn.disabled = true;
+
+            // Simulated staged progress while AI works
+            const stages = [
+                { p: 10, t: "10% - Reading content..." },
+                { p: 30, t: "30% - Identifying topics..." },
+                { p: 60, t: "60% - Extracting key concepts..." },
+                { p: 85, t: "85% - Building notes..." }
+            ];
+            let stageIndex = 0;
+            setNoteProgress(stages[0].p, stages[0].t);
+            const stageTimer = setInterval(() => {
+                stageIndex++;
+                if (stageIndex < stages.length) {
+                    setNoteProgress(stages[stageIndex].p, stages[stageIndex].t);
+                }
+            }, 900);
+
+            try {
+                let prompt;
+                if (noteType === 'cornell') {
+                    prompt = `You are a study notes expert. Convert the following study material into Cornell Notes format.
+
+Return ONLY valid JSON (no markdown, no code fences) with this exact structure:
+{
+  "title": "Main topic title",
+  "rows": [
+    { "question": "A useful study question", "notes": "Corresponding concise notes" }
+  ],
+  "summary": "A short overall summary of the material"
+}
+
+Rules:
+- Create 4 to 8 question/notes pairs.
+- Questions should be clear and useful for review.
+- Notes should be concise but informative.
+- Summary should be 2-4 sentences.
+- Do not invent facts not present in the material.
+
+Study Material:
+${content}`;
+                } else {
+                    prompt = `You are a study notes expert. Convert the following study material into Outline Notes format.
+
+Return ONLY valid JSON (no markdown, no code fences) with this exact structure:
+{
+  "title": "Main topic title",
+  "sections": [
+    {
+      "heading": "Section heading",
+      "points": ["Key point one", "Key point two"]
+    }
+  ]
+}
+
+Rules:
+- Use clear hierarchical outline style.
+- Include 3 to 6 main sections.
+- Each section should have 2 to 5 bullet points.
+- Keep language concise and student-friendly.
+- Do not invent facts not present in the material.
+
+Study Material:
+${content}`;
+                }
+
+                const res = await callGeminiApi(prompt);
+                clearInterval(stageTimer);
+                setNoteProgress(100, "100% - Notes generated!");
+
+                const data = parseAiJson(res.text);
+                let html = "";
+                let plain = "";
+
+                if (noteType === 'cornell') {
+                    const title = data.title || "Cornell Notes";
+                    const rows = Array.isArray(data.rows) ? data.rows : [];
+                    const summary = data.summary || "";
+
+                    html += `<div class="text-2xl font-bold mb-4 text-brand-500">${escapeHtml(title)}</div>`;
+                    html += `<div class="space-y-4">`;
+                    rows.forEach(r => {
+                        html += `
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-3 p-4 rounded-xl bg-slate-100/60 dark:bg-slate-900/40 border border-slate-200 dark:border-slate-700">
+                                <div class="md:col-span-1">
+                                    <div class="text-[10px] font-bold uppercase tracking-wider text-brand-500 mb-1">Question</div>
+                                    <div>${escapeHtml(r.question || "")}</div>
+                                </div>
+                                <div class="md:col-span-2">
+                                    <div class="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1">Notes</div>
+                                    <div>${escapeHtml(r.notes || "")}</div>
+                                </div>
+                            </div>`;
+                    });
+                    html += `</div>`;
+                    if (summary) {
+                        html += `
+                            <div class="mt-6 p-4 rounded-xl bg-brand-500/10 border border-brand-500/30">
+                                <div class="text-[10px] font-bold uppercase tracking-wider text-brand-500 mb-1">Summary</div>
+                                <div>${escapeHtml(summary)}</div>
+                            </div>`;
+                    }
+                    plain = title + "\n\n" + rows.map(r => "Question: " + (r.question||"") + "\nNotes: " + (r.notes||"")).join("\n\n") + "\n\nSummary:\n" + summary;
+                } else {
+                    const title = data.title || "Outline Notes";
+                    const sections = Array.isArray(data.sections) ? data.sections : [];
+
+                    html += `<div class="text-2xl font-bold mb-4 text-brand-500">${escapeHtml(title)}</div>`;
+                    sections.forEach(sec => {
+                        html += `<div class="mt-5 mb-2 text-xl font-bold">${escapeHtml(sec.heading || "")}</div>`;
+                        html += `<ul class="space-y-1.5 ml-1">`;
+                        (sec.points || []).forEach(pt => {
+                            html += `<li>• ${escapeHtml(pt)}</li>`;
+                        });
+                        html += `</ul>`;
+                    });
+                    plain = title + "\n\n" + sections.map(s => "## " + (s.heading||"") + "\n" + (s.points||[]).map(p => "• " + p).join("\n")).join("\n\n");
+                }
+
+                noteMakerGeneratedText = plain;
+                output.innerHTML = html;
+                outputWrap.classList.remove('hidden');
+
+                setTimeout(() => {
+                    progress.classList.add('hidden');
+                    setNoteProgress(0, "");
+                }, 700);
+
+            } catch (err) {
+                clearInterval(stageTimer);
+                console.error(err);
+                alert("Failed to generate notes: " + (err.message || err));
+                progress.classList.add('hidden');
+                setNoteProgress(0, "");
+            } finally {
+                if (btn) btn.disabled = false;
+            }
+        }
+
+        function escapeHtml(str) {
+            if (str == null) return "";
+            return String(str)
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
+        function downloadNotes() {
+            if (!noteMakerGeneratedText) {
+                alert("No notes to download yet.");
+                return;
+            }
+            const blob = new Blob([noteMakerGeneratedText], { type: "text/plain;charset=utf-8" });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = "studyforge_notes.txt";
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            URL.revokeObjectURL(url);
+        }
 
         function resetQuiz() {
             hideFnfBanner();
