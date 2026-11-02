@@ -223,7 +223,10 @@
                 <div class="w-9 h-9 bg-brand-500 rounded-xl flex items-center justify-center text-white font-bold shadow-md shadow-brand-500/20">
                     <i class="fa-solid fa-graduation-cap"></i>
                 </div>
-                <span class="font-extrabold text-base tracking-wide hidden sm:inline">StudyForge <span class="text-brand-500 text-xs px-2 py-0.5 bg-brand-500/10 rounded-full">AI</span></span>
+                <div class="hidden sm:flex flex-col">
+                    <span class="font-extrabold text-base tracking-wide">StudyForge <span class="text-brand-500 text-xs px-2 py-0.5 bg-brand-500/10 rounded-full">AI</span></span>
+                    <span class="text-[10px] font-semibold text-slate-400 -mt-0.5">V. 0.73</span>
+                </div>
             </div>
             <div class="flex items-center space-x-2 sm:space-x-3">
                 <div class="flex items-center space-x-1.5 px-2.5 sm:px-3 py-1.5 rounded-xl bg-amber-500/10 text-amber-500 text-[11px] sm:text-xs font-bold border border-amber-500/20 shadow-sm" title="Your Coins">
@@ -427,18 +430,39 @@
                                 <button onclick="resetHomeworkHelper()" class="text-slate-400 hover:text-red-500 text-xs font-bold">Start Over</button>
                             </div>
                             
+                            <div class="p-4 rounded-2xl bg-slate-100/70 dark:bg-slate-900/70 border border-slate-200 dark:border-slate-800 space-y-1">
+                                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Current Question:</p>
+                                <p id="hwCurrentQuestionText" class="text-xs font-semibold leading-relaxed"></p>
+                            </div>
+
                             <div class="p-4 rounded-2xl glass-panel space-y-3">
-                                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Socratic AI Guide:</p>
+                                <div class="flex items-center justify-between">
+                                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Socratic AI Guide:</p>
+                                    <span id="hwStepCounter" class="text-[10px] font-bold text-brand-500">Step 1 of 1</span>
+                                </div>
                                 <p id="hwAiPromptText" class="text-xs font-semibold leading-relaxed">Loading guide step...</p>
                             </div>
 
-                            <div class="space-y-2">
-                                <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest">Your Answer / Response:</label>
+                            <div id="hwStepNav" class="flex gap-2">
+                                <button id="hwPrevStepBtn" onclick="prevHomeworkStep()" class="flex-1 py-3 bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 font-bold rounded-xl text-xs transition-all">
+                                    Previous Step
+                                </button>
+                                <button id="hwNextStepBtn" onclick="nextHomeworkStep()" class="flex-1 py-3 bg-brand-500 hover:bg-brand-600 text-white font-bold rounded-xl text-xs transition-all shadow-md">
+                                    Next Step
+                                </button>
+                            </div>
+
+                            <div id="hwResponseArea" class="space-y-2 hidden">
+                                <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest">Your Answer / Response (optional):</label>
                                 <div class="flex flex-col sm:flex-row gap-2">
-                                    <input type="text" autocomplete="off" id="hwUserResponseInput" placeholder="Type your answer..." class="w-full px-4 py-3 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-xs focus:outline-none focus:border-brand-500 font-semibold">
-                                    <button onclick="submitHomeworkStep()" class="px-6 py-3 bg-brand-500 hover:bg-brand-600 text-white font-bold rounded-xl text-xs transition-all flex-shrink-0">Submit</button>
+                                    <input type="text" autocomplete="off" id="hwUserResponseInput" placeholder="Type your answer or response..." class="w-full px-4 py-3 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-xs focus:outline-none focus:border-brand-500 font-semibold">
+                                    <button onclick="submitHomeworkStep()" class="px-6 py-3 bg-slate-600 hover:bg-slate-700 text-white font-bold rounded-xl text-xs transition-all flex-shrink-0">Check</button>
                                 </div>
                             </div>
+
+                            <button onclick="finishCurrentQuestion()" class="w-full py-3 bg-emerald-500 hover:bg-emerald-600 text-white font-bold rounded-xl text-xs transition-all shadow-md">
+                                Finish this Question & Return to List
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -568,7 +592,15 @@
 
                         <div id="quizActiveContainer" class="hidden space-y-6 text-left">
                             <div class="flex justify-between items-center text-xs">
-                                <span id="quizQuestionNumber" class="font-bold text-brand-500">Question 1 of 5</span>
+                                <div class="flex items-center gap-2">
+                                    <button onclick="prevQuizQuestion()" id="quizPrevBtn" class="px-3 py-1 bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 font-bold rounded-xl text-xs transition-all">
+                                        Previous
+                                    </button>
+                                    <button onclick="nextQuizQuestion()" id="quizNextBtn" class="px-3 py-1 bg-brand-500 hover:bg-brand-600 text-white font-bold rounded-xl text-xs transition-all">
+                                        Next
+                                    </button>
+                                    <span id="quizQuestionNumber" class="font-bold text-brand-500">Question 1 of 5</span>
+                                </div>
                                 <div class="flex items-center space-x-3">
                                     <button onclick="fetchAiTipForQuiz()" class="px-3 py-1 bg-amber-500/10 hover:bg-amber-500/20 text-amber-500 rounded-xl text-xs font-bold flex items-center space-x-1.5 transition-all">
                                         <i class="fa-solid fa-lightbulb"></i><span>AI Hint</span>
@@ -1217,7 +1249,9 @@
     </div>
 
     <script>
-        // Check local storage availability
+        // App version: V. X.XX where the number after the decimal is the total GitHub commit count.
+        // Rule: every 0.100 = 1 full version (e.g. 73 commits = V. 0.73, 100 commits = V. 1.00, 173 commits = V. 1.73).
+        // Update this number and the navbar label whenever the commit count changes.
         try {
             localStorage.setItem('storage_test', '1');
             localStorage.removeItem('storage_test');
@@ -1268,12 +1302,18 @@
         let currentQuizQuestionIndex = 0;
         let quizScore = 0;
         let activeQuizQuestions = [];
+        let quizUserAnswers = [];
 
         let pendingPreGenType = null;
         let hwUploadedText = "";
         let hwParsedQuestions = [];
         let hwActiveQuestion = "";
+        let hwActiveQuestionIndex = -1;
         let hwSocraticStepCount = 0;
+        let hwCompletedIndices = new Set();
+        let hwCurrentSteps = [];
+        let hwCurrentStepIndex = 0;
+
 
         let wordGameMode = 'easy';
         let wordGameCurrent = { word: '', clue: '' };
@@ -2684,43 +2724,210 @@ Do not include any other text.`;
 
         async function processHomeworkText(textContent) {
             try {
-                const aiRes = await callGeminiApi(`Split this homework text into a JSON array of strings: ["Q1...", "Q2..."]. Return ONLY a valid JSON array.\n\n${textContent}`);
-                hwParsedQuestions = parseAiJson(aiRes.text);
-                if (!Array.isArray(hwParsedQuestions)) {
-                    hwParsedQuestions = [String(hwParsedQuestions)];
-                }
+                const prompt = `Read the following homework text carefully. Find every question and any answer that is already provided.
+
+Return ONLY a valid JSON array of objects. Each object must have these exact keys:
+- "question": the full question text (clean, without options mixed in)
+- "type": either "multiple-choice" or "written"
+- "options": array of option strings if multiple-choice, otherwise null
+- "answer": the correct answer if it is already in the document (the letter or the full text), otherwise null
+
+Rules:
+- If the document has answer choices (A, B, C, D, etc.), set type to "multiple-choice" and put the choices in options.
+- If no answer is given in the document, set answer to null.
+- Do not invent answers here. Only extract what is actually written in the file.
+- If a question has no options, set type to "written" and options to null.
+
+Homework text:
+${textContent}`;
+
+                const aiRes = await callGeminiApi(prompt);
+                let parsed = parseAiJson(aiRes.text);
+                if (!Array.isArray(parsed)) parsed = [parsed];
+
+                hwParsedQuestions = parsed.map(q => ({
+                    question: q.question || String(q),
+                    type: (q.type === "multiple-choice" || q.type === "written") ? q.type : "written",
+                    options: Array.isArray(q.options) ? q.options : null,
+                    answer: q.answer || null
+                }));
+
+                hwCompletedIndices.clear();
                 document.getElementById('hwLoadingSection').classList.add('hidden');
-                if (hwParsedQuestions.length > 1) {
-                    document.getElementById('hwQuestionsList').innerHTML = hwParsedQuestions.map((q, i) => {
-                        
-                        return `<button
-data-question="${encodeURIComponent(q)}"
-onclick="selectHwQuestion(decodeURIComponent(this.dataset.question))"
-class="w-full p-4 rounded-xl glass-panel text-left text-xs font-semibold hover:bg-brand-500 hover:text-white transition-all shadow-md">
-Problem ${i+1}: ${String(q).slice(0, 80)}...
-</button>`; 
-                    }).join('');
-                    document.getElementById('hwSelectQuestionSection').classList.remove('hidden');
-                } else {
-                    selectHwQuestion(hwParsedQuestions[0] || textContent);
-                }
+                renderHomeworkQuestionsList();
             } catch (err) {
                 alert("Error parsing homework: " + err.message);
                 resetHomeworkHelper();
             }
         }
 
-        async function selectHwQuestion(qText) {
-            hwActiveQuestion = qText;
+        function renderHomeworkQuestionsList() {
+            const list = document.getElementById('hwQuestionsList');
+            if (!list) return;
+
+            if (hwParsedQuestions.length === 0) {
+                list.innerHTML = `<p class="text-xs text-slate-400">No questions found.</p>`;
+                document.getElementById('hwSelectQuestionSection').classList.remove('hidden');
+                return;
+            }
+
+            if (hwCompletedIndices.size >= hwParsedQuestions.length) {
+                list.innerHTML = `
+                    <div class="text-center space-y-3 py-4">
+                        <div class="w-12 h-12 bg-emerald-500/20 text-emerald-500 rounded-2xl mx-auto flex items-center justify-center text-xl"><i class="fa-solid fa-check"></i></div>
+                        <p class="text-xs font-bold text-emerald-500">All questions completed! Great job.</p>
+                        <button onclick="resetHomeworkHelper()" class="px-4 py-2 bg-brand-500 text-white font-bold rounded-xl text-xs">Start New Homework</button>
+                    </div>`;
+                document.getElementById('hwSelectQuestionSection').classList.remove('hidden');
+                document.getElementById('hwSocraticSection').classList.add('hidden');
+                return;
+            }
+
+            list.innerHTML = hwParsedQuestions.map((q, i) => {
+                const isDone = hwCompletedIndices.has(i);
+                const baseClass = isDone
+                    ? "w-full p-4 rounded-xl glass-panel text-left text-xs font-semibold opacity-40 cursor-not-allowed line-through bg-slate-200/50 dark:bg-slate-800/50"
+                    : "w-full p-4 rounded-xl glass-panel text-left text-xs font-semibold hover:bg-brand-500 hover:text-white transition-all shadow-md";
+                const onclickAttr = isDone ? "" : `onclick="selectHwQuestion(${i})"`;
+                const status = isDone ? " (Completed)" : "";
+                const typeLabel = q.type === "multiple-choice" ? " [MCQ]" : " [Written]";
+                const preview = (q.question || "").slice(0, 90) + ((q.question || "").length > 90 ? "..." : "");
+                return `<button ${onclickAttr} class="${baseClass}" ${isDone ? "disabled" : ""}>
+                    Problem ${i+1}${typeLabel}${status}: ${preview}
+                </button>`;
+            }).join('');
+
+            document.getElementById('hwSelectQuestionSection').classList.remove('hidden');
+            document.getElementById('hwSocraticSection').classList.add('hidden');
+        }
+
+        async function selectHwQuestion(index) {
+            if (hwCompletedIndices.has(index)) return;
+            hwActiveQuestionIndex = index;
+            const qObj = hwParsedQuestions[index] || {};
+            hwActiveQuestion = qObj.question || "";
             document.getElementById('hwSelectQuestionSection').classList.add('hidden');
             document.getElementById('hwLoadingSection').classList.remove('hidden');
+            document.getElementById('hwActiveQuestionBadge').textContent = `Working on Problem ${index + 1} (${qObj.type === "multiple-choice" ? "Multiple Choice" : "Written"})`;
+            let questionDisplay = hwActiveQuestion;
+            if (qObj.type === "multiple-choice" && Array.isArray(qObj.options) && qObj.options.length) {
+                const optsText = qObj.options.map((o, idx) => `${String.fromCharCode(65 + idx)}. ${o}`).join("\n");
+                questionDisplay += "\n\n" + optsText;
+            }
+            document.getElementById('hwCurrentQuestionText').textContent = questionDisplay;
+
+            let prompt = "";
+            if (qObj.type === "multiple-choice") {
+                const opts = (qObj.options || []).map((o, idx) => `${String.fromCharCode(65 + idx)}. ${o}`).join("\n");
+                prompt = `You are a helpful tutor. The student has this multiple-choice question.
+
+Question: ${hwActiveQuestion}
+Options:
+${opts}
+${qObj.answer ? `The correct answer already in the document is: ${qObj.answer}` : "No answer was provided in the document. Determine the correct option."}
+
+Return ONLY a valid JSON object with this exact structure:
+{
+  "steps": [
+    "Step 1 text here...",
+    "Step 2 text here...",
+    "Step 3 text here..."
+  ],
+  "finalAnswer": "The correct choice (e.g. c) and a short reason"
+}
+
+Rules:
+- Break the solution into clear, separate steps (at least 2 if possible).
+- Each step should make the question easier to solve.
+- Do not put all steps in one string.
+- The finalAnswer should clearly state the correct option.`;
+            } else {
+                prompt = `You are a helpful tutor. The student has this written-answer question.
+
+Question: ${hwActiveQuestion}
+${qObj.answer ? `The expected answer already in the document is: ${qObj.answer}` : "No answer was provided in the document. You must produce a clear correct written answer."}
+
+Return ONLY a valid JSON object with this exact structure:
+{
+  "steps": [
+    "Step 1 text here...",
+    "Step 2 text here...",
+    "Step 3 text here..."
+  ],
+  "finalAnswer": "The complete written answer the student should produce"
+}
+
+Rules:
+- Break the solution into clear, separate steps (at least 2 if possible).
+- Each step should help the student write the answer.
+- Do not put all steps in one string.
+- The finalAnswer should be a clean written response.`;
+            }
+
             try {
-                const res = await callGeminiApi(`Socratic tutor guidance for: "${hwActiveQuestion}". Provide Step 1 and end with a guiding question.`);
-                document.getElementById('hwAiPromptText').textContent = res.text;
-                hwSocraticStepCount = 1;
+                const res = await callGeminiApi(prompt);
+                let data = parseAiJson(res.text);
+                if (!data || !Array.isArray(data.steps) || data.steps.length === 0) {
+                    throw new Error("AI did not return valid steps");
+                }
+                hwCurrentSteps = data.steps;
+                if (data.finalAnswer) {
+                    hwCurrentSteps.push("Final Answer: " + data.finalAnswer);
+                }
+                hwCurrentStepIndex = 0;
+                showCurrentHomeworkStep();
                 document.getElementById('hwLoadingSection').classList.add('hidden');
                 document.getElementById('hwSocraticSection').classList.remove('hidden');
-            } catch (err) { alert("Error: " + err.message); resetHomeworkHelper(); }
+            } catch (err) { 
+                alert("Error: " + err.message); 
+                document.getElementById('hwLoadingSection').classList.add('hidden');
+                renderHomeworkQuestionsList();
+            }
+        }
+
+        function showCurrentHomeworkStep() {
+            const textEl = document.getElementById('hwAiPromptText');
+            const counterEl = document.getElementById('hwStepCounter');
+            const nextBtn = document.getElementById('hwNextStepBtn');
+            const prevBtn = document.getElementById('hwPrevStepBtn');
+            const responseArea = document.getElementById('hwResponseArea');
+
+            if (!hwCurrentSteps.length) return;
+
+            textEl.textContent = hwCurrentSteps[hwCurrentStepIndex];
+            counterEl.textContent = `Step ${hwCurrentStepIndex + 1} of ${hwCurrentSteps.length}`;
+
+            const isFirst = hwCurrentStepIndex === 0;
+            const isLast = hwCurrentStepIndex >= hwCurrentSteps.length - 1;
+
+            if (prevBtn) {
+                prevBtn.style.visibility = isFirst ? 'hidden' : 'visible';
+                prevBtn.disabled = isFirst;
+            }
+
+            if (isLast) {
+                nextBtn.textContent = "Done with Steps";
+                nextBtn.onclick = finishCurrentQuestion;
+                if (responseArea) responseArea.classList.remove('hidden');
+            } else {
+                nextBtn.textContent = "Next Step";
+                nextBtn.onclick = nextHomeworkStep;
+                if (responseArea) responseArea.classList.add('hidden');
+            }
+        }
+
+        function nextHomeworkStep() {
+            if (hwCurrentStepIndex < hwCurrentSteps.length - 1) {
+                hwCurrentStepIndex++;
+                showCurrentHomeworkStep();
+            }
+        }
+
+        function prevHomeworkStep() {
+            if (hwCurrentStepIndex > 0) {
+                hwCurrentStepIndex--;
+                showCurrentHomeworkStep();
+            }
         }
 
         async function submitHomeworkStep() {
@@ -2730,14 +2937,36 @@ Problem ${i+1}: ${String(q).slice(0, 80)}...
             document.getElementById('hwLoadingSection').classList.remove('hidden');
             document.getElementById('hwSocraticSection').classList.add('hidden');
             try {
-                const res = await callGeminiApi(`Problem: "${hwActiveQuestion}". Student response: "${userAns}". Provide Step ${++hwSocraticStepCount} guidance.`);
+                const res = await callGeminiApi(`You are a Socratic tutor. Problem: "${hwActiveQuestion}". Student response: "${userAns}". Provide the next step of guidance (Step ${++hwSocraticStepCount}). Continue guiding the student step by step toward the solution. If the student has essentially solved it correctly, acknowledge the solution and say the problem is complete. Otherwise, give the next helpful step and end with a guiding question.`);
                 document.getElementById('hwAiPromptText').textContent = res.text;
                 document.getElementById('hwLoadingSection').classList.add('hidden');
                 document.getElementById('hwSocraticSection').classList.remove('hidden');
-            } catch (err) { alert("Error: " + err.message); resetHomeworkHelper(); }
+            } catch (err) { 
+                alert("Error: " + err.message); 
+                document.getElementById('hwLoadingSection').classList.add('hidden');
+                document.getElementById('hwSocraticSection').classList.remove('hidden');
+            }
+        }
+
+        function finishCurrentQuestion() {
+            if (hwActiveQuestionIndex >= 0) {
+                hwCompletedIndices.add(hwActiveQuestionIndex);
+            }
+            const input = document.getElementById('hwUserResponseInput');
+            if (input) input.value = '';
+            hwCurrentSteps = [];
+            hwCurrentStepIndex = 0;
+            document.getElementById('hwSocraticSection').classList.add('hidden');
+            renderHomeworkQuestionsList();
         }
 
         function resetHomeworkHelper() {
+            hwCompletedIndices.clear();
+            hwActiveQuestionIndex = -1;
+            hwActiveQuestion = "";
+            hwSocraticStepCount = 0;
+            hwCurrentSteps = [];
+            hwCurrentStepIndex = 0;
             document.getElementById('hwLoadingSection').classList.add('hidden');
             document.getElementById('hwSelectQuestionSection').classList.add('hidden');
             document.getElementById('hwSocraticSection').classList.add('hidden');
@@ -3190,6 +3419,7 @@ ${materialContext}`;
                 }
                 currentQuizQuestionIndex = 0; 
                 quizScore = 0;
+                quizUserAnswers = new Array(activeQuizQuestions.length).fill(null);
                 document.getElementById('quizLoadingContainer').classList.add('hidden');
                 document.getElementById('quizActiveContainer').classList.remove('hidden');
                 loadQuizQuestion();
@@ -3202,6 +3432,18 @@ ${materialContext}`;
         function loadQuizQuestion() {
             const q = activeQuizQuestions[currentQuizQuestionIndex];
             document.getElementById('quizQuestionNumber').textContent = `Question ${currentQuizQuestionIndex + 1} of ${activeQuizQuestions.length}`;
+
+            const prevBtn = document.getElementById('quizPrevBtn');
+            const nextBtn = document.getElementById('quizNextBtn');
+            if (prevBtn) {
+                prevBtn.style.visibility = currentQuizQuestionIndex === 0 ? 'hidden' : 'visible';
+                prevBtn.disabled = currentQuizQuestionIndex === 0;
+            }
+            if (nextBtn) {
+                const isLast = currentQuizQuestionIndex >= activeQuizQuestions.length - 1;
+                nextBtn.style.visibility = isLast ? 'hidden' : 'visible';
+                nextBtn.disabled = isLast;
+            }
             
             // Check if question includes a reading passage
             const readingContainer = document.getElementById('quizReadingContainer');
@@ -3216,18 +3458,42 @@ ${materialContext}`;
             }
 
             document.getElementById('quizQuestionText').textContent = q.q;
-            document.getElementById('quizOptionsContainer').innerHTML = q.options.map((opt, i) => `
-                <button onclick="selectQuizOption(${i})" class="w-full p-3 rounded-xl glass-panel text-left text-xs font-semibold hover:bg-brand-500 hover:text-white transition-all shadow-md">${opt}</button>
-            `).join('');
+
+            const previousAnswer = quizUserAnswers[currentQuizQuestionIndex];
+            document.getElementById('quizOptionsContainer').innerHTML = q.options.map((opt, i) => {
+                const selectedClass = previousAnswer === i ? ' bg-brand-500 text-white' : '';
+                return `<button onclick="selectQuizOption(${i})" class="w-full p-3 rounded-xl glass-panel text-left text-xs font-semibold hover:bg-brand-500 hover:text-white transition-all shadow-md${selectedClass}">${opt}</button>`;
+            }).join('');
+        }
+
+        function prevQuizQuestion() {
+            if (currentQuizQuestionIndex > 0) {
+                currentQuizQuestionIndex--;
+                loadQuizQuestion();
+            }
+        }
+
+        function nextQuizQuestion() {
+            if (currentQuizQuestionIndex < activeQuizQuestions.length - 1) {
+                currentQuizQuestionIndex++;
+                loadQuizQuestion();
+            }
         }
 
         async function selectQuizOption(idx) {
             const currentQ = activeQuizQuestions[currentQuizQuestionIndex];
             const isCorrect = idx === currentQ.correct;
-            if (isCorrect) {
-                quizScore++;
-                if (typeof recordCorrectAnswer === 'function') recordCorrectAnswer();
+            const alreadyAnswered = quizUserAnswers[currentQuizQuestionIndex] !== null;
+
+            // Only score the first time this question is answered
+            if (!alreadyAnswered) {
+                if (isCorrect) {
+                    quizScore++;
+                    if (typeof recordCorrectAnswer === 'function') recordCorrectAnswer();
+                }
             }
+
+            quizUserAnswers[currentQuizQuestionIndex] = idx;
             currentQuizQuestionIndex++;
 
             if (currentQuizQuestionIndex >= activeQuizQuestions.length) {
