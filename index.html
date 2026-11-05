@@ -11,10 +11,18 @@
     <script src="https://unpkg.com/dexie@3.2.4/dist/dexie.js"></script>
     <!-- Mammoth.js for .docx extraction -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
+    <!-- PDF.js for .pdf extraction -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
     <!-- Cytoscape.js + Dagre for Mind Map -->
     <script src="https://unpkg.com/cytoscape@3.26.0/dist/cytoscape.min.js"></script>
     <script src="https://unpkg.com/dagre@0.8.5/dist/dagre.min.js"></script>
     <script src="https://unpkg.com/cytoscape-dagre@2.5.0/cytoscape-dagre.js"></script>
+    <script>
+        // Setup PDF.js worker
+        if (typeof pdfjsLib !== 'undefined') {
+            pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+        }
+    </script>
     <script>
         tailwind.config = {
             darkMode: 'class',
@@ -246,7 +254,7 @@
                 </div>
                 <div class="hidden sm:flex flex-col">
                     <span class="font-extrabold text-base tracking-wide">StudyForge <span class="text-brand-500 text-xs px-2 py-0.5 bg-brand-500/10 rounded-full">AI</span></span>
-                    <span class="text-[10px] font-semibold text-slate-400 -mt-0.5">V. 0.75</span>
+                    <span class="text-[10px] font-semibold text-slate-400 -mt-0.5">V. 0.76</span>
                 </div>
             </div>
             <div class="flex items-center space-x-2 sm:space-x-3">
@@ -408,7 +416,7 @@
                             <div class="w-12 h-12 rounded-2xl bg-brand-500/10 text-brand-500 flex items-center justify-center text-lg mb-3 shadow-inner"><i class="fa-solid fa-cloud-arrow-up"></i></div>
                             <span class="font-bold text-xs mb-1">Click to upload files (.docx, .txt, images)</span>
                             <span class="text-[10px] text-slate-400">Supports DOCX, TXT + Image OCR via Gemini</span>
-                            <input type="file" multiple accept=".docx,.txt,image/*" onchange="handleGeneralMaterialUpload(event)" class="hidden">
+                            <input type="file" multiple accept=".docx,.txt,.pdf,image/*" onchange="handleGeneralMaterialUpload(event)" class="hidden">
                         </label>
 
                         <div>
@@ -433,7 +441,7 @@
                                 <div class="w-12 h-12 rounded-2xl bg-brand-500/10 text-brand-500 flex items-center justify-center text-lg mb-3 shadow-inner"><i class="fa-solid fa-file-arrow-up"></i></div>
                                 <span class="font-bold text-xs mb-1">Upload Homework (.docx, Image, or Document)</span>
                                 <span class="text-[10px] text-slate-400">Math, Physics, Bio, English, or History</span>
-                                <input type="file" accept=".docx,image/*,.txt" onchange="handleHomeworkUpload(event)" class="hidden">
+                                <input type="file" accept=".docx,.pdf,image/*,.txt" onchange="handleHomeworkUpload(event)" class="hidden">
                             </label>
                         </div>
 
@@ -731,7 +739,7 @@
                             <label class="border-2 border-dashed border-slate-300 dark:border-slate-700 hover:border-brand-500 rounded-3xl p-6 flex flex-col items-center justify-center cursor-pointer transition-all bg-slate-50/50 dark:bg-slate-900/50 text-center">
                                 <div class="w-10 h-10 rounded-2xl bg-brand-500/10 text-brand-500 flex items-center justify-center text-lg mb-2"><i class="fa-solid fa-cloud-arrow-up"></i></div>
                                 <span class="font-bold text-xs">Or upload a file (.docx, .txt, image)</span>
-                                <input type="file" id="mindMapFileInput" accept=".docx,.txt,image/*" onchange="handleMindMapUpload(event)" class="hidden">
+                                <input type="file" id="mindMapFileInput" accept=".docx,.txt,.pdf,image/*" onchange="handleMindMapUpload(event)" class="hidden">
                             </label>
                             <p id="mindMapFileStatus" class="text-[10px] text-slate-400 text-center hidden"></p>
                         </div>
@@ -2641,6 +2649,7 @@ Do not include any other text.`;
                 const fileName = file.name.toLowerCase();
                 const isImage = file.type.startsWith('image/') || /\.(png|jpe?g|gif|webp|bmp|tiff?)$/i.test(fileName);
                 const isDocx = fileName.endsWith('.docx');
+                const isPdf = fileName.endsWith('.pdf');
 
                 try {
                     if (isImage) {
@@ -2670,6 +2679,15 @@ Do not include any other text.`;
                             name: file.name,
                             size: (file.size / 1024).toFixed(1) + ' KB',
                             content: result.value
+                        });
+                    } else if (isPdf) {
+                        listContainer.innerHTML = `<p class="text-xs text-brand-500 col-span-2 font-semibold"><i class="fa-solid fa-spinner fa-spin mr-2"></i>Extracting PDF "${file.name}" (${file.size} bytes)...</p>`;
+                        const pdfText = await extractTextFromPDF(file);
+                        await db.materials.add({
+                            username: currentUser,
+                            name: file.name + " (PDF)",
+                            size: (file.size / 1024).toFixed(1) + ' KB',
+                            content: pdfText
                         });
                     } else {
                         // Plain text / other
@@ -2713,7 +2731,43 @@ Do not include any other text.`;
             updateStorageUsage();
         }
 
-        async function removeMaterial(id) {
+
+        // ========== SHARED: Auto-transfer uploads to Materials for Quiz/Cards ==========
+        async function addUploadedToMaterials(fileName, content, sizeBytes, sourceTag) {
+            try {
+                if (!content || !content.trim()) return;
+                // Avoid duplicate names - check if already exists
+                const existing = await db.materials.where('username').equals(currentUser).toArray();
+                const already = existing.some(m => m.name === fileName && m.content && m.content.slice(0,100) === content.slice(0,100));
+                if (already) {
+                    console.log(`Material already exists: ${fileName}`);
+                    return;
+                }
+                const sizeStr = sizeBytes ? (sizeBytes/1024).toFixed(1) + ' KB' : (content.length/1024).toFixed(1) + ' KB (est)';
+                await db.materials.add({
+                    username: currentUser,
+                    name: fileName + (sourceTag ? ` (${sourceTag})` : ''),
+                    size: sizeStr,
+                    content: content
+                });
+                materials = await db.materials.where('username').equals(currentUser).toArray();
+                renderMaterials();
+                updateStorageUsage();
+                // Notify
+                const matCount = materials.length;
+                console.log(`Auto-added to Materials: ${fileName} -> now ${matCount} materials`);
+                // Optional toast notification
+                const statusEl = document.getElementById('materialListContainer');
+                if (statusEl && typeof showToast === 'function') {
+                    // showToast(`Added to Materials: ${fileName}`);
+                }
+            } catch (e) {
+                console.warn("Failed to auto-add to materials:", e);
+            }
+        }
+
+
+                async function removeMaterial(id) {
             await db.materials.delete(id);
             materials = await db.materials.where('username').equals(currentUser).toArray();
             renderMaterials();
@@ -2764,6 +2818,7 @@ Do not include any other text.`;
             const fileName = file.name.toLowerCase();
             const isImage = file.type.startsWith('image/') || /\.(png|jpe?g|gif|webp|bmp|tiff?)$/i.test(fileName);
             const isDocx = fileName.endsWith('.docx');
+            const isPdf = fileName.endsWith('.pdf');
 
             try {
                 let textContent = '';
@@ -2776,9 +2831,13 @@ Do not include any other text.`;
                     const arrayBuffer = await file.arrayBuffer();
                     const result = await mammoth.extractRawText({ arrayBuffer });
                     textContent = result.value;
+                } else if (isPdf) {
+                    textContent = await extractTextFromPDF(file);
                 } else {
                     textContent = await file.text();
                 }
+                // V0.76: Auto-transfer to Materials for Quiz/Cards reuse
+                await addUploadedToMaterials(file.name, textContent, file.size, "Homework");
                 await processHomeworkText(textContent);
             } catch (err) {
                 alert("Error processing homework: " + err.message);
@@ -3171,6 +3230,44 @@ async function extractTextFromImage(file) {
                 reader.readAsDataURL(file);
             });
         }
+
+        async function extractTextFromPDF(file) {
+            return new Promise(async (resolve, reject) => {
+                try {
+                    const arrayBuffer = await file.arrayBuffer();
+                    if (typeof pdfjsLib === 'undefined') {
+                        throw new Error("PDF.js library not loaded");
+                    }
+                    const loadingTask = pdfjsLib.getDocument({ data: arrayBuffer });
+                    const pdf = await loadingTask.promise;
+                    let fullText = "";
+                    // Limit to first 50 pages for safety
+                    const maxPages = Math.min(pdf.numPages, 50);
+                    for (let i = 1; i <= maxPages; i++) {
+                        const page = await pdf.getPage(i);
+                        const textContent = await page.getTextContent();
+                        const pageText = textContent.items.map(item => item.str).join(" ");
+                        fullText += pageText + "\n\n";
+                        // Update progress if possible
+                        if (i % 5 === 0) {
+                            console.log(`PDF extraction: ${i}/${maxPages} pages`);
+                        }
+                    }
+                    if (pdf.numPages > 50) {
+                        fullText += `\n[... ${pdf.numPages - 50} more pages truncated for length ...]`;
+                    }
+                    const cleaned = fullText.replace(/\s+/g, " ").trim();
+                    if (!cleaned || cleaned.length < 10) {
+                        throw new Error("No readable text found in PDF (might be scanned image - try OCR)");
+                    }
+                    resolve(cleaned);
+                } catch (err) {
+                    console.error("PDF extraction failed:", err);
+                    reject(err);
+                }
+            });
+        }
+
 
         function setDeckGenProgress(percent, statusText) {
             const bar = document.getElementById('deckGenProgressBar');
@@ -3777,6 +3874,7 @@ ${materialContext}`;
             const fileName = file.name.toLowerCase();
             const isImage = file.type.startsWith('image/') || /\.(png|jpe?g|gif|webp|bmp)$/i.test(fileName);
             const isDocx = fileName.endsWith('.docx');
+            const isPdf = fileName.endsWith('.pdf');
 
             if (status) {
                 status.classList.remove('hidden');
@@ -3798,6 +3896,9 @@ ${materialContext}`;
                     const arrayBuffer = await file.arrayBuffer();
                     const result = await mammoth.extractRawText({ arrayBuffer });
                     extracted = result.value || "";
+                } else if (isPdf) {
+                    if (status) status.textContent = "Extracting PDF " + file.name + "...";
+                    extracted = await extractTextFromPDF(file);
                 } else {
                     extracted = await file.text();
                 }
@@ -3807,10 +3908,12 @@ ${materialContext}`;
 
                 mindMapSourceText = extracted;
                 if (status) {
-                    status.textContent = "Ready: " + file.name + " (" + extracted.length + " characters)";
+                    status.textContent = "Ready: " + file.name + " (" + extracted.length + " characters) • Auto-added to Materials for Quiz/Cards";
                     status.classList.remove('text-slate-400');
                     status.classList.add('text-emerald-500');
                 }
+                // V0.76: Auto-transfer to Materials so Quiz and Cards can use it
+                await addUploadedToMaterials(file.name, extracted, file.size, "Mind Map");
             } catch (err) {
                 console.error(err);
                 mindMapSourceText = "";
@@ -3898,7 +4001,7 @@ ${content.slice(0, 12000)}`;
 
                 const res = await callGeminiApi(prompt);
                 document.getElementById('mindMapProgressBar').style.width = '80%';
-                document.getElementById('mindMapProgressText').textContent = 'Rendering with Cytoscape.js V0.75...';
+                document.getElementById('mindMapProgressText').textContent = 'Rendering with Cytoscape.js V0.76...';
 
                 const data = parseAiJson(res.text);
                 mindMapGeneratedText = JSON.stringify(data, null, 2);
@@ -3961,7 +4064,7 @@ ${content.slice(0, 12000)}`;
                         <div class="cy-toolbar">
                             <div style="display:flex; gap:8px; align-items:center; background:rgba(15,23,42,0.85); padding:6px 12px; border-radius:20px; border:1px solid #334155;">
                                 <div style="width:10px; height:10px; border-radius:50%; background:#10b981;"></div>
-                                <span style="font-size:11px; color:#94a3b8; font-weight:600;">Cytoscape V0.75 • 51 nodes max</span>
+                                <span style="font-size:11px; color:#94a3b8; font-weight:600;">Cytoscape V0.76 • 51 nodes max</span>
                             </div>
                             <div style="display:flex; gap:6px; flex-wrap:wrap; justify-content:center;">
                                 <button id="cyFullscreenBtn" style="background:#8b5cf6; border:none; color:white; padding:6px 12px; border-radius:8px; font-size:11px; font-weight:700; cursor:pointer;">⛶ Fullscreen</button>
@@ -3983,7 +4086,7 @@ ${content.slice(0, 12000)}`;
                             </div>
                             <div style="margin-top:16px; color:#64748b; font-size:10px;">📱 Mobile: Fullscreen required for dragging • Desktop: Works without fullscreen</div>
                         </div>
-                        <div style="position:absolute; bottom:8px; left:12px; font-size:10px; color:#475569; background:rgba(15,23,42,0.7); padding:3px 8px; border-radius:10px; z-index:5;" id="cyHint">V0.75 • 5 Main / 3 Sub / 2 Details = 51 nodes max • Safe for mobile</div>
+                        <div style="position:absolute; bottom:8px; left:12px; font-size:10px; color:#475569; background:rgba(15,23,42,0.7); padding:3px 8px; border-radius:10px; z-index:5;" id="cyHint">V0.76 • 5 Main / 3 Sub / 2 Details = 51 nodes max • Safe for mobile</div>
                     </div>
                     <div style="margin-top:12px; display:flex; gap:8px; flex-wrap:wrap; align-items:center;">
                         <div style="display:flex; gap:12px; font-size:10px; color:#64748b; flex-wrap:wrap; flex:1;">
@@ -4023,7 +4126,7 @@ ${content.slice(0, 12000)}`;
                         });
                     });
 
-                    console.log(`V0.75 Cytoscape: ${elements.filter(e=>e.data.source===undefined).length} nodes (max 51)`);
+                    console.log(`V0.76 Cytoscape: ${elements.filter(e=>e.data.source===undefined).length} nodes (max 51)`);
 
                     const isMobile = window.innerWidth < 768;
                     let mapInteractionEnabled = !isMobile;
@@ -4296,12 +4399,8 @@ ${content.slice(0, 12000)}`;
                     const result = await mammoth.extractRawText({ arrayBuffer });
                     extracted = result.value || "";
                 } else if (isPdf) {
-                    // Basic text extraction attempt; full PDF parsing may be limited
-                    const textContent = await file.text();
-                    extracted = textContent.replace(/[^\x20-\x7E\n\r\t]/g, " ").replace(/\s+/g, " ").trim();
-                    if (extracted.length < 20) {
-                        throw new Error("Could not extract readable text from this PDF. Try a .txt or .docx instead.");
-                    }
+                    if (status) status.textContent = "Extracting PDF " + file.name + "...";
+                    extracted = await extractTextFromPDF(file);
                 } else {
                     extracted = await file.text();
                 }
@@ -4313,10 +4412,12 @@ ${content.slice(0, 12000)}`;
 
                 noteMakerSourceText = extracted;
                 if (status) {
-                    status.textContent = "Ready: " + file.name + " (" + extracted.length + " characters extracted)";
+                    status.textContent = "Ready: " + file.name + " (" + extracted.length + " characters) • Auto-added to Materials for Quiz/Cards";
                     status.classList.remove('text-slate-400');
                     status.classList.add('text-emerald-500');
                 }
+                // V0.76: Auto-transfer to Materials
+                await addUploadedToMaterials(file.name, extracted, file.size, "Note Maker");
             } catch (err) {
                 console.error(err);
                 noteMakerSourceText = "";
