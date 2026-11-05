@@ -11,6 +11,10 @@
     <script src="https://unpkg.com/dexie@3.2.4/dist/dexie.js"></script>
     <!-- Mammoth.js for .docx extraction -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
+    <!-- Cytoscape.js + Dagre for Mind Map -->
+    <script src="https://unpkg.com/cytoscape@3.26.0/dist/cytoscape.min.js"></script>
+    <script src="https://unpkg.com/dagre@0.8.5/dist/dagre.min.js"></script>
+    <script src="https://unpkg.com/cytoscape-dagre@2.5.0/cytoscape-dagre.js"></script>
     <script>
         tailwind.config = {
             darkMode: 'class',
@@ -81,6 +85,20 @@
         transform: translateY(calc(100vh - 50%));
     }
 }
+
+        /* Better contrast for small / secondary text */
+        .text-slate-400 {
+            color: #475569;
+        }
+        .dark .text-slate-400 {
+            color: #94a3b8;
+        }
+        .text-slate-500 {
+            color: #334155;
+        }
+        .dark .text-slate-500 {
+            color: #cbd5e1;
+        }
     </style>
 </head>
 <body id="bodyRoot" class="bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 min-h-screen font-sans pb-20 md:pb-0 relative overflow-x-hidden">
@@ -192,6 +210,9 @@
             <button onclick="switchTabMobile('notemaker')" class="w-full px-4 py-3 rounded-xl font-semibold text-xs transition-all text-slate-600 dark:text-slate-300 hover:bg-white/40 dark:hover:bg-slate-800/40 flex items-center space-x-3">
                 <i class="fa-solid fa-book w-5 text-center text-sm"></i><span>Note Maker</span>
             </button>
+            <button onclick="switchTabMobile('mindmap')" class="w-full px-4 py-3 rounded-xl font-semibold text-xs transition-all text-slate-600 dark:text-slate-300 hover:bg-white/40 dark:hover:bg-slate-800/40 flex items-center space-x-3">
+                <i class="fa-solid fa-project-diagram w-5 text-center text-sm"></i><span>Mind Map</span>
+            </button>
             <button onclick="switchTabMobile('quests')" class="w-full px-4 py-3 rounded-xl font-semibold text-xs transition-all text-slate-600 dark:text-slate-300 hover:bg-white/40 dark:hover:bg-slate-800/40 flex items-center space-x-3">
                 <i class="fa-solid fa-flag w-5 text-center text-sm"></i><span>Quest & Mission</span>
             </button>
@@ -225,7 +246,7 @@
                 </div>
                 <div class="hidden sm:flex flex-col">
                     <span class="font-extrabold text-base tracking-wide">StudyForge <span class="text-brand-500 text-xs px-2 py-0.5 bg-brand-500/10 rounded-full">AI</span></span>
-                    <span class="text-[10px] font-semibold text-slate-400 -mt-0.5">V. 0.74</span>
+                    <span class="text-[10px] font-semibold text-slate-400 -mt-0.5">V. 0.75</span>
                 </div>
             </div>
             <div class="flex items-center space-x-2 sm:space-x-3">
@@ -287,6 +308,9 @@
                 <button onclick="switchTab('notemaker')" id="sidebar-notemaker" class="w-full px-4 py-3 rounded-xl font-semibold text-xs transition-all text-slate-600 dark:text-slate-300 hover:bg-white/40 dark:hover:bg-slate-800/40 flex items-center space-x-3">
                     <i class="fa-solid fa-book w-5 text-center text-sm"></i><span>Note Maker</span>
                 </button>
+                <button onclick="switchTab('mindmap')" id="sidebar-mindmap" class="w-full px-4 py-3 rounded-xl font-semibold text-xs transition-all text-slate-600 dark:text-slate-300 hover:bg-white/40 dark:hover:bg-slate-800/40 flex items-center space-x-3">
+                    <i class="fa-solid fa-project-diagram w-5 text-center text-sm"></i><span>Mind Map</span>
+                </button>
                 <button onclick="switchTab('quests')" id="sidebar-quests" class="w-full px-4 py-3 rounded-xl font-semibold text-xs transition-all text-slate-600 dark:text-slate-300 hover:bg-white/40 dark:hover:bg-slate-800/40 flex items-center space-x-3 relative">
                     <i class="fa-solid fa-flag w-5 text-center text-sm"></i><span>Quest & Mission</span>
                     <span id="questBadge" class="hidden absolute right-3 top-2 w-2 h-2 bg-red-500 rounded-full"></span>
@@ -315,7 +339,7 @@
                         <div class="space-y-2 text-center md:text-left">
                             <span id="overviewBadgeTitle" class="text-xs font-bold text-brand-500 uppercase tracking-widest px-3 py-1 bg-brand-500/10 rounded-full">🌱 Novice Scholar</span>
                             <h2 class="text-xl sm:text-2xl font-black mt-2">Welcome back, <span id="loggedInUserDisplay">Student</span>!</h2>
-                            <p class="text-xs text-slate-400 max-w-md">Your AI assistant is ready to help you convert study materials, break down homework, and boost your cognitive skills.</p>
+                            <p class="text-xs text-slate-700 dark:text-slate-300 max-w-md">Your AI assistant is ready to help you convert study materials, break down homework, and boost your cognitive skills.</p>
                         </div>
                         <div class="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
                             <button onclick="switchTab('homework')" class="px-6 py-3 bg-brand-500 hover:bg-brand-600 text-white font-bold rounded-2xl text-xs shadow-lg shadow-brand-500/20 transition-all">Homework Helper</button>
@@ -693,6 +717,45 @@
                     </div>
                 </div>
 
+                <!-- TAB: MIND MAP -->
+                <div id="content-mindmap" class="hidden space-y-6">
+                    <div class="glass-panel p-6 sm:p-8 rounded-3xl shadow-xl space-y-6">
+                        <div>
+                            <h3 class="text-lg font-bold"><i class="fa-solid fa-project-diagram text-brand-500 mr-2"></i>Mind Map</h3>
+                            <p class="text-xs text-slate-400">Generate a hierarchical mind map (Root → Main Branch → Sub Branch → Detail). Every concept has a parent except the root.</p>
+                        </div>
+
+                        <div class="space-y-2">
+                            <label class="block text-xs font-semibold text-slate-400">Topic or Material Source</label>
+                            <input type="text" id="mindMapTopic" placeholder="Enter a topic, or leave blank to use uploaded materials..." class="w-full px-4 py-3 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-xs focus:outline-none focus:border-brand-500">
+                            <label class="border-2 border-dashed border-slate-300 dark:border-slate-700 hover:border-brand-500 rounded-3xl p-6 flex flex-col items-center justify-center cursor-pointer transition-all bg-slate-50/50 dark:bg-slate-900/50 text-center">
+                                <div class="w-10 h-10 rounded-2xl bg-brand-500/10 text-brand-500 flex items-center justify-center text-lg mb-2"><i class="fa-solid fa-cloud-arrow-up"></i></div>
+                                <span class="font-bold text-xs">Or upload a file (.docx, .txt, image)</span>
+                                <input type="file" id="mindMapFileInput" accept=".docx,.txt,image/*" onchange="handleMindMapUpload(event)" class="hidden">
+                            </label>
+                            <p id="mindMapFileStatus" class="text-[10px] text-slate-400 text-center hidden"></p>
+                        </div>
+
+                        <button onclick="generateMindMap()" id="mindMapGenerateBtn" class="w-full py-3.5 bg-brand-500 hover:bg-brand-600 text-white font-bold rounded-2xl text-xs shadow-lg shadow-brand-500/20 transition-all">
+                            ✨ Generate Mind Map
+                        </button>
+
+                        <div id="mindMapProgress" class="hidden space-y-3 py-4">
+                            <div class="w-full h-3 bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden">
+                                <div id="mindMapProgressBar" class="h-full bg-brand-500 transition-all duration-500 rounded-full" style="width: 0%"></div>
+                            </div>
+                            <p id="mindMapProgressText" class="text-xs font-semibold text-slate-400 text-center">Generating mind map...</p>
+                        </div>
+
+                        <div id="mindMapOutput" class="hidden space-y-4">
+                            <div id="mindMapCanvas" class="glass-panel rounded-2xl p-6 overflow-auto min-h-[300px]"></div>
+                            <button onclick="downloadMindMap()" class="w-full py-2.5 glass-panel hover:bg-slate-200 dark:hover:bg-slate-800 font-bold rounded-xl text-xs transition-all">
+                                Download as Text
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- TAB: REWARD SHOP -->
                 <div id="content-shop" class="hidden space-y-6">
                     <div class="glass-panel p-6 sm:p-8 rounded-3xl shadow-xl max-w-4xl mx-auto space-y-6">
@@ -757,42 +820,6 @@
                                 <div class="space-y-2">
                                     <span class="text-xs font-black text-amber-500 block">60 Coins</span>
                                     <button id="shopBtn-customSfx" onclick="buyCustomAudioFeature()" class="w-full py-2 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-xl text-xs transition-all shadow-md">Unlock Feature</button>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Custom Wallpaper Upload Box -->
-                        <div id="customWallpaperUploadBox" class="hidden glass-panel p-5 rounded-2xl space-y-3 border border-blue-500/30">
-                            <h4 class="font-bold text-xs text-blue-500">Upload Custom Wallpaper Image</h4>
-                            <label class="w-full flex items-center justify-between gap-2 px-3 py-2 bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl text-xs cursor-pointer hover:border-blue-500 transition-all">
-                                <span id="wallpaperFileName" class="text-slate-500 truncate">No file chosen</span>
-                                <span class="text-blue-500 font-bold flex-shrink-0">Browse</span>
-                                <input type="file" id="wallpaperFileInput" accept="image/*" onchange="handleWallpaperUpload(event)" class="hidden">
-                            </label>
-                        </div>
-
-                        <!-- Custom Audio Upload Box -->
-                        <div id="customAudioUploadBox" class="hidden glass-panel p-5 rounded-2xl space-y-3 border border-amber-500/30">
-                            <h4 class="font-bold text-xs text-amber-500">Upload Your Custom Audio (.mp3)</h4>
-                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
-                                <div class="space-y-1.5">
-                                    <label class="block text-[10px] font-bold text-slate-400">Victory Track (.mp3)</label>
-                                    <label class="w-full py-2 px-3 bg-brand-500/10 hover:bg-brand-500/20 text-brand-500 font-bold rounded-xl text-xs transition-all flex items-center justify-center space-x-2 cursor-pointer border border-brand-500/30">
-                                        <i class="fa-solid fa-music"></i>
-                                        <span>Choose Audio File</span>
-                                        <input type="file" accept="audio/mp3,audio/wav" onchange="handleAudioUpload(event, 'win')" class="hidden">
-                                    </label>
-                                    <div id="winAudioNameDisplay" class="text-[10px] font-semibold text-emerald-400 truncate pt-1">No track selected</div>
-                                </div>
-
-                                <div class="space-y-1.5">
-                                    <label class="block text-[10px] font-bold text-slate-400">Defeat Track (.mp3)</label>
-                                    <label class="w-full py-2 px-3 bg-red-500/10 hover:bg-red-500/20 text-red-500 font-bold rounded-xl text-xs transition-all flex items-center justify-center space-x-2 cursor-pointer border border-red-500/30">
-                                        <i class="fa-solid fa-music"></i>
-                                        <span>Choose Audio File</span>
-                                        <input type="file" accept="audio/mp3,audio/wav" onchange="handleAudioUpload(event, 'lose')" class="hidden">
-                                    </label>
-                                    <div id="loseAudioNameDisplay" class="text-[10px] font-semibold text-red-400 truncate pt-1">No track selected</div>
                                 </div>
                             </div>
                         </div>
@@ -966,10 +993,7 @@
                             </div>
 
                             <!-- Bonus Buttons -->
-                            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                                <button onclick="alert('Coming Soon')" class="py-2.5 glass-panel hover:bg-slate-200 dark:hover:bg-slate-800 font-bold rounded-xl text-xs transition-all flex items-center justify-center space-x-1.5">
-                                    <span>🧠</span><span>Convert to Mind Map</span>
-                                </button>
+                            <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
                                 <button onclick="alert('Coming Soon')" class="py-2.5 glass-panel hover:bg-slate-200 dark:hover:bg-slate-800 font-bold rounded-xl text-xs transition-all flex items-center justify-center space-x-1.5">
                                     <span>🃏</span><span>Convert to Flashcards</span>
                                 </button>
@@ -1224,8 +1248,8 @@
     </div>
 
     <!-- Settings Modal -->
-    <div id="settingsModal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 backdrop-blur-md p-4">
-        <div class="glass-panel p-6 sm:p-8 rounded-3xl w-full max-w-md shadow-2xl space-y-6 relative">
+    <div id="settingsModal" class="hidden fixed inset-0 z-[60] flex items-center justify-center bg-slate-950/80 backdrop-blur-md p-4">
+        <div class="glass-panel p-5 sm:p-6 rounded-3xl w-full max-w-md max-h-[85vh] overflow-y-auto shadow-2xl space-y-5 relative">
             <button onclick="closeSettingsModal()" class="absolute top-6 right-6 text-slate-400 hover:text-slate-100"><i class="fa-solid fa-xmark"></i></button>
             <h3 class="text-lg font-bold">Settings & Customization</h3>
             
@@ -1241,6 +1265,42 @@
                     </div>
                     <input type="color" id="settingsCustomColor" onchange="applyCustomColor(this.value)" value="#10b981" class="w-10 h-10 rounded-xl cursor-pointer bg-transparent border-0">
                 </div>
+                <!-- Custom Wallpaper Upload Box -->
+                <div id="customWallpaperUploadBox" class="hidden glass-panel p-5 rounded-2xl space-y-3 border border-blue-500/30">
+                    <h4 class="font-bold text-xs text-blue-500">Upload Custom Wallpaper Image</h4>
+                    <label class="w-full flex items-center justify-between gap-2 px-3 py-2 bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl text-xs cursor-pointer hover:border-blue-500 transition-all">
+                        <span id="wallpaperFileName" class="text-slate-500 truncate">No file chosen</span>
+                        <span class="text-blue-500 font-bold flex-shrink-0">Browse</span>
+                        <input type="file" id="wallpaperFileInput" accept="image/*" onchange="handleWallpaperUpload(event)" class="hidden">
+                    </label>
+                </div>
+
+                <!-- Custom Audio Upload Box -->
+                <div id="customAudioUploadBox" class="hidden glass-panel p-5 rounded-2xl space-y-3 border border-amber-500/30">
+                    <h4 class="font-bold text-xs text-amber-500">Upload Your Custom Audio (.mp3)</h4>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+                        <div class="space-y-1.5">
+                            <label class="block text-[10px] font-bold text-slate-400">Victory Track (.mp3)</label>
+                            <label class="w-full py-2 px-3 bg-brand-500/10 hover:bg-brand-500/20 text-brand-500 font-bold rounded-xl text-xs transition-all flex items-center justify-center space-x-2 cursor-pointer border border-brand-500/30">
+                                <i class="fa-solid fa-music"></i>
+                                <span>Choose Audio File</span>
+                                <input type="file" accept="audio/mp3,audio/wav" onchange="handleAudioUpload(event, 'win')" class="hidden">
+                            </label>
+                            <div id="winAudioNameDisplay" class="text-[10px] font-semibold text-emerald-400 truncate pt-1">No track selected</div>
+                        </div>
+
+                        <div class="space-y-1.5">
+                            <label class="block text-[10px] font-bold text-slate-400">Defeat Track (.mp3)</label>
+                            <label class="w-full py-2 px-3 bg-red-500/10 hover:bg-red-500/20 text-red-500 font-bold rounded-xl text-xs transition-all flex items-center justify-center space-x-2 cursor-pointer border border-red-500/30">
+                                <i class="fa-solid fa-music"></i>
+                                <span>Choose Audio File</span>
+                                <input type="file" accept="audio/mp3,audio/wav" onchange="handleAudioUpload(event, 'lose')" class="hidden">
+                            </label>
+                            <div id="loseAudioNameDisplay" class="text-[10px] font-semibold text-red-400 truncate pt-1">No track selected</div>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="pt-4 border-t border-slate-200 dark:border-slate-800">
                     <button onclick="clearAppData()" class="w-full py-2.5 bg-red-500/10 hover:bg-red-500/20 text-red-500 font-bold rounded-xl text-xs transition-all">Clear Local Cache & Settings</button>
                 </div>
@@ -1756,7 +1816,12 @@
 
         function openSocialsModal() { document.getElementById('socialsModal').classList.remove('hidden'); }
         function closeSocialsModal() { document.getElementById('socialsModal').classList.add('hidden'); }
-        function openSettingsModal() { document.getElementById('settingsModal').classList.remove('hidden'); checkRewardsUnlock(); }
+        function openSettingsModal() { 
+            document.getElementById('settingsModal').classList.remove('hidden'); 
+            const notifPanel = document.getElementById('notificationsPanel');
+            if (notifPanel) notifPanel.classList.add('hidden');
+            checkRewardsUnlock(); 
+        }
         function closeSettingsModal() { document.getElementById('settingsModal').classList.add('hidden'); }
 
         async function buyShopItem(itemType, cost) {
@@ -2055,7 +2120,7 @@
             }
             hideFnfBanner();
 
-            ['overview', 'upload', 'homework', 'decks', 'quizzes', 'wordgame', 'notemaker', 'quests', 'socials', 'shop', 'profile'].forEach(t => {
+            ['overview', 'upload', 'homework', 'decks', 'quizzes', 'wordgame', 'notemaker', 'mindmap', 'quests', 'socials', 'shop', 'profile'].forEach(t => {
                 const btn = document.getElementById(`sidebar-${t}`);
                 const content = document.getElementById(`content-${t}`);
                 if (t === tabId) {
@@ -3697,6 +3762,493 @@ ${materialContext}`;
         setInterval(updateQuestUI, 1000);
         setTimeout(() => { loadQuestProgress(); updateQuestUI(); }, 500);
 
+
+
+
+        // ========== MIND MAP ==========
+        let mindMapSourceText = "";
+        let mindMapGeneratedText = "";
+
+        async function handleMindMapUpload(event) {
+            const file = event.target.files && event.target.files[0];
+            const status = document.getElementById('mindMapFileStatus');
+            if (!file) return;
+
+            const fileName = file.name.toLowerCase();
+            const isImage = file.type.startsWith('image/') || /\.(png|jpe?g|gif|webp|bmp)$/i.test(fileName);
+            const isDocx = fileName.endsWith('.docx');
+
+            if (status) {
+                status.classList.remove('hidden');
+                status.textContent = "Reading " + file.name + "...";
+            }
+
+            try {
+                let extracted = "";
+                if (isImage) {
+                    if (!apiKey) {
+                        alert("Image OCR requires a Gemini API Key. Please set it in Settings first.");
+                        openSettingsModal();
+                        if (status) status.textContent = "Upload cancelled — API key required for images.";
+                        event.target.value = "";
+                        return;
+                    }
+                    extracted = await extractTextFromImage(file);
+                } else if (isDocx) {
+                    const arrayBuffer = await file.arrayBuffer();
+                    const result = await mammoth.extractRawText({ arrayBuffer });
+                    extracted = result.value || "";
+                } else {
+                    extracted = await file.text();
+                }
+
+                extracted = (extracted || "").trim();
+                if (!extracted) throw new Error("No text could be extracted.");
+
+                mindMapSourceText = extracted;
+                if (status) {
+                    status.textContent = "Ready: " + file.name + " (" + extracted.length + " characters)";
+                    status.classList.remove('text-slate-400');
+                    status.classList.add('text-emerald-500');
+                }
+            } catch (err) {
+                console.error(err);
+                mindMapSourceText = "";
+                alert("Failed to read file: " + (err.message || err));
+                if (status) {
+                    status.textContent = "Failed to read file.";
+                    status.classList.add('text-red-500');
+                }
+            }
+            event.target.value = "";
+        }
+
+        async function generateMindMap() {
+            const topic = (document.getElementById('mindMapTopic').value || '').trim();
+            const source = (mindMapSourceText || '').trim();
+            let content = source || topic;
+
+            if (!content) {
+                // Fall back to uploaded materials
+                if (typeof materials !== 'undefined' && materials.length) {
+                    content = materials.map(m => m.content || '').join('\n\n').slice(0, 15000);
+                }
+            }
+
+            if (!content) {
+                alert("Please enter a topic, upload a file, or add materials first.");
+                return;
+            }
+            if (!apiKey) {
+                alert("Configure your Gemini API Key in Settings first!");
+                openSettingsModal();
+                return;
+            }
+
+            const progress = document.getElementById('mindMapProgress');
+            const output = document.getElementById('mindMapOutput');
+            const canvas = document.getElementById('mindMapCanvas');
+            const btn = document.getElementById('mindMapGenerateBtn');
+
+            progress.classList.remove('hidden');
+            output.classList.add('hidden');
+            if (btn) btn.disabled = true;
+
+            document.getElementById('mindMapProgressBar').style.width = '30%';
+            document.getElementById('mindMapProgressText').textContent = 'Generating mind map structure...';
+
+            try {
+                const prompt = `You are a mind map structure extractor. You must give EXPLANATIONS, not just titles.
+
+Task:
+1. Identify Root Topic - The single central concept. Provide label + 1-2 sentence explanation.
+2. Identify Main Objects - MAXIMUM 5 core themes that branch from Root. Each needs label + 1-2 sentence explanation. Limit to 5 for safety (51 nodes max).
+3. Identify Sub Objects - For each Main Object, MAXIMUM 3 sub-topics. Each needs label + explanation. Limit to 3.
+4. Identify Details - For each Sub Object, MAXIMUM 2 specific details. Each needs label + explanation. Limit to 2.
+5. Return JSON only.
+
+SAFETY LIMIT: Max 5 Main Objects, 3 Sub Objects per Main, 2 Details per Sub = 1 + 5 + 15 + 30 = 51 nodes max. This is much safer for Cytoscape rendering.
+
+Rules:
+- Every node MUST have both label (2-6 words) and explanation (1-2 sentences).
+- Root is ONE topic.
+- No orphan nodes.
+- Strictly based on content.
+
+Return ONLY valid JSON with exact structure:
+{
+  "root": { "label": "Root Topic", "explanation": "Explanation..." },
+  "branches": [
+    {
+      "label": "Main Object",
+      "explanation": "Explanation...",
+      "children": [
+        {
+          "label": "Sub Object",
+          "explanation": "Explanation...",
+          "children": [ { "label": "Detail", "explanation": "..." } ]
+        }
+      ]
+    }
+  ]
+}
+
+Content:
+${content.slice(0, 12000)}`;
+
+                const res = await callGeminiApi(prompt);
+                document.getElementById('mindMapProgressBar').style.width = '80%';
+                document.getElementById('mindMapProgressText').textContent = 'Rendering with Cytoscape.js V0.75...';
+
+                const data = parseAiJson(res.text);
+                mindMapGeneratedText = JSON.stringify(data, null, 2);
+
+                let rootObj = data.root || { label: "Mind Map", explanation: "" };
+                if (typeof rootObj === 'string') rootObj = { label: rootObj, explanation: '' };
+                const rootLabel = rootObj.label || "Mind Map";
+                const rootExp = rootObj.explanation || "";
+                let branches = Array.isArray(data.branches) ? data.branches : [];
+                branches = branches.slice(0,5).map(main => {
+                    const subs = Array.isArray(main.children) ? main.children.slice(0,3) : [];
+                    return {
+                        ...main,
+                        children: subs.map(sub => ({
+                            ...sub,
+                            children: Array.isArray(sub.children) ? sub.children.slice(0,2) : []
+                        }))
+                    };
+                });
+
+                if (!branches.length) {
+                    canvas.innerHTML = `<div class="text-center text-xs text-slate-400 py-6">No hierarchy found. Try regenerating.</div>`;
+                } else {
+                    canvas.innerHTML = `
+                    <style>
+                    #mindMapCanvas { padding: 0 !important; background: transparent !important; border: none !important; overflow: visible !important; }
+                    .cy-wrapper {
+                        background: radial-gradient(ellipse at top, #1e293b 0%, #0f172a 100%);
+                        border: 1px solid #334155;
+                        border-radius: 18px;
+                        overflow: hidden;
+                        position: relative;
+                        width: 100%;
+                        min-height: 640px;
+                        touch-action: pan-y;
+                        overscroll-behavior: contain;
+                    }
+                    .cy-wrapper:fullscreen { width: 100vw; height: 100vh; border-radius: 0; border: none; }
+                    .cy-wrapper:-webkit-full-screen { width: 100vw; height: 100vh; border-radius: 0; }
+                    #cy { width: 100%; height: 640px; display: block; }
+                    .cy-wrapper:fullscreen #cy { height: 100vh !important; }
+                    .cy-toolbar { position: absolute; top: 12px; left: 12px; right: 12px; display: flex; justify-content: space-between; align-items: center; z-index: 10; pointer-events: none; gap: 8px; flex-wrap: wrap; }
+                    .cy-toolbar * { pointer-events: auto; }
+                    .cy-info { position: absolute; bottom: 12px; right: 12px; width: 340px; max-width: 90%; background: rgba(15,23,42,0.98); border: 1px solid #334155; border-radius: 14px; padding: 16px; color: #e2e8f0; font-size: 12.5px; line-height: 1.5; box-shadow: 0 10px 30px rgba(0,0,0,0.6); display: none; z-index: 20; max-height: 75%; overflow-y: auto; }
+                    .cy-info.show { display: block; animation: slideIn 0.25s ease; }
+                    @keyframes slideIn { from { opacity:0; transform: translateY(10px);} to { opacity:1; transform: translateY(0);} }
+                    .cy-scroll-overlay { position: absolute; inset: 0; background: rgba(15,23,42,0.82); backdrop-filter: blur(2px); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 15; cursor: pointer; transition: opacity 0.25s ease; text-align: center; padding: 20px; }
+                    .cy-scroll-overlay.hidden { opacity: 0; pointer-events: none; }
+                    .cy-scroll-overlay .overlay-icon { width: 56px; height: 56px; background: #38bdf8; border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 24px; margin-bottom: 12px; box-shadow: 0 8px 20px rgba(56,189,248,0.4); }
+                    @media (max-width: 768px) {
+                        .cy-wrapper { min-height: 70vh; border-radius: 16px; }
+                        #cy { height: 70vh; min-height: 480px; }
+                        .cy-toolbar { top: 8px; left: 8px; right: 8px; flex-direction: column; align-items: stretch; }
+                        .cy-toolbar > div { justify-content: center; }
+                        .cy-toolbar button { padding: 10px 14px !important; font-size: 12px !important; min-height: 44px; }
+                        .cy-info { bottom: 0; right: 0; left: 0; width: 100%; max-width: 100%; border-radius: 16px 16px 0 0; max-height: 55vh; border-bottom: none; }
+                    }
+                    </style>
+                    <div class="cy-wrapper" id="cyWrapper">
+                        <div class="cy-toolbar">
+                            <div style="display:flex; gap:8px; align-items:center; background:rgba(15,23,42,0.85); padding:6px 12px; border-radius:20px; border:1px solid #334155;">
+                                <div style="width:10px; height:10px; border-radius:50%; background:#10b981;"></div>
+                                <span style="font-size:11px; color:#94a3b8; font-weight:600;">Cytoscape V0.75 • 51 nodes max</span>
+                            </div>
+                            <div style="display:flex; gap:6px; flex-wrap:wrap; justify-content:center;">
+                                <button id="cyFullscreenBtn" style="background:#8b5cf6; border:none; color:white; padding:6px 12px; border-radius:8px; font-size:11px; font-weight:700; cursor:pointer;">⛶ Fullscreen</button>
+                                <button id="cyToggleScroll" style="background:#f59e0b; border:none; color:#0f172a; padding:6px 12px; border-radius:8px; font-size:11px; font-weight:700; cursor:pointer; display:none;">🔓 Map Mode</button>
+                                <button id="cyFit" style="background:#1e293b; border:1px solid #334155; color:#94a3b8; padding:6px 12px; border-radius:8px; font-size:11px; cursor:pointer;">Fit</button>
+                                <button id="cyReset" style="background:#38bdf8; border:none; color:#0f172a; padding:6px 12px; border-radius:8px; font-size:11px; font-weight:700; cursor:pointer;">Reset</button>
+                            </div>
+                        </div>
+                        <div id="cy"></div>
+                        <div class="cy-info" id="cyInfo"></div>
+                        <div class="cy-scroll-overlay" id="cyOverlay">
+                            <div class="overlay-icon">🗺️</div>
+                            <div style="color:#e2e8f0; font-weight:700; font-size:14px; margin-bottom:6px;">Mind Map Ready</div>
+                            <div style="color:#94a3b8; font-size:11px; line-height:1.4; max-width:260px;">
+                                <span class="hidden md:inline">Desktop: Drag to pan, scroll to zoom, tap boxes for explanation. Fullscreen for bigger view.</span>
+                                <span class="md:hidden">Mobile: Tap Fullscreen button to drag & pan. Outside fullscreen, page scrolls normally.</span>
+                                <br><br>
+                                <span style="background:rgba(56,189,248,0.2); border:1px solid #38bdf8; color:#38bdf8; padding:4px 10px; border-radius:20px; font-size:11px;" id="overlayActionText">Tap to enable</span>
+                            </div>
+                            <div style="margin-top:16px; color:#64748b; font-size:10px;">📱 Mobile: Fullscreen required for dragging • Desktop: Works without fullscreen</div>
+                        </div>
+                        <div style="position:absolute; bottom:8px; left:12px; font-size:10px; color:#475569; background:rgba(15,23,42,0.7); padding:3px 8px; border-radius:10px; z-index:5;" id="cyHint">V0.75 • 5 Main / 3 Sub / 2 Details = 51 nodes max • Safe for mobile</div>
+                    </div>
+                    <div style="margin-top:12px; display:flex; gap:8px; flex-wrap:wrap; align-items:center;">
+                        <div style="display:flex; gap:12px; font-size:10px; color:#64748b; flex-wrap:wrap; flex:1;">
+                            <span><span style="display:inline-block; width:10px; height:10px; background:#10b981; border-radius:2px; vertical-align:middle; margin-right:4px;"></span>Root</span>
+                            <span><span style="display:inline-block; width:10px; height:10px; background:#38bdf8; border-radius:2px; vertical-align:middle; margin-right:4px;"></span>Main (max 5)</span>
+                            <span><span style="display:inline-block; width:10px; height:10px; background:#a78bfa; border-radius:2px; vertical-align:middle; margin-right:4px;"></span>Sub (max 3)</span>
+                            <span><span style="display:inline-block; width:10px; height:10px; background:#fbbf24; border-radius:2px; vertical-align:middle; margin-right:4px;"></span>Detail (max 2)</span>
+                        </div>
+                        <button id="cyRegenBtn" onclick="generateMindMap()" style="background:#1e293b; border:1px solid #334155; color:#38bdf8; padding:8px 16px; border-radius:10px; font-size:11px; font-weight:700; cursor:pointer; display:flex; align-items:center; gap:6px;">
+                            🔄 Re-generate (Different output, same material)
+                        </button>
+                    </div>
+                    `;
+
+                    const elements = [];
+                    let nid = 0;
+                    const makeId = () => 'n' + (nid++);
+
+                    const rootId = makeId();
+                    elements.push({ data: { id: rootId, label: rootLabel, explanation: rootExp, type: 'root', level: 0, fullLabel: rootLabel } });
+
+                    branches.forEach(main => {
+                        const mid = makeId();
+                        elements.push({ data: { id: mid, label: main.label||'Main', explanation: main.explanation||'', type: 'main', level: 1, parentLabel: rootLabel, fullLabel: main.label||'Main' } });
+                        elements.push({ data: { id: 'e-'+rootId+'-'+mid, source: rootId, target: mid } });
+
+                        (main.children||[]).forEach(sub => {
+                            const sid = makeId();
+                            elements.push({ data: { id: sid, label: sub.label||'Sub', explanation: sub.explanation||'', type: 'sub', level: 2, parentLabel: main.label||'Main', fullLabel: sub.label||'Sub' } });
+                            elements.push({ data: { id: 'e-'+mid+'-'+sid, source: mid, target: sid } });
+
+                            (sub.children||[]).forEach(det => {
+                                const did = makeId();
+                                elements.push({ data: { id: did, label: det.label||'Detail', explanation: det.explanation||'', type: 'detail', level: 3, parentLabel: sub.label||'Sub', fullLabel: det.label||'Detail' } });
+                                elements.push({ data: { id: 'e-'+sid+'-'+did, source: sid, target: did } });
+                            });
+                        });
+                    });
+
+                    console.log(`V0.75 Cytoscape: ${elements.filter(e=>e.data.source===undefined).length} nodes (max 51)`);
+
+                    const isMobile = window.innerWidth < 768;
+                    let mapInteractionEnabled = !isMobile;
+                    let isFullscreen = false;
+
+                    const cy = cytoscape({
+                        container: document.getElementById('cy'),
+                        elements: elements,
+                        style: [
+                            { selector: 'node', style: { 'label': 'data(label)', 'text-valign': 'center', 'text-halign': 'center', 'text-wrap': 'wrap', 'text-max-width': isMobile ? '110px' : '140px', 'font-size': '11px', 'font-weight': '600', 'font-family': 'Inter, sans-serif', 'color': '#e2e8f0', 'width': 'label', 'height': 'label', 'padding': isMobile ? '14px' : '12px', 'shape': 'round-rectangle', 'background-color': '#334155', 'border-width': '1px', 'border-color': '#475569' } },
+                            { selector: 'node[type="root"]', style: { 'background-color': '#1e293b', 'border-width': '0 0 0 4px', 'border-color': '#10b981', 'font-size': isMobile ? '12px' : '13px', 'font-weight': '800', 'padding': '16px' } },
+                            { selector: 'node[type="main"]', style: { 'background-color': '#334155', 'border-width': '0 0 0 3px', 'border-color': '#38bdf8' } },
+                            { selector: 'node[type="sub"]', style: { 'background-color': '#2d3748', 'border-color': '#a78bfa', 'border-width': '0 0 0 3px', 'font-size': '10.5px', 'opacity': 0.95 } },
+                            { selector: 'node[type="detail"]', style: { 'background-color': '#283244', 'border-color': '#fbbf24', 'border-width': '0 0 0 3px', 'font-size': '10px', 'opacity': 0.9 } },
+                            { selector: 'edge', style: { 'width': 1.5, 'line-color': '#475569', 'line-style': 'dashed', 'line-dash-pattern': [6,4], 'curve-style': 'bezier', 'target-arrow-shape': 'none', 'opacity': 0.7 } },
+                            { selector: 'node:selected', style: { 'background-color': '#1e3a5f', 'border-color': '#38bdf8', 'border-width': '2px' } }
+                        ],
+                        layout: { name: 'dagre', rankDir: 'LR', nodeSep: isMobile ? 24 : 18, rankSep: isMobile ? 60 : 80, edgeSep: 10, spacingFactor: 1.15, animate: true, animationDuration: 400 },
+                        wheelSensitivity: 0.2,
+                        minZoom: 0.2,
+                        maxZoom: 2.5
+                    });
+
+                    const infoEl = document.getElementById('cyInfo');
+                    const overlayEl = document.getElementById('cyOverlay');
+                    const toggleBtn = document.getElementById('cyToggleScroll');
+                    const wrapperEl = document.getElementById('cyWrapper');
+                    const fsBtn = document.getElementById('cyFullscreenBtn');
+
+                    function enableMapInteraction() {
+                        mapInteractionEnabled = true;
+                        try { cy.userPanningEnabled(true); } catch(e){}
+                        try { cy.userZoomingEnabled(true); } catch(e){}
+                        try { cy.boxSelectionEnabled(true); } catch(e){}
+                        if (overlayEl) overlayEl.classList.add('hidden');
+                        if (toggleBtn) {
+                            toggleBtn.style.display = 'block';
+                            toggleBtn.textContent = '🔒 Scroll Page';
+                            toggleBtn.style.background = '#10b981';
+                        }
+                        if (wrapperEl) wrapperEl.style.touchAction = 'none';
+                        const hint = document.getElementById('cyHint');
+                        if (hint) hint.textContent = isFullscreen ? '⛶ Fullscreen • Drag to pan, pinch to zoom' : '🔓 Map Mode: Drag to pan, pinch to zoom • Tap 🔒 to scroll page';
+                    }
+                    function disableMapInteraction() {
+                        mapInteractionEnabled = false;
+                        try { cy.userPanningEnabled(false); } catch(e){}
+                        try { cy.userZoomingEnabled(false); } catch(e){}
+                        try { cy.boxSelectionEnabled(false); } catch(e){}
+                        if (overlayEl) overlayEl.classList.remove('hidden');
+                        if (toggleBtn) {
+                            toggleBtn.style.display = 'block';
+                            toggleBtn.textContent = '🔓 Map Mode';
+                            toggleBtn.style.background = '#f59e0b';
+                        }
+                        if (wrapperEl) wrapperEl.style.touchAction = 'pan-y';
+                        const hint = document.getElementById('cyHint');
+                        if (hint) hint.textContent = isMobile ? '📱 Mobile: Tap Fullscreen to drag • Outside: scroll page' : '📱 Desktop: Works without fullscreen • Fullscreen for bigger view';
+                    }
+
+                    function enterFullscreen() {
+                        const el = wrapperEl;
+                        if (!el) return;
+                        if (el.requestFullscreen) el.requestFullscreen();
+                        else if (el.webkitRequestFullscreen) el.webkitRequestFullscreen();
+                        else if (el.msRequestFullscreen) el.msRequestFullscreen();
+                        else {
+                            el.style.position = 'fixed';
+                            el.style.inset = '0';
+                            el.style.zIndex = '9999';
+                            el.style.width = '100vw';
+                            el.style.height = '100vh';
+                            el.style.borderRadius = '0';
+                            const cyDiv = document.getElementById('cy');
+                            if (cyDiv) cyDiv.style.height = '100vh';
+                            isFullscreen = true;
+                            enableMapInteraction();
+                            if (fsBtn) fsBtn.textContent = '✕ Exit Fullscreen';
+                            setTimeout(() => { try { cy.resize(); cy.fit(null, 20); } catch(e){} }, 300);
+                        }
+                    }
+                    function exitFullscreen() {
+                        if (document.fullscreenElement) {
+                            if (document.exitFullscreen) document.exitFullscreen();
+                            else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
+                        } else {
+                            const el = wrapperEl;
+                            if (!el) return;
+                            el.style.position = '';
+                            el.style.inset = '';
+                            el.style.zIndex = '';
+                            el.style.width = '';
+                            el.style.height = '';
+                            el.style.borderRadius = '';
+                            const cyDiv = document.getElementById('cy');
+                            if (cyDiv) cyDiv.style.height = isMobile ? '70vh' : '640px';
+                            isFullscreen = false;
+                            if (fsBtn) fsBtn.textContent = '⛶ Fullscreen';
+                            setTimeout(() => { try { cy.resize(); cy.fit(null, 20); } catch(e){} }, 300);
+                            if (isMobile) disableMapInteraction();
+                        }
+                    }
+
+                    if (fsBtn) {
+                        fsBtn.onclick = () => {
+                            if (!isFullscreen && !document.fullscreenElement) enterFullscreen();
+                            else exitFullscreen();
+                        };
+                    }
+
+                    document.addEventListener('fullscreenchange', () => {
+                        isFullscreen = !!document.fullscreenElement;
+                        if (isFullscreen) {
+                            enableMapInteraction();
+                            if (fsBtn) fsBtn.textContent = '✕ Exit Fullscreen';
+                            setTimeout(() => { try { cy.resize(); cy.fit(null, 20); } catch(e){} }, 300);
+                        } else {
+                            if (fsBtn) fsBtn.textContent = '⛶ Fullscreen';
+                            setTimeout(() => { try { cy.resize(); cy.fit(null, isMobile ? 20 : 30); } catch(e){} }, 300);
+                            if (isMobile) disableMapInteraction();
+                            else enableMapInteraction();
+                        }
+                    });
+
+                    if (isMobile) {
+                        disableMapInteraction();
+                        const tb = document.getElementById('cyToggleScroll');
+                        if (tb) tb.style.display = 'block';
+                    } else {
+                        if (overlayEl) overlayEl.classList.add('hidden');
+                        try { cy.userPanningEnabled(true); cy.userZoomingEnabled(true); } catch(e){}
+                        const tb = document.getElementById('cyToggleScroll');
+                        if (tb) tb.style.display = 'none';
+                    }
+
+                    if (overlayEl) {
+                        overlayEl.onclick = () => {
+                            if (isMobile) enterFullscreen();
+                            else enableMapInteraction();
+                        };
+                    }
+                    if (toggleBtn) {
+                        toggleBtn.onclick = () => {
+                            if (mapInteractionEnabled) disableMapInteraction();
+                            else enableMapInteraction();
+                        };
+                    }
+
+                    cy.on('tap', 'node', function(evt){
+                        const d = evt.target.data();
+                        cy.nodes().unselect();
+                        evt.target.select();
+                        const children = evt.target.outgoers('node');
+                        const childrenList = children.map(c => {
+                            const cd = c.data();
+                            return `<li style="margin-bottom:8px;"><div style="font-weight:600;">${escapeHtml(cd.label)}</div><div style="font-size:11px; opacity:0.8; margin-top:2px;">${escapeHtml(cd.explanation||'No explanation')}</div></li>`;
+                        }).join('');
+                        if (infoEl) {
+                            infoEl.innerHTML = `
+                                <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
+                                    <span style="font-size:10px; text-transform:uppercase; color:${d.type==='root'?'#10b981':d.type==='main'?'#38bdf8':d.type==='sub'?'#a78bfa':'#fbbf24'}; font-weight:700;">${d.type}</span>
+                                    <button onclick="document.getElementById('cyInfo').classList.remove('show')" style="background:transparent; border:none; color:#64748b; cursor:pointer; font-size:18px;">✕</button>
+                                </div>
+                                <div style="font-weight:800; font-size:15px; margin-bottom:6px;">${escapeHtml(d.fullLabel)}</div>
+                                ${d.parentLabel ? `<div style="font-size:11px; opacity:0.7; margin-bottom:10px;">Parent: <span style="color:#38bdf8;">${escapeHtml(d.parentLabel)}</span></div>` : ''}
+                                <div style="background:rgba(51,65,85,0.6); border-radius:10px; padding:12px; margin-bottom:12px; border-left:3px solid ${d.type==='root'?'#10b981':d.type==='main'?'#38bdf8':d.type==='sub'?'#a78bfa':'#fbbf24'};">
+                                    <div style="font-size:10px; text-transform:uppercase; color:#94a3b8; margin-bottom:6px; font-weight:600;">Explanation</div>
+                                    <div style="font-size:12.5px; line-height:1.55;">${escapeHtml(d.explanation||'No explanation provided.')}</div>
+                                </div>
+                                ${children.length ? `<div><div style="font-size:10px; text-transform:uppercase; color:#94a3b8; margin-bottom:8px; font-weight:600;">Spreads to ${children.length} →</div><ul style="padding-left:14px; list-style:disc;">${childrenList}</ul></div>` : '<div style="font-style:italic; opacity:0.6; font-size:11px;">Deepest level</div>'}
+                            `;
+                            infoEl.classList.add('show');
+                        }
+                    });
+                    cy.on('tap', function(evt){ 
+                        if (evt.target === cy) { 
+                            if (infoEl) infoEl.classList.remove('show'); 
+                            cy.nodes().unselect(); 
+                        } 
+                    });
+                    const fitBtn = document.getElementById('cyFit');
+                    if (fitBtn) fitBtn.onclick = () => { try { cy.fit(null, isMobile ? 20 : 30); } catch(e){} };
+                    const resetBtn = document.getElementById('cyReset');
+                    if (resetBtn) resetBtn.onclick = () => { try { cy.fit(null, isMobile ? 20 : 30); cy.zoom(isMobile ? 0.75 : 1); cy.center(); } catch(e){} };
+                    const centerBtn = document.getElementById('cyCenter');
+                    if (centerBtn) centerBtn.onclick = () => { try { cy.center(); } catch(e){} };
+                    window._cyInstance = cy;
+                    setTimeout(() => {
+                        try { cy.fit(null, isMobile ? 20 : 30); if (isMobile) { cy.zoom(0.75); cy.center(); } } catch(e){}
+                    }, 250);
+                    window.addEventListener('resize', () => {
+                        if (window._cyInstance) {
+                            try { window._cyInstance.resize(); window._cyInstance.fit(null, window.innerWidth < 768 ? 20 : 30); } catch(e){}
+                        }
+                    });
+                }
+
+                output.classList.remove('hidden');
+                document.getElementById('mindMapProgressBar').style.width = '100%';
+                setTimeout(() => progress.classList.add('hidden'), 500);
+
+            } catch (err) {
+                console.error(err);
+                alert("Failed to generate mind map: " + (err.message || err));
+                progress.classList.add('hidden');
+            } finally {
+                if (btn) btn.disabled = false;
+            }
+        }
+
+        function downloadMindMap() {
+            if (!mindMapGeneratedText) {
+                alert("No mind map to download yet.");
+                return;
+            }
+            const blob = new Blob([mindMapGeneratedText], { type: "application/json;charset=utf-8" });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = "studyforge_mindmap.json";
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            URL.revokeObjectURL(url);
+        }
 
 
         // ========== NOTE MAKER ==========
