@@ -77,7 +77,8 @@
 
         /* FNF Style Vertical Scrolling Text Animation - Seamless 24s Slow Loop */
         .fnf-scroll-text {
-            animation: fnfScrollUpSlow 24s linear infinite;
+            animation: fnfScrollUpSlow 9s linear infinite;
+            will-change: transform;
             text-shadow: 0 0 10px #ffffff, 
                          0 0 20px #ffffff, 
                          0 0 35px var(--brand-custom, #10b981), 
@@ -87,10 +88,10 @@
 
 @keyframes fnfScrollUpSlow {
     0% {
-        transform: translateY(100vh);
+        transform: translateY(0);
     }
     100% {
-        transform: translateY(calc(100vh - 50%));
+        transform: translateY(-50%);
     }
 }
 
@@ -254,7 +255,7 @@
                 </div>
                 <div class="hidden sm:flex flex-col">
                     <span class="font-extrabold text-base tracking-wide">StudyForge <span class="text-brand-500 text-xs px-2 py-0.5 bg-brand-500/10 rounded-full">AI</span></span>
-                    <span class="text-[10px] font-semibold text-slate-400 -mt-0.5">V. 0.76</span>
+                    <span class="text-[10px] font-semibold text-slate-400 -mt-0.5">V. 0.77</span>
                 </div>
             </div>
             <div class="flex items-center space-x-2 sm:space-x-3">
@@ -361,17 +362,15 @@
                         <div class="lg:col-span-2 glass-panel p-5 sm:p-6 rounded-3xl shadow-xl space-y-3">
                             <div>
                                 <h3 class="font-bold text-sm">Subject Performance Analytics</h3>
-                                <p class="text-[10px] text-slate-400">Average scores grouped by broad subject areas</p>
+                                <p class="text-[10px] text-slate-400">Average scores for the subjects YOU actually quizzed on (top 4) — always in English</p>
                             </div>
                             <div id="subjectBarChartContainer" class="h-36 sm:h-40 flex items-end justify-between space-x-2 pt-4 px-2 border-b border-slate-200 dark:border-slate-800">
                                 <!-- Injected bars -->
                             </div>
                             <div id="subjectChartLabels" class="flex justify-between text-[10px] font-bold text-slate-400 px-1">
-                                <span>English</span>
-                                <span>Mathematics</span>
-                                <span>Physics</span>
-                                <span>Biology</span>
+                                <span>No quiz data yet</span>
                             </div>
+                            <p id="subjectChartNote" class="text-[10px] text-slate-400">Showing your top 4 most-quizzed subjects — labels are always in English.</p>
                         </div>
 
                         <!-- Right column: 2 squares + storage rectangle -->
@@ -661,6 +660,16 @@
                                 <p id="quizScorePercentText" class="text-2xl font-black text-brand-500">100%</p>
                             </div>
                             <p id="finalQuizScore" class="text-xs font-semibold text-amber-500">+150 Coins & +250 XP Earned</p>
+                            <button onclick="toggleQuizReview()" id="quizReviewBtn" class="w-full py-3 bg-slate-800 dark:bg-slate-700 hover:bg-slate-900 dark:hover:bg-slate-600 text-white font-bold rounded-2xl text-xs transition-all flex items-center justify-center gap-2"><i class="fa-solid fa-table-list"></i> Review My Answers</button>
+                            <div id="quizReviewContainer" class="hidden text-left space-y-3 mt-2">
+                                <div class="flex items-center justify-between">
+                                    <h4 class="font-bold text-sm">📋 Review — All Questions (First to Last)</h4>
+                                    <button onclick="toggleQuizReview()" class="text-xs font-bold text-slate-400 hover:text-slate-200 px-2 py-1">Hide ✕</button>
+                                </div>
+                                <p class="text-[11px] text-slate-400">Shows YOUR answer and whether it was Correct / Incorrect. Correct answers are NOT shown.</p>
+                                <div id="quizReviewSummary" class="flex gap-2 text-[11px] font-bold"></div>
+                                <div id="quizReviewTable" class="overflow-x-auto rounded-xl border border-slate-200 dark:border-slate-700"></div>
+                            </div>
                             <button onclick="resetQuiz()" class="w-full py-3 bg-brand-500 hover:bg-brand-600 text-white font-bold rounded-2xl text-xs transition-all">Take Another Quiz</button>
                         </div>
                     </div>
@@ -1942,7 +1951,7 @@
                 .map(letter => `<span class="block text-center font-extrabold p-0 m-0 leading-none">${letter}</span>`)
                 .join('');
 
-            content.innerHTML = Array(4).fill(
+            content.innerHTML = Array(2).fill( // V0.77: exactly 2 prints - seamless loop
                 `<div class="flex flex-col items-end p-0 m-0 leading-none py-4">${verticalStackHtml}</div>`
             ).join('');
 
@@ -1950,7 +1959,7 @@
 
             content.style.animation = 'none';
             void content.offsetHeight;
-            content.style.animation = 'fnfScrollUpSlow 24s linear infinite';
+            content.style.animation = 'fnfScrollUpSlow 9s linear infinite';
         }
 
         function hideFnfBanner() {
@@ -2278,52 +2287,104 @@
             document.getElementById('adaptiveSecurityModal').classList.add('hidden');
         }
 
+        // ========== SUBJECT DETECTION (V0.77 - ENGLISH APP, INDONESIAN-AWARE) ==========
+        // App UI is ALWAYS English, even if material is Indonesian.
+        // PKn / PPKn / Pendidikan Kenegaraan / Pancasila -> Civics
+        // IPS -> Social Studies, IPA -> Science, Bahasa Indonesia -> Indonesian Language, etc.
+        function detectSubjectFromText(text, fallbackMaterialName) {
+            const t = (text || '').toLowerCase();
+            const m = (fallbackMaterialName || '').toLowerCase();
+            const combined = t + ' ' + m;
+            const hasWord = (word) => new RegExp('\\b' + word + '\\b').test(combined);
+            if (hasWord('pkn') || hasWord('ppkn') || combined.includes('kenegaraan') || combined.includes('kewarganegaraan') || combined.includes('pancasila') || combined.includes('civics') || combined.includes('citizenship')) return 'Civics';
+            if (hasWord('ips') || combined.includes('ilmu pengetahuan sosial')) return 'Social Studies';
+            if (hasWord('ipa') || combined.includes('ilmu pengetahuan alam')) return 'Science';
+            if (hasWord('pai') || combined.includes('pendidikan agama')) return 'Religion';
+            if (hasWord('pjok') || hasWord('penjas')) return 'Physical Education';
+            if (hasWord('sbdp') || hasWord('sbdb')) return 'Arts';
+            if (hasWord('tik')) return 'Computer Science';
+            if (combined.includes('bahasa indonesia') || combined.includes('b. indonesia')) return 'Indonesian Language';
+            if (combined.includes('bahasa inggris')) return 'English';
+            if (combined.includes('matematika') || combined.includes('geometri')) return 'Mathematics';
+            if (combined.includes('fisika')) return 'Physics';
+            if (combined.includes('biologi')) return 'Biology';
+            if (combined.includes('kimia')) return 'Chemistry';
+            if (combined.includes('sejarah') || combined.includes('kemerdekaan')) return 'History';
+            if (combined.includes('geografi')) return 'Geography';
+            if (combined.includes('ekonomi')) return 'Economics';
+            if (combined.includes('sosiologi')) return 'Sociology';
+            if (combined.includes('agama') || combined.includes('islam') || combined.includes('kristen')) return 'Religion';
+            if (combined.includes('informatika') || combined.includes('coding')) return 'Computer Science';
+            if (combined.includes('olahraga')) return 'Physical Education';
+            if (combined.includes('seni')) return 'Arts';
+            if (combined.includes('english') || combined.includes('grammar') || combined.includes('tense')) return 'English';
+            if (combined.includes('math') || combined.includes('algebra') || combined.includes('geometry')) return 'Mathematics';
+            if (combined.includes('physics') || combined.includes('force') || combined.includes('sound')) return 'Physics';
+            if (combined.includes('biology') || combined.includes('reproduction') || combined.includes('cell')) return 'Biology';
+            if (combined.includes('chemistry') || combined.includes('atom')) return 'Chemistry';
+            if (combined.includes('history')) return 'History';
+            if (combined.includes('geography')) return 'Geography';
+            if (combined.includes('economics')) return 'Economics';
+            if (combined.includes('sociology')) return 'Sociology';
+            if (combined.includes('religion')) return 'Religion';
+            if (combined.includes('computer') || combined.includes('programming')) return 'Computer Science';
+            if (combined.includes('science')) return 'Science';
+            if (combined.includes('social studies')) return 'Social Studies';
+            if (fallbackMaterialName && fallbackMaterialName.trim()) {
+                let clean = fallbackMaterialName.replace(/\.(pdf|docx|txt)$/i, '').replace(/\s*\(.*?\)/g, '').trim();
+                let words = clean.split(/\s+/).slice(0,2).join(' ');
+                if (words.length > 18) words = words.slice(0,18);
+                if (words) return words.charAt(0).toUpperCase() + words.slice(1);
+            }
+            return 'General';
+        }
+
         function renderSubjectBarChart() {
             const container = document.getElementById('subjectBarChartContainer');
+            const labelsEl = document.getElementById('subjectChartLabels');
+            const noteEl = document.getElementById('subjectChartNote');
             if (!container) return;
-
-            const subjectMap = {
-                "English": { totalScore: 0, count: 0 },
-                "Mathematics": { totalScore: 0, count: 0 },
-                "Physics": { totalScore: 0, count: 0 },
-                "Biology": { totalScore: 0, count: 0 }
-            };
-
             const records = userProfile.quizHistoryRecords || [];
+            if (!records.length) {
+                container.innerHTML = '<p class="text-xs text-slate-400 text-center w-full py-8">No quiz data yet.<br>Take a quiz to see your subjects here.</p>';
+                if (labelsEl) labelsEl.innerHTML = '<span>No quiz data yet</span>';
+                if (noteEl) noteEl.textContent = 'Take a quiz on your material — your subjects will appear here in English.';
+                return;
+            }
+            const subjectMap = {};
             records.forEach(record => {
-                let category = "Mathematics";
-                const topic = (record.topic || "").toLowerCase();
-                if (topic.includes('tense') || topic.includes('english') || topic.includes('grammar')) {
-                    category = "English";
-                } else if (topic.includes('akar') || topic.includes('algebra') || topic.includes('math')) {
-                    category = "Mathematics";
-                } else if (topic.includes('sound') || topic.includes('physics') || topic.includes('force')) {
-                    category = "Physics";
-                } else if (topic.includes('biology') || topic.includes('reproduction') || topic.includes('cell')) {
-                    category = "Biology";
-                }
-
-                if (subjectMap[category]) {
-                    subjectMap[category].totalScore += record.scorePercent;
-                    subjectMap[category].count += 1;
-                }
+                const subject = record.subject || detectSubjectFromText(record.topic, record.materialName);
+                if (!subjectMap[subject]) subjectMap[subject] = { totalScore: 0, count: 0, lastTime: 0 };
+                subjectMap[subject].totalScore += record.scorePercent || 0;
+                subjectMap[subject].count += 1;
+                if (record.timestamp) subjectMap[subject].lastTime = Math.max(subjectMap[subject].lastTime, record.timestamp);
             });
-
+            const sorted = Object.entries(subjectMap).sort((a,b) => (b[1].count - a[1].count) || (b[1].lastTime - a[1].lastTime)).slice(0,4);
             container.innerHTML = '';
-            Object.keys(subjectMap).forEach(subject => {
-                const data = subjectMap[subject];
-                const avgScore = data.count > 0 ? Math.round(data.totalScore / data.count) : (Math.floor(Math.random() * 30) + 65);
-
+            if (labelsEl) labelsEl.innerHTML = '';
+            sorted.forEach(([subject, data]) => {
+                const avgScore = data.count > 0 ? Math.round(data.totalScore / data.count) : 0;
                 const barWrapper = document.createElement('div');
                 barWrapper.className = "flex-1 flex flex-col items-center h-full justify-end group relative";
                 barWrapper.innerHTML = `
-                    <span class="absolute -top-6 text-[10px] font-bold opacity-0 group-hover:opacity-100 transition-opacity bg-slate-800 text-white px-1.5 py-0.5 rounded shadow">${avgScore}%</span>
+                    <span class="absolute -top-6 text-[10px] font-bold opacity-0 group-hover:opacity-100 transition-opacity bg-slate-800 text-white px-1.5 py-0.5 rounded shadow whitespace-nowrap">${avgScore}% • ${data.count} quiz${data.count>1?'zes':''}</span>
                     <div class="w-full bg-brand-500/20 rounded-t-xl overflow-hidden h-full flex items-end">
                         <div class="w-full bg-brand-500 transition-all duration-1000 rounded-t-xl" style="height: ${avgScore}%"></div>
                     </div>
                 `;
                 container.appendChild(barWrapper);
+                if (labelsEl) {
+                    const label = document.createElement('span');
+                    label.className = 'flex-1 text-center truncate px-1';
+                    label.title = subject + ` (${data.count} quizzes, avg ${avgScore}%)`;
+                    label.textContent = subject;
+                    labelsEl.appendChild(label);
+                }
             });
+            if (noteEl) {
+                if (sorted.length === 1) noteEl.textContent = `Showing your only subject: ${sorted[0][0]} — take quizzes on other materials to add more. Labels are always in English.`;
+                else noteEl.textContent = `Showing your top ${sorted.length} most-quizzed subjects (out of ${Object.keys(subjectMap).length} total). Labels are always in English.`;
+            }
         }
 
         function checkAndVerifyStreak() {
@@ -2732,42 +2793,22 @@ Do not include any other text.`;
         }
 
 
-        // ========== SHARED: Auto-transfer uploads to Materials for Quiz/Cards ==========
+        // ========== SHARED: Auto-transfer uploads to Materials for Quiz/Cards (V0.77) ==========
         async function addUploadedToMaterials(fileName, content, sizeBytes, sourceTag) {
             try {
                 if (!content || !content.trim()) return;
-                // Avoid duplicate names - check if already exists
                 const existing = await db.materials.where('username').equals(currentUser).toArray();
                 const already = existing.some(m => m.name === fileName && m.content && m.content.slice(0,100) === content.slice(0,100));
-                if (already) {
-                    console.log(`Material already exists: ${fileName}`);
-                    return;
-                }
+                if (already) return;
                 const sizeStr = sizeBytes ? (sizeBytes/1024).toFixed(1) + ' KB' : (content.length/1024).toFixed(1) + ' KB (est)';
-                await db.materials.add({
-                    username: currentUser,
-                    name: fileName + (sourceTag ? ` (${sourceTag})` : ''),
-                    size: sizeStr,
-                    content: content
-                });
+                await db.materials.add({ username: currentUser, name: fileName + (sourceTag ? ` (${sourceTag})` : ''), size: sizeStr, content: content });
                 materials = await db.materials.where('username').equals(currentUser).toArray();
                 renderMaterials();
                 updateStorageUsage();
-                // Notify
-                const matCount = materials.length;
-                console.log(`Auto-added to Materials: ${fileName} -> now ${matCount} materials`);
-                // Optional toast notification
-                const statusEl = document.getElementById('materialListContainer');
-                if (statusEl && typeof showToast === 'function') {
-                    // showToast(`Added to Materials: ${fileName}`);
-                }
-            } catch (e) {
-                console.warn("Failed to auto-add to materials:", e);
-            }
+            } catch (e) { console.warn("Failed to auto-add to materials:", e); }
         }
 
-
-                async function removeMaterial(id) {
+        async function removeMaterial(id) {
             await db.materials.delete(id);
             materials = await db.materials.where('username').equals(currentUser).toArray();
             renderMaterials();
@@ -2836,7 +2877,6 @@ Do not include any other text.`;
                 } else {
                     textContent = await file.text();
                 }
-                // V0.76: Auto-transfer to Materials for Quiz/Cards reuse
                 await addUploadedToMaterials(file.name, textContent, file.size, "Homework");
                 await processHomeworkText(textContent);
             } catch (err) {
@@ -3689,8 +3729,13 @@ ${materialContext}`;
                 userProfile.quizzesCompleted++;
 
                 if (!userProfile.quizHistoryRecords) userProfile.quizHistoryRecords = [];
+                // V0.77: Save REAL subject in English, even if material is Indonesian
+                const quizMaterialName = (typeof materials !== 'undefined' && materials.length) ? materials[materials.length-1].name : '';
+                const quizSubject = (typeof detectSubjectFromText === 'function') ? detectSubjectFromText(currentQ.q, quizMaterialName) : 'General';
                 userProfile.quizHistoryRecords.push({
                     topic: currentQ.q || "General Quiz",
+                    subject: quizSubject,
+                    materialName: quizMaterialName || '',
                     scorePercent: finalPercent,
                     timestamp: Date.now()
                 });
@@ -3907,13 +3952,12 @@ ${materialContext}`;
                 if (!extracted) throw new Error("No text could be extracted.");
 
                 mindMapSourceText = extracted;
+                await addUploadedToMaterials(file.name, extracted, file.size, "Mind Map");
                 if (status) {
-                    status.textContent = "Ready: " + file.name + " (" + extracted.length + " characters) • Auto-added to Materials for Quiz/Cards";
+                    status.textContent = "Ready: " + file.name + " (" + extracted.length + " characters)";
                     status.classList.remove('text-slate-400');
                     status.classList.add('text-emerald-500');
                 }
-                // V0.76: Auto-transfer to Materials so Quiz and Cards can use it
-                await addUploadedToMaterials(file.name, extracted, file.size, "Mind Map");
             } catch (err) {
                 console.error(err);
                 mindMapSourceText = "";
@@ -4001,7 +4045,7 @@ ${content.slice(0, 12000)}`;
 
                 const res = await callGeminiApi(prompt);
                 document.getElementById('mindMapProgressBar').style.width = '80%';
-                document.getElementById('mindMapProgressText').textContent = 'Rendering with Cytoscape.js V0.76...';
+                document.getElementById('mindMapProgressText').textContent = 'Rendering with Cytoscape.js V0.77...';
 
                 const data = parseAiJson(res.text);
                 mindMapGeneratedText = JSON.stringify(data, null, 2);
@@ -4064,11 +4108,11 @@ ${content.slice(0, 12000)}`;
                         <div class="cy-toolbar">
                             <div style="display:flex; gap:8px; align-items:center; background:rgba(15,23,42,0.85); padding:6px 12px; border-radius:20px; border:1px solid #334155;">
                                 <div style="width:10px; height:10px; border-radius:50%; background:#10b981;"></div>
-                                <span style="font-size:11px; color:#94a3b8; font-weight:600;">Cytoscape V0.76 • 51 nodes max</span>
+                                <span style="font-size:11px; color:#94a3b8; font-weight:600;">Cytoscape V0.77 • 51 nodes max</span>
                             </div>
                             <div style="display:flex; gap:6px; flex-wrap:wrap; justify-content:center;">
                                 <button id="cyFullscreenBtn" style="background:#8b5cf6; border:none; color:white; padding:6px 12px; border-radius:8px; font-size:11px; font-weight:700; cursor:pointer;">⛶ Fullscreen</button>
-                                <button id="cyToggleScroll" style="background:#f59e0b; border:none; color:#0f172a; padding:6px 12px; border-radius:8px; font-size:11px; font-weight:700; cursor:pointer; display:none;">🔓 Map Mode</button>
+                                <!-- cyToggleScroll removed in V0.77 - fullscreen handles scroll vs drag -->
                                 <button id="cyFit" style="background:#1e293b; border:1px solid #334155; color:#94a3b8; padding:6px 12px; border-radius:8px; font-size:11px; cursor:pointer;">Fit</button>
                                 <button id="cyReset" style="background:#38bdf8; border:none; color:#0f172a; padding:6px 12px; border-radius:8px; font-size:11px; font-weight:700; cursor:pointer;">Reset</button>
                             </div>
@@ -4086,7 +4130,7 @@ ${content.slice(0, 12000)}`;
                             </div>
                             <div style="margin-top:16px; color:#64748b; font-size:10px;">📱 Mobile: Fullscreen required for dragging • Desktop: Works without fullscreen</div>
                         </div>
-                        <div style="position:absolute; bottom:8px; left:12px; font-size:10px; color:#475569; background:rgba(15,23,42,0.7); padding:3px 8px; border-radius:10px; z-index:5;" id="cyHint">V0.76 • 5 Main / 3 Sub / 2 Details = 51 nodes max • Safe for mobile</div>
+                        <div style="position:absolute; bottom:8px; left:12px; font-size:10px; color:#475569; background:rgba(15,23,42,0.7); padding:3px 8px; border-radius:10px; z-index:5;" id="cyHint">V0.77 • 5 Main / 3 Sub / 2 Details = 51 nodes max • Safe for mobile</div>
                     </div>
                     <div style="margin-top:12px; display:flex; gap:8px; flex-wrap:wrap; align-items:center;">
                         <div style="display:flex; gap:12px; font-size:10px; color:#64748b; flex-wrap:wrap; flex:1;">
@@ -4126,7 +4170,7 @@ ${content.slice(0, 12000)}`;
                         });
                     });
 
-                    console.log(`V0.76 Cytoscape: ${elements.filter(e=>e.data.source===undefined).length} nodes (max 51)`);
+                    console.log(`V0.77 Cytoscape: ${elements.filter(e=>e.data.source===undefined).length} nodes (max 51)`);
 
                     const isMobile = window.innerWidth < 768;
                     let mapInteractionEnabled = !isMobile;
@@ -4152,7 +4196,7 @@ ${content.slice(0, 12000)}`;
 
                     const infoEl = document.getElementById('cyInfo');
                     const overlayEl = document.getElementById('cyOverlay');
-                    const toggleBtn = document.getElementById('cyToggleScroll');
+                    // toggleBtn removed - fullscreen handles scroll vs drag (V0.77)
                     const wrapperEl = document.getElementById('cyWrapper');
                     const fsBtn = document.getElementById('cyFullscreenBtn');
 
@@ -4162,14 +4206,9 @@ ${content.slice(0, 12000)}`;
                         try { cy.userZoomingEnabled(true); } catch(e){}
                         try { cy.boxSelectionEnabled(true); } catch(e){}
                         if (overlayEl) overlayEl.classList.add('hidden');
-                        if (toggleBtn) {
-                            toggleBtn.style.display = 'block';
-                            toggleBtn.textContent = '🔒 Scroll Page';
-                            toggleBtn.style.background = '#10b981';
-                        }
                         if (wrapperEl) wrapperEl.style.touchAction = 'none';
                         const hint = document.getElementById('cyHint');
-                        if (hint) hint.textContent = isFullscreen ? '⛶ Fullscreen • Drag to pan, pinch to zoom' : '🔓 Map Mode: Drag to pan, pinch to zoom • Tap 🔒 to scroll page';
+                        if (hint) hint.textContent = isFullscreen ? '⛶ Fullscreen • Drag to pan, pinch to zoom' : 'Desktop: Drag to pan, pinch to zoom';
                     }
                     function disableMapInteraction() {
                         mapInteractionEnabled = false;
@@ -4177,11 +4216,6 @@ ${content.slice(0, 12000)}`;
                         try { cy.userZoomingEnabled(false); } catch(e){}
                         try { cy.boxSelectionEnabled(false); } catch(e){}
                         if (overlayEl) overlayEl.classList.remove('hidden');
-                        if (toggleBtn) {
-                            toggleBtn.style.display = 'block';
-                            toggleBtn.textContent = '🔓 Map Mode';
-                            toggleBtn.style.background = '#f59e0b';
-                        }
                         if (wrapperEl) wrapperEl.style.touchAction = 'pan-y';
                         const hint = document.getElementById('cyHint');
                         if (hint) hint.textContent = isMobile ? '📱 Mobile: Tap Fullscreen to drag • Outside: scroll page' : '📱 Desktop: Works without fullscreen • Fullscreen for bigger view';
@@ -4253,13 +4287,9 @@ ${content.slice(0, 12000)}`;
 
                     if (isMobile) {
                         disableMapInteraction();
-                        const tb = document.getElementById('cyToggleScroll');
-                        if (tb) tb.style.display = 'block';
                     } else {
                         if (overlayEl) overlayEl.classList.add('hidden');
                         try { cy.userPanningEnabled(true); cy.userZoomingEnabled(true); } catch(e){}
-                        const tb = document.getElementById('cyToggleScroll');
-                        if (tb) tb.style.display = 'none';
                     }
 
                     if (overlayEl) {
@@ -4268,12 +4298,7 @@ ${content.slice(0, 12000)}`;
                             else enableMapInteraction();
                         };
                     }
-                    if (toggleBtn) {
-                        toggleBtn.onclick = () => {
-                            if (mapInteractionEnabled) disableMapInteraction();
-                            else enableMapInteraction();
-                        };
-                    }
+                    // No toggle button - fullscreen is the only mode switch (V0.77)
 
                     cy.on('tap', 'node', function(evt){
                         const d = evt.target.data();
@@ -4411,13 +4436,12 @@ ${content.slice(0, 12000)}`;
                 }
 
                 noteMakerSourceText = extracted;
+                await addUploadedToMaterials(file.name, extracted, file.size, "Note Maker");
                 if (status) {
-                    status.textContent = "Ready: " + file.name + " (" + extracted.length + " characters) • Auto-added to Materials for Quiz/Cards";
+                    status.textContent = "Ready: " + file.name + " (" + extracted.length + " characters extracted)";
                     status.classList.remove('text-slate-400');
                     status.classList.add('text-emerald-500');
                 }
-                // V0.76: Auto-transfer to Materials
-                await addUploadedToMaterials(file.name, extracted, file.size, "Note Maker");
             } catch (err) {
                 console.error(err);
                 noteMakerSourceText = "";
@@ -4616,6 +4640,36 @@ ${content}`;
             a.click();
             a.remove();
             URL.revokeObjectURL(url);
+        }
+
+
+        // ========== QUIZ REVIEW (V0.77) ==========
+        function renderQuizReviewTable() {
+            const tableEl = document.getElementById('quizReviewTable');
+            const summaryEl = document.getElementById('quizReviewSummary');
+            if (!tableEl) return;
+            if (!activeQuizQuestions || !activeQuizQuestions.length) { tableEl.innerHTML = '<p class="text-xs text-slate-400 p-3">No quiz data to review.</p>'; if (summaryEl) summaryEl.innerHTML = ''; return; }
+            let correctCount = 0;
+            let rows = activeQuizQuestions.map((q, i) => {
+                const userIdx = (quizUserAnswers && quizUserAnswers[i] !== undefined) ? quizUserAnswers[i] : null;
+                const userAnswerText = (userIdx !== null && userIdx !== undefined && q.options && q.options[userIdx] !== undefined) ? q.options[userIdx] : '— No answer —';
+                const isCorrect = userIdx === q.correct;
+                if (isCorrect) correctCount++;
+                const badge = isCorrect ? '<span class="px-2 py-1 rounded-full bg-emerald-500/20 text-emerald-500 text-[10px] font-bold whitespace-nowrap">✓ Correct</span>' : '<span class="px-2 py-1 rounded-full bg-red-500/20 text-red-500 text-[10px] font-bold whitespace-nowrap">✗ Incorrect</span>';
+                const rowBg = isCorrect ? 'bg-emerald-500/5' : 'bg-red-500/5';
+                return `<tr class="${rowBg} border-b border-slate-100 dark:border-slate-800"><td class="p-3 align-top text-center font-bold text-xs w-8">${i+1}</td><td class="p-3 align-top"><div class="font-bold text-xs leading-relaxed">${escapeHtml(q.q || '')}</div></td><td class="p-3 align-top"><div class="text-xs leading-relaxed">${escapeHtml(userAnswerText)}</div><div class="text-[10px] text-slate-400 mt-1">You chose: ${userIdx !== null && userIdx !== undefined ? String.fromCharCode(65+userIdx) : '—'}</div></td><td class="p-3 align-top text-center">${badge}</td></tr>`;
+            }).join('');
+            const incorrectCount = activeQuizQuestions.length - correctCount;
+            if (summaryEl) summaryEl.innerHTML = `<span class="px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-500">${correctCount} Correct</span><span class="px-3 py-1 rounded-full bg-red-500/20 text-red-500">${incorrectCount} Incorrect</span><span class="px-3 py-1 rounded-full bg-slate-200 dark:bg-slate-800 text-slate-500">${activeQuizQuestions.length} Total</span>`;
+            tableEl.innerHTML = `<table class="w-full min-w-[520px] text-left"><thead><tr class="bg-slate-100 dark:bg-slate-800 text-[11px] uppercase tracking-wider text-slate-400"><th class="p-3 w-8 text-center">#</th><th class="p-3">Question</th><th class="p-3">Your Answer</th><th class="p-3 text-center">Result</th></tr></thead><tbody>${rows}</tbody></table>`;
+        }
+        function toggleQuizReview() {
+            const container = document.getElementById('quizReviewContainer');
+            const btn = document.getElementById('quizReviewBtn');
+            if (!container) return;
+            const isHidden = container.classList.contains('hidden');
+            if (isHidden) { renderQuizReviewTable(); container.classList.remove('hidden'); if (btn) btn.innerHTML = '<i class="fa-solid fa-eye-slash"></i> Hide Review'; container.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); }
+            else { container.classList.add('hidden'); if (btn) btn.innerHTML = '<i class="fa-solid fa-table-list"></i> Review My Answers'; }
         }
 
         function resetQuiz() {
