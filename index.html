@@ -75,25 +75,27 @@
             transform: rotateY(180deg);
         }
 
-        /* FNF Style Vertical Scrolling Text Animation - Seamless 24s Slow Loop */
+        /* FNF Style Vertical Scrolling Text - Entry from below + seamless loop (V0.78 FIX) */
         .fnf-scroll-text {
-            animation: fnfScrollUpSlow 9s linear infinite;
-            will-change: transform;
             text-shadow: 0 0 10px #ffffff, 
                          0 0 20px #ffffff, 
                          0 0 35px var(--brand-custom, #10b981), 
                          0 0 50px var(--brand-custom, #10b981), 
                          0 4px 12px rgba(0, 0, 0, 0.9);
+            will-change: transform;
         }
-
-@keyframes fnfScrollUpSlow {
-    0% {
-        transform: translateY(0);
-    }
-    100% {
-        transform: translateY(-50%);
-    }
-}
+        @keyframes fnfEnterFromBelow {
+            0% { transform: translateY(100vh); }
+            100% { transform: translateY(0); }
+        }
+        @keyframes fnfScrollLoop {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(-50%); }
+        }
+        @keyframes fnfScrollUpSlow {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(-50%); }
+        }
 
         /* Better contrast for small / secondary text */
         .text-slate-400 {
@@ -255,7 +257,7 @@
                 </div>
                 <div class="hidden sm:flex flex-col">
                     <span class="font-extrabold text-base tracking-wide">StudyForge <span class="text-brand-500 text-xs px-2 py-0.5 bg-brand-500/10 rounded-full">AI</span></span>
-                    <span class="text-[10px] font-semibold text-slate-400 -mt-0.5">V. 0.77</span>
+                    <span class="text-[10px] font-semibold text-slate-400 -mt-0.5">V. 0.78</span>
                 </div>
             </div>
             <div class="flex items-center space-x-2 sm:space-x-3">
@@ -362,7 +364,7 @@
                         <div class="lg:col-span-2 glass-panel p-5 sm:p-6 rounded-3xl shadow-xl space-y-3">
                             <div>
                                 <h3 class="font-bold text-sm">Subject Performance Analytics</h3>
-                                <p class="text-[10px] text-slate-400">Average scores for the subjects YOU actually quizzed on (top 4) — always in English</p>
+                                <p class="text-[10px] text-slate-400">Average scores for the subjects YOU actually quizzed on — based on your material content, not last question</p>
                             </div>
                             <div id="subjectBarChartContainer" class="h-36 sm:h-40 flex items-end justify-between space-x-2 pt-4 px-2 border-b border-slate-200 dark:border-slate-800">
                                 <!-- Injected bars -->
@@ -370,7 +372,7 @@
                             <div id="subjectChartLabels" class="flex justify-between text-[10px] font-bold text-slate-400 px-1">
                                 <span>No quiz data yet</span>
                             </div>
-                            <p id="subjectChartNote" class="text-[10px] text-slate-400">Showing your top 4 most-quizzed subjects — labels are always in English.</p>
+                            <p id="subjectChartNote" class="text-[10px] text-slate-400">Shows only subjects you actually quizzed on — no hardcoded subjects, no filename as subject. Labels are always in English.</p>
                         </div>
 
                         <!-- Right column: 2 squares + storage rectangle -->
@@ -413,8 +415,8 @@
                         
                         <label class="border-2 border-dashed border-slate-300 dark:border-slate-700 hover:border-brand-500 rounded-3xl p-6 sm:p-8 flex flex-col items-center justify-center cursor-pointer transition-all bg-slate-50/50 dark:bg-slate-900/50 text-center">
                             <div class="w-12 h-12 rounded-2xl bg-brand-500/10 text-brand-500 flex items-center justify-center text-lg mb-3 shadow-inner"><i class="fa-solid fa-cloud-arrow-up"></i></div>
-                            <span class="font-bold text-xs mb-1">Click to upload files (.docx, .txt, images)</span>
-                            <span class="text-[10px] text-slate-400">Supports DOCX, TXT + Image OCR via Gemini</span>
+                            <span class="font-bold text-xs mb-1">Click to upload files (.docx, .pdf, .txt, images)</span>
+                            <span class="text-[10px] text-slate-400">Supports DOCX, PDF (text-based), TXT + Image OCR via Gemini • Scanned PDF = upload as image</span>
                             <input type="file" multiple accept=".docx,.txt,.pdf,image/*" onchange="handleGeneralMaterialUpload(event)" class="hidden">
                         </label>
 
@@ -1327,7 +1329,7 @@
 
     <script>
         // App version: V. X.XX where the number after the decimal is the total GitHub commit count.
-        // Rule: every 0.100 = 1 full version (e.g. 73 commits = V. 0.73, 100 commits = V. 1.00, 173 commits = V. 1.73).
+        // Rule: every 0.100 = 1 full version (e.g. 73 commits = V. 0.78, 100 commits = V. 1.00, 173 commits = V. 1.73).
         // Update this number and the navbar label whenever the commit count changes.
         try {
             localStorage.setItem('storage_test', '1');
@@ -1951,15 +1953,13 @@
                 .map(letter => `<span class="block text-center font-extrabold p-0 m-0 leading-none">${letter}</span>`)
                 .join('');
 
-            content.innerHTML = Array(2).fill( // V0.77: exactly 2 prints - seamless loop
+            content.innerHTML = Array(2).fill(
                 `<div class="flex flex-col items-end p-0 m-0 leading-none py-4">${verticalStackHtml}</div>`
             ).join('');
-
             banner.classList.remove('hidden');
-
             content.style.animation = 'none';
             void content.offsetHeight;
-            content.style.animation = 'fnfScrollUpSlow 9s linear infinite';
+            content.style.animation = 'fnfEnterFromBelow 1.4s ease-out forwards, fnfScrollLoop 9s linear 1.4s infinite';
         }
 
         function hideFnfBanner() {
@@ -2287,73 +2287,75 @@
             document.getElementById('adaptiveSecurityModal').classList.add('hidden');
         }
 
-        // ========== SUBJECT DETECTION (V0.77 - ENGLISH APP, INDONESIAN-AWARE) ==========
-        // App UI is ALWAYS English, even if material is Indonesian.
-        // PKn / PPKn / Pendidikan Kenegaraan / Pancasila -> Civics
-        // IPS -> Social Studies, IPA -> Science, Bahasa Indonesia -> Indonesian Language, etc.
-        function detectSubjectFromText(text, fallbackMaterialName) {
-            const t = (text || '').toLowerCase();
-            const m = (fallbackMaterialName || '').toLowerCase();
-            const combined = t + ' ' + m;
-            const hasWord = (word) => new RegExp('\\b' + word + '\\b').test(combined);
-            if (hasWord('pkn') || hasWord('ppkn') || combined.includes('kenegaraan') || combined.includes('kewarganegaraan') || combined.includes('pancasila') || combined.includes('civics') || combined.includes('citizenship')) return 'Civics';
-            if (hasWord('ips') || combined.includes('ilmu pengetahuan sosial')) return 'Social Studies';
-            if (hasWord('ipa') || combined.includes('ilmu pengetahuan alam')) return 'Science';
-            if (hasWord('pai') || combined.includes('pendidikan agama')) return 'Religion';
-            if (hasWord('pjok') || hasWord('penjas')) return 'Physical Education';
-            if (hasWord('sbdp') || hasWord('sbdb')) return 'Arts';
-            if (hasWord('tik')) return 'Computer Science';
-            if (combined.includes('bahasa indonesia') || combined.includes('b. indonesia')) return 'Indonesian Language';
-            if (combined.includes('bahasa inggris')) return 'English';
-            if (combined.includes('matematika') || combined.includes('geometri')) return 'Mathematics';
-            if (combined.includes('fisika')) return 'Physics';
-            if (combined.includes('biologi')) return 'Biology';
-            if (combined.includes('kimia')) return 'Chemistry';
-            if (combined.includes('sejarah') || combined.includes('kemerdekaan')) return 'History';
-            if (combined.includes('geografi')) return 'Geography';
-            if (combined.includes('ekonomi')) return 'Economics';
-            if (combined.includes('sosiologi')) return 'Sociology';
-            if (combined.includes('agama') || combined.includes('islam') || combined.includes('kristen')) return 'Religion';
-            if (combined.includes('informatika') || combined.includes('coding')) return 'Computer Science';
-            if (combined.includes('olahraga')) return 'Physical Education';
-            if (combined.includes('seni')) return 'Arts';
-            if (combined.includes('english') || combined.includes('grammar') || combined.includes('tense')) return 'English';
-            if (combined.includes('math') || combined.includes('algebra') || combined.includes('geometry')) return 'Mathematics';
-            if (combined.includes('physics') || combined.includes('force') || combined.includes('sound')) return 'Physics';
-            if (combined.includes('biology') || combined.includes('reproduction') || combined.includes('cell')) return 'Biology';
-            if (combined.includes('chemistry') || combined.includes('atom')) return 'Chemistry';
-            if (combined.includes('history')) return 'History';
-            if (combined.includes('geography')) return 'Geography';
-            if (combined.includes('economics')) return 'Economics';
-            if (combined.includes('sociology')) return 'Sociology';
-            if (combined.includes('religion')) return 'Religion';
-            if (combined.includes('computer') || combined.includes('programming')) return 'Computer Science';
-            if (combined.includes('science')) return 'Science';
-            if (combined.includes('social studies')) return 'Social Studies';
-            if (fallbackMaterialName && fallbackMaterialName.trim()) {
-                let clean = fallbackMaterialName.replace(/\.(pdf|docx|txt)$/i, '').replace(/\s*\(.*?\)/g, '').trim();
-                let words = clean.split(/\s+/).slice(0,2).join(' ');
-                if (words.length > 18) words = words.slice(0,18);
-                if (words) return words.charAt(0).toUpperCase() + words.slice(1);
-            }
-            return 'General';
+        // ========== SUBJECT DETECTION - V0.78: From MATERIAL CONTENT, not last question, not filename ==========
+        function detectSubjectFromMaterialContent(allContent, allNames) {
+            const t = ((allContent || '') + ' ' + (allNames || '')).toLowerCase();
+            const has = (s) => t.includes(s);
+            const hasWord = (w) => new RegExp('\\b' + w + '\\b').test(t);
+            let civicsScore = 0;
+            if (has('pkn') || has('ppkn')) civicsScore += 5;
+            if (has('pancasila')) civicsScore += 4;
+            if (has('uud nri') || has('uud 1945') || has('uud nri 1945')) civicsScore += 4;
+            if (has('kewarganegaraan') || has('kenegaraan')) civicsScore += 4;
+            if (has('hak dan kewajiban warga negara')) civicsScore += 5;
+            if (has('hak dan kewajiban')) civicsScore += 3;
+            if (has('warga negara')) civicsScore += 2;
+            if (civicsScore >= 4) return 'Civics';
+            if (has('bahasa indonesia') || has('b. indonesia')) return 'Indonesian Language';
+            if (has('bahasa inggris') || hasWord('grammar') && has('english')) return 'English';
+            if (has('matematika') || has('aljabar') || has('geometri') && has('matematika')) return 'Mathematics';
+            if (has('fisika')) return 'Physics';
+            if (has('biologi')) return 'Biology';
+            if (has('kimia')) return 'Chemistry';
+            if (has('sejarah') && !has('pancasila')) return 'History';
+            if (has('geografi')) return 'Geography';
+            if (has('ekonomi') && !has('pancasila')) return 'Economics';
+            if (has('sosiologi')) return 'Sociology';
+            if (has('pendidikan agama') || hasWord('pai')) return 'Religion';
+            if (has('pjok') || has('penjas')) return 'Physical Education';
+            if (has('sbdp') || has('sbdb')) return 'Arts';
+            let csScore = 0;
+            if (has('informatika')) csScore += 2;
+            if (has('pemrograman') || has('programming') || has('coding')) csScore += 2;
+            if (has('algoritma')) csScore += 1;
+            if (has('jaringan komputer') || has('sistem komputer')) csScore += 2;
+            if (csScore >= 3) return 'Computer Science';
+            if (has('ips') || has('ilmu pengetahuan sosial')) return 'Social Studies';
+            if (has('ipa') || has('ilmu pengetahuan alam')) return 'Science';
+            if (has('tik') && !has('pancasila')) return 'Computer Science';
+            return 'Unknown';
         }
-
+        function getQuizSubjectForCurrentQuiz() {
+            try {
+                const usable = typeof getUsableMaterials === 'function' ? getUsableMaterials() : (materials || []);
+                const allContent = usable.map(m => m.content || '').join('\n');
+                const allNames = usable.map(m => m.name || '').join(' ');
+                return detectSubjectFromMaterialContent(allContent, allNames);
+            } catch (e) { return 'Unknown'; }
+        }
         function renderSubjectBarChart() {
             const container = document.getElementById('subjectBarChartContainer');
             const labelsEl = document.getElementById('subjectChartLabels');
             const noteEl = document.getElementById('subjectChartNote');
             if (!container) return;
             const records = userProfile.quizHistoryRecords || [];
-            if (!records.length) {
+            const cleanRecords = records.filter(r => {
+                const s = r.subject || '';
+                if (!s) return false;
+                if (s === 'General' || s === 'Unknown') return false;
+                if (s === 'Kisi-Kisi PH' || s.toLowerCase().includes('kisi-kisi') || s.toLowerCase().includes('kisi kisi')) return false;
+                if (s.length > 20) return false;
+                return true;
+            });
+            if (!cleanRecords.length) {
                 container.innerHTML = '<p class="text-xs text-slate-400 text-center w-full py-8">No quiz data yet.<br>Take a quiz to see your subjects here.</p>';
                 if (labelsEl) labelsEl.innerHTML = '<span>No quiz data yet</span>';
-                if (noteEl) noteEl.textContent = 'Take a quiz on your material — your subjects will appear here in English.';
+                if (noteEl) noteEl.textContent = 'Take a quiz on your material — your real subject (e.g. Civics for PPKn) will appear here.';
                 return;
             }
             const subjectMap = {};
-            records.forEach(record => {
-                const subject = record.subject || detectSubjectFromText(record.topic, record.materialName);
+            cleanRecords.forEach(record => {
+                const subject = record.subject;
                 if (!subjectMap[subject]) subjectMap[subject] = { totalScore: 0, count: 0, lastTime: 0 };
                 subjectMap[subject].totalScore += record.scorePercent || 0;
                 subjectMap[subject].count += 1;
@@ -2367,7 +2369,8 @@
                 const barWrapper = document.createElement('div');
                 barWrapper.className = "flex-1 flex flex-col items-center h-full justify-end group relative";
                 barWrapper.innerHTML = `
-                    <span class="absolute -top-6 text-[10px] font-bold opacity-0 group-hover:opacity-100 transition-opacity bg-slate-800 text-white px-1.5 py-0.5 rounded shadow whitespace-nowrap">${avgScore}% • ${data.count} quiz${data.count>1?'zes':''}</span>
+                    <span class="text-[12px] font-bold text-slate-700 dark:text-slate-200 mb-1">${avgScore}%</span>
+                    <span class="text-[10px] text-slate-400 mb-1">${data.count} quiz${data.count>1?'zes':''}</span>
                     <div class="w-full bg-brand-500/20 rounded-t-xl overflow-hidden h-full flex items-end">
                         <div class="w-full bg-brand-500 transition-all duration-1000 rounded-t-xl" style="height: ${avgScore}%"></div>
                     </div>
@@ -2382,8 +2385,8 @@
                 }
             });
             if (noteEl) {
-                if (sorted.length === 1) noteEl.textContent = `Showing your only subject: ${sorted[0][0]} — take quizzes on other materials to add more. Labels are always in English.`;
-                else noteEl.textContent = `Showing your top ${sorted.length} most-quizzed subjects (out of ${Object.keys(subjectMap).length} total). Labels are always in English.`;
+                if (sorted.length === 1) noteEl.textContent = `Showing your only subject: ${sorted[0][0]} — based on your material content, not filename.`;
+                else noteEl.textContent = `Showing your top ${sorted.length} most-quizzed subjects (out of ${Object.keys(subjectMap).length} total). Based on material content, not filename. Labels are always in English.`;
             }
         }
 
@@ -2685,6 +2688,54 @@ Do not include any other text.`;
             document.getElementById('wordGameSetup').classList.remove('hidden');
         }
 
+
+        // ========== MATERIALS FIX (V0.78): Filter empty + View shows ALL characters ==========
+        function getUsableMaterials() {
+            return (materials || []).filter(m => {
+                const c = (m.content || '').trim();
+                return c.length >= 50 && c.split(/\s+/).filter(w => w.length > 1).length >= 10;
+            });
+        }
+        function getUnusableMaterials() {
+            return (materials || []).filter(m => {
+                const c = (m.content || '').trim();
+                return c.length < 50 || c.split(/\s+/).filter(w => w.length > 1).length < 10;
+            });
+        }
+        function viewMaterialContent(id) {
+            const m = (materials || []).find(x => x.id === id);
+            if (!m) return;
+            const fullContent = m.content || '';
+            const totalChars = fullContent.length;
+            const totalWords = fullContent.split(/\s+/).filter(Boolean).length;
+            const isUsable = totalChars >= 50 && totalWords >= 10;
+            const modal = document.createElement('div');
+            modal.className = 'fixed inset-0 z-[100] bg-black/60 flex items-center justify-center p-4';
+            modal.onclick = (e) => { if (e.target === modal) modal.remove(); };
+            modal.innerHTML = `<div class="bg-white dark:bg-slate-900 rounded-2xl max-w-3xl w-full max-h-[85vh] flex flex-col overflow-hidden shadow-2xl">
+                <div class="p-4 border-b border-slate-200 dark:border-slate-800 flex justify-between items-start gap-3">
+                    <div class="min-w-0">
+                        <h3 class="font-bold text-sm truncate">${escapeHtml(m.name)}</h3>
+                        <p class="text-[11px] text-slate-400 mt-1">Showing ALL characters: ${totalChars.toLocaleString()} characters • ${totalWords.toLocaleString()} words • ${isUsable ? '✅ Usable for Quiz' : '⚠️ TOO SHORT'}</p>
+                        <p class="text-[11px] text-slate-400">AI Quiz sees first 28,000 chars. View shows everything.</p>
+                    </div>
+                    <div class="flex gap-2 shrink-0">
+                        <button onclick="navigator.clipboard.writeText(document.getElementById('fullMaterialText').innerText).then(()=>alert('Copied!'))" class="px-3 py-1.5 bg-brand-500 text-white text-xs font-bold rounded-lg">Copy All</button>
+                        <button onclick="this.closest('.fixed').remove()" class="px-3 py-1.5 bg-slate-200 dark:bg-slate-800 text-xs font-bold rounded-lg">✕ Close</button>
+                    </div>
+                </div>
+                <div class="px-4 pt-2 pb-1 flex gap-2">
+                    <input id="materialSearchInput" type="text" placeholder="Search in this file... e.g. Pasal 34" class="flex-1 px-3 py-2 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs focus:outline-none focus:border-brand-500" oninput="const q=this.value.toLowerCase(); const el=document.getElementById('fullMaterialText'); if(!q){el.innerHTML=el.dataset.full||el.innerHTML; return;} const txt=el.dataset.full||el.innerText; const idx=txt.toLowerCase().indexOf(q); if(idx===-1){el.innerHTML='<span>Not found</span>'; return;} el.innerHTML = escapeHtml(txt.slice(0, idx)) + '<mark style=background:yellow;color:black>' + escapeHtml(txt.slice(idx, idx+q.length)) + '</mark>' + escapeHtml(txt.slice(idx+q.length));">
+                    <button onclick="const el=document.getElementById('fullMaterialText'); el.scrollTop = el.scrollHeight; alert('Jumped to end');" class="px-3 py-2 bg-slate-200 dark:bg-slate-800 text-xs font-bold rounded-lg whitespace-nowrap">Jump to End ↓</button>
+                </div>
+                <div id="fullMaterialText" class="p-4 overflow-y-auto text-xs leading-relaxed whitespace-pre-wrap flex-1 border-t border-slate-100 dark:border-slate-800" style="max-height:60vh;">${escapeHtml(fullContent || '(No content extracted)')}</div>
+                <div class="p-3 border-t border-slate-200 dark:border-slate-800 text-[11px] text-slate-400 flex justify-between"><span>Start: ${escapeHtml(fullContent.slice(0,80))}...</span><span>End: ...${escapeHtml(fullContent.slice(-80))}</span></div>
+            </div>`;
+            document.body.appendChild(modal);
+            const el = modal.querySelector('#fullMaterialText');
+            if (el) el.dataset.full = fullContent;
+        }
+
         async function handleGeneralMaterialUpload(event) {
             const files = event.target.files;
             if (!files.length) return;
@@ -2735,11 +2786,17 @@ Do not include any other text.`;
                     } else if (isDocx) {
                         const arrayBuffer = await file.arrayBuffer();
                         const result = await mammoth.extractRawText({ arrayBuffer });
+                        const docxText = (result.value || '').trim();
+                        if (docxText.length < 50) {
+                            alert(`"${file.name}" has only ${docxText.length} characters of text. It may be image-only or empty.`);
+                            listContainer.innerHTML = originalHtml;
+                            continue;
+                        }
                         await db.materials.add({
                             username: currentUser,
                             name: file.name,
                             size: (file.size / 1024).toFixed(1) + ' KB',
-                            content: result.value
+                            content: docxText
                         });
                     } else if (isPdf) {
                         listContainer.innerHTML = `<p class="text-xs text-brand-500 col-span-2 font-semibold"><i class="fa-solid fa-spinner fa-spin mr-2"></i>Extracting PDF "${file.name}" (${file.size} bytes)...</p>`;
@@ -2751,8 +2808,17 @@ Do not include any other text.`;
                             content: pdfText
                         });
                     } else {
-                        // Plain text / other
-                        const textContent = await file.text();
+                        const textContent = (await file.text() || '').trim();
+                        if (textContent.length < 50) {
+                            alert(`"${file.name}" has only ${textContent.length} characters.`);
+                            listContainer.innerHTML = originalHtml;
+                            continue;
+                        }
+                        if (/[\u0000-\u0008\u000E-\u001F]/.test(textContent.slice(0,1000))) {
+                            alert(`"${file.name}" looks like a binary file (.doc/.pptx/.zip not supported). Please upload .docx, .pdf, .txt, or image.`);
+                            listContainer.innerHTML = originalHtml;
+                            continue;
+                        }
                         await db.materials.add({
                             username: currentUser,
                             name: file.name,
@@ -2780,20 +2846,27 @@ Do not include any other text.`;
                 updateStorageUsage();
                 return; 
             }
-            container.innerHTML = materials.map(m => `
-                <div class="glass-panel p-4 rounded-2xl flex items-center justify-between shadow-md">
+            container.innerHTML = materials.map(m => {
+                const contentLen = (m.content || '').length;
+                const wordCount = (m.content || '').split(/\s+/).filter(Boolean).length;
+                const isUsable = contentLen >= 50 && wordCount >= 10;
+                return `
+                <div class="glass-panel p-4 rounded-2xl flex items-center justify-between shadow-md ${!isUsable ? 'border border-red-500/30' : ''}">
                     <div class="flex items-center space-x-3 overflow-hidden">
                         <div class="w-10 h-10 rounded-xl bg-brand-500/20 text-brand-500 flex items-center justify-center flex-shrink-0"><i class="fa-solid fa-file-lines"></i></div>
-                        <div class="overflow-hidden"><h4 class="font-bold text-xs truncate">${m.name}</h4><p class="text-[10px] text-slate-400">${m.size}</p></div>
+                        <div class="overflow-hidden"><h4 class="font-bold text-xs truncate">${escapeHtml(m.name)}</h4><p class="text-[10px] text-slate-400">${m.size} • ${contentLen} chars • ${wordCount} words ${!isUsable ? '• ⚠️ TOO SHORT' : '• ✅ Ready'}</p></div>
                     </div>
-                    <button onclick="removeMaterial(${m.id})" class="text-slate-400 hover:text-red-500 text-xs px-2 py-1"><i class="fa-solid fa-trash"></i></button>
+                    <div class="flex gap-1 shrink-0">
+                        <button onclick="viewMaterialContent(${m.id})" class="text-brand-500 hover:text-brand-600 text-xs px-2 py-1 font-bold">View Full</button>
+                        <button onclick="removeMaterial(${m.id})" class="text-slate-400 hover:text-red-500 text-xs px-2 py-1"><i class="fa-solid fa-trash"></i></button>
+                    </div>
                 </div>
-            `).join('');
+            `}).join('');
             updateStorageUsage();
         }
 
 
-        // ========== SHARED: Auto-transfer uploads to Materials for Quiz/Cards (V0.77) ==========
+        // ========== SHARED: Auto-transfer uploads to Materials (V0.78) ==========
         async function addUploadedToMaterials(fileName, content, sizeBytes, sourceTag) {
             try {
                 if (!content || !content.trim()) return;
@@ -3296,10 +3369,12 @@ async function extractTextFromImage(file) {
                     if (pdf.numPages > 50) {
                         fullText += `\n[... ${pdf.numPages - 50} more pages truncated for length ...]`;
                     }
-                    const cleaned = fullText.replace(/\s+/g, " ").trim();
-                    if (!cleaned || cleaned.length < 10) {
-                        throw new Error("No readable text found in PDF (might be scanned image - try OCR)");
+                    const cleaned = fullText.replace(/\n{3,}/g, "\n\n").trim();
+                    const wordCount = cleaned ? cleaned.split(/\s+/).filter(w => w.length > 1).length : 0;
+                    if (!cleaned || wordCount < 10) {
+                        throw new Error("No readable text found in PDF - this PDF is likely a scanned image (no text layer). Try uploading it as an image for OCR, or use a text-based PDF.");
                     }
+                    console.log(`PDF extraction OK: ${cleaned.length} chars, ${wordCount} words, ${maxPages} pages`);
                     resolve(cleaned);
                 } catch (err) {
                     console.error("PDF extraction failed:", err);
@@ -3364,7 +3439,7 @@ async function extractTextFromImage(file) {
                     if (materialContext.length > 28000) {
                         materialContext = materialContext.slice(0, 28000) + "\n\n[...truncated for length...]";
                     }
-                    promptText = `Based strictly on the following study materials, generate a JSON array of exactly 5 flashcards for active recall practice. Each flashcard must contain: {"q":"question", "a":"answer", "readingText":"full reading passage if the question is based on a paragraph, story, article, dialogue, or reading comprehension text; otherwise empty string"}.
+                    promptText = `Use ONLY facts INSIDE the content below. NEVER ask about filename, file title, or 'what is this file about?'. Every flashcard must test a SPECIFIC fact written inside the content, not the document itself. Based strictly on the following study materials, generate a JSON array of exactly 5 flashcards for active recall practice. Each flashcard must contain: {"q":"question", "a":"answer", "readingText":"full reading passage if the question is based on a paragraph, story, article, dialogue, or reading comprehension text; otherwise empty string"}.
 
 CRITICAL RULES:
 1. ALL questions MUST be open-ended recall questions. NEVER generate multiple-choice questions.
@@ -3596,19 +3671,46 @@ updateStats();
             document.getElementById('quizLoadingContainer').classList.remove('hidden');
 
             try {
-                /* Extract text from uploaded IndexedDB materials */
-                let materialContext = materials.map(m => `File: ${m.name}\nContent:\n${m.content}`).join("\n\n");
-                
+                /* V0.78: Use ONLY usable materials + Use existing questions + Essay->MCQ */
+                const usable = typeof getUsableMaterials === 'function' ? getUsableMaterials() : (materials || []).filter(m => (m.content||'').trim().length >= 50);
+                const unusable = typeof getUnusableMaterials === 'function' ? getUnusableMaterials() : [];
+                if ((materials || []).length > 0 && usable.length === 0) {
+                    document.getElementById('quizLoadingContainer').classList.add('hidden');
+                    document.getElementById('quizStartContainer').classList.remove('hidden');
+                    alert(`None of your materials have readable content (${unusable.map(m => m.name).join(', ')}). The PDF is likely a scanned image or the file is empty. Re-upload as image for OCR or use a text-based PDF. Quiz cannot be generated from filename alone.`);
+                    return;
+                }
+                if (unusable.length > 0) { console.warn('Skipping unusable materials (too short):', unusable.map(m => m.name)); }
+                let materialContext = usable.map(m => `--- START OF CONTENT (ignore filename, use only the text below) ---\n${m.content}`).join("\n\n--- END ---\n\n");
+                if (materialContext.length > 28000) { materialContext = materialContext.slice(0, 28000) + "\n\n[...truncated for length...]"; }
                 let promptText;
                 if (materialContext.trim().length > 0) {
-                    promptText = `Based strictly on the following study materials, generate a JSON array of ${qty} multiple-choice questions. 
+                    promptText = `You are a quiz generator. Use ONLY the facts, definitions, and passages inside the CONTENT below. Do NOT use the filename, file title, or metadata.
+STRICT RULES - YOU MUST FOLLOW ALL:
+1. NEVER ask about the filename, file title, document title, or "what is this file about?" / "what is this document about?"
+2. NEVER ask "What is the main topic of..." / "What does this file contain?" / "What is the purpose of this document?"
+3. NEVER say "Berdasarkan naskah yang tercantum dalam materi" / "Berdasarkan materi" / "According to the material" in the question. Just ask the question directly with its scenario, like a real test would.
+4. Every question must test a SPECIFIC fact, definition, date, formula, event, or concept that is WRITTEN INSIDE the content.
+5. Do NOT invent facts not in the content. Do NOT use general knowledge outside the content.
+6. Return ONLY valid JSON, no markdown.
+7. IF THE FILE ALREADY HAS QUESTIONS, USE THE QUESTIONS - MOST IMPORTANT RULE:
+   - First, check if the CONTENT contains existing questions (Latihan Soal, Kisi-Kisi, PH, Ulangan, Soal Pilihan Ganda, Soal Esai, Quiz, Practice Test, etc).
+   - If YES, you MUST base your quiz on THOSE questions. Do NOT invent new recall questions about article text / definitions.
+   - Reuse the scenario / case / question stem from the file. Keep the same difficulty level and same HOTS style (scenario -> analysis, not hafalan).
+8. IF THERE IS AN ESSAY / OPEN-ENDED QUESTION WITH ONLY ONE ANSWER, CONVERT IT TO MCQ WITH 4 OPTIONS:
+   - Keep the original essay's scenario + question stem as-is (or with minimal rewording). Do NOT turn it into a "What is the text of Article X?" recall question.
+   - Create exactly 4 options: 1 CORRECT answer taken from the Kunci Jawaban / Pembahasan in the file (if present), otherwise from the correct concept in the content.
+   - Create 3 DISTRACTORS that are plausible but wrong: use related articles / concepts from the same file - NOT random / silly options.
+   - All 4 options should be similar length and style.
+9. IF THE FILE HAS BOTH MCQ AND ESSAY: Prioritize essay questions for conversion (they are usually HOTS) + reuse MCQ scenarios. Mix them.
+10. LANGUAGE: Match the language of the CONTENT. If content is Indonesian (e.g. PPKn / IPS / PKn), questions and options must be in Indonesian. If content is English, use English. Do NOT translate PPKn articles to English.
+Generate a JSON array of ${qty} multiple-choice questions.
 Keys required for each object:
-- "q": The main question string.
+- "q": The main question string (about a fact / scenario INSIDE the content, never about the file itself).
 - "options": An array of 4 multiple choice options.
 - "correct": Index (0-3) of the correct option.
-- "readingText": (Optional string) If answering the question requires reading a specific text, paragraph, narrative, or reading passage from the materials, extract and include that reading text snippet here. If no text reading is necessary, set this field to null or empty string.
-
-Study Materials:
+- "readingText": (Optional string) If answering requires reading a specific text, paragraph, narrative, or reading passage from the materials, extract and include that snippet here. If the file has NO reading passage (only Latihan Soal / Kisi-Kisi), set this to null or empty string. Do NOT invent a passage.
+Study Materials - CONTENT ONLY (ignore any filename, use only the text below):
 ${materialContext}`;
                 } else {
                     promptText = `Generate a JSON array of ${qty} multiple-choice questions. Keys: "q", "options" (array of 4 strings), "correct" (index 0-3), "readingText" (null or passage string if applicable).`;
@@ -3729,13 +3831,12 @@ ${materialContext}`;
                 userProfile.quizzesCompleted++;
 
                 if (!userProfile.quizHistoryRecords) userProfile.quizHistoryRecords = [];
-                // V0.77: Save REAL subject in English, even if material is Indonesian
-                const quizMaterialName = (typeof materials !== 'undefined' && materials.length) ? materials[materials.length-1].name : '';
-                const quizSubject = (typeof detectSubjectFromText === 'function') ? detectSubjectFromText(currentQ.q, quizMaterialName) : 'General';
+                const quizSubject = (typeof getQuizSubjectForCurrentQuiz === 'function') ? getQuizSubjectForCurrentQuiz() : 'Unknown';
+                const quizMaterialNames = (materials || []).map(m => m.name).join(', ');
                 userProfile.quizHistoryRecords.push({
                     topic: currentQ.q || "General Quiz",
                     subject: quizSubject,
-                    materialName: quizMaterialName || '',
+                    materialName: quizMaterialNames || '',
                     scorePercent: finalPercent,
                     timestamp: Date.now()
                 });
@@ -4045,7 +4146,7 @@ ${content.slice(0, 12000)}`;
 
                 const res = await callGeminiApi(prompt);
                 document.getElementById('mindMapProgressBar').style.width = '80%';
-                document.getElementById('mindMapProgressText').textContent = 'Rendering with Cytoscape.js V0.77...';
+                document.getElementById('mindMapProgressText').textContent = 'Rendering with Cytoscape.js V0.78...';
 
                 const data = parseAiJson(res.text);
                 mindMapGeneratedText = JSON.stringify(data, null, 2);
@@ -4108,11 +4209,11 @@ ${content.slice(0, 12000)}`;
                         <div class="cy-toolbar">
                             <div style="display:flex; gap:8px; align-items:center; background:rgba(15,23,42,0.85); padding:6px 12px; border-radius:20px; border:1px solid #334155;">
                                 <div style="width:10px; height:10px; border-radius:50%; background:#10b981;"></div>
-                                <span style="font-size:11px; color:#94a3b8; font-weight:600;">Cytoscape V0.77 • 51 nodes max</span>
+                                <span style="font-size:11px; color:#94a3b8; font-weight:600;">Cytoscape V0.78 • 51 nodes max</span>
                             </div>
                             <div style="display:flex; gap:6px; flex-wrap:wrap; justify-content:center;">
                                 <button id="cyFullscreenBtn" style="background:#8b5cf6; border:none; color:white; padding:6px 12px; border-radius:8px; font-size:11px; font-weight:700; cursor:pointer;">⛶ Fullscreen</button>
-                                <!-- cyToggleScroll removed in V0.77 - fullscreen handles scroll vs drag -->
+                                <!-- cyToggleScroll removed in V0.78 -->
                                 <button id="cyFit" style="background:#1e293b; border:1px solid #334155; color:#94a3b8; padding:6px 12px; border-radius:8px; font-size:11px; cursor:pointer;">Fit</button>
                                 <button id="cyReset" style="background:#38bdf8; border:none; color:#0f172a; padding:6px 12px; border-radius:8px; font-size:11px; font-weight:700; cursor:pointer;">Reset</button>
                             </div>
@@ -4130,7 +4231,7 @@ ${content.slice(0, 12000)}`;
                             </div>
                             <div style="margin-top:16px; color:#64748b; font-size:10px;">📱 Mobile: Fullscreen required for dragging • Desktop: Works without fullscreen</div>
                         </div>
-                        <div style="position:absolute; bottom:8px; left:12px; font-size:10px; color:#475569; background:rgba(15,23,42,0.7); padding:3px 8px; border-radius:10px; z-index:5;" id="cyHint">V0.77 • 5 Main / 3 Sub / 2 Details = 51 nodes max • Safe for mobile</div>
+                        <div style="position:absolute; bottom:8px; left:12px; font-size:10px; color:#475569; background:rgba(15,23,42,0.7); padding:3px 8px; border-radius:10px; z-index:5;" id="cyHint">V0.78 • 5 Main / 3 Sub / 2 Details = 51 nodes max • Safe for mobile</div>
                     </div>
                     <div style="margin-top:12px; display:flex; gap:8px; flex-wrap:wrap; align-items:center;">
                         <div style="display:flex; gap:12px; font-size:10px; color:#64748b; flex-wrap:wrap; flex:1;">
@@ -4170,7 +4271,7 @@ ${content.slice(0, 12000)}`;
                         });
                     });
 
-                    console.log(`V0.77 Cytoscape: ${elements.filter(e=>e.data.source===undefined).length} nodes (max 51)`);
+                    console.log(`V0.78 Cytoscape: ${elements.filter(e=>e.data.source===undefined).length} nodes (max 51)`);
 
                     const isMobile = window.innerWidth < 768;
                     let mapInteractionEnabled = !isMobile;
@@ -4196,7 +4297,7 @@ ${content.slice(0, 12000)}`;
 
                     const infoEl = document.getElementById('cyInfo');
                     const overlayEl = document.getElementById('cyOverlay');
-                    // toggleBtn removed - fullscreen handles scroll vs drag (V0.77)
+                    // toggleBtn removed (V0.78)
                     const wrapperEl = document.getElementById('cyWrapper');
                     const fsBtn = document.getElementById('cyFullscreenBtn');
 
@@ -4298,7 +4399,7 @@ ${content.slice(0, 12000)}`;
                             else enableMapInteraction();
                         };
                     }
-                    // No toggle button - fullscreen is the only mode switch (V0.77)
+                    // No toggle button (V0.78)
 
                     cy.on('tap', 'node', function(evt){
                         const d = evt.target.data();
@@ -4643,7 +4744,7 @@ ${content}`;
         }
 
 
-        // ========== QUIZ REVIEW (V0.77) ==========
+        // ========== QUIZ REVIEW (V0.78) ==========
         function renderQuizReviewTable() {
             const tableEl = document.getElementById('quizReviewTable');
             const summaryEl = document.getElementById('quizReviewSummary');
